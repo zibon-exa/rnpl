@@ -12,7 +12,7 @@
  */
 
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { BookOpen, CheckCircle, Clock, Plus, Folder, User, LogOut, Bell, Search, ArrowRight, ArrowLeft, X, Edit, RotateCcw, ArrowUp, ArrowDown, Mail, AlertTriangle, FileText, ChevronRight, Filter, Paperclip, File } from 'lucide-react';
+import { BookOpen, CheckCircle, Clock, Plus, Folder, User, LogOut, Bell, Search, ArrowRight, ArrowLeft, X, Edit, RotateCcw, ArrowUp, ArrowDown, Mail, AlertTriangle, FileText, ChevronRight, Filter, Paperclip, File, Send, Zap } from 'lucide-react';
 
 // --- UTILITIES & MOCK DATA ---
 const useDebounce = (value, delay) => {
@@ -38,6 +38,19 @@ const useAuth = () => {
   return { user, isAuthenticated: true };
 };
 
+// Helper for formatting timestamps (More formal/localized style)
+const formatTimestamp = (isoDateString) => {
+    const date = new Date(isoDateString);
+    return date.toLocaleString('en-US', { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric', 
+        hour: '2-digit', 
+        minute: '2-digit',
+        timeZoneName: 'short'
+    });
+};
+
 // Mock Data
 const initialFiles = [
   { 
@@ -48,8 +61,12 @@ const initialFiles = [
     lastUpdated: '2025-11-30', 
     sender: 'Raj Patel', 
     isApproverAction: true, 
-    summary: "Analysis of Q4 spending against projected budget with variance explanations.",
-    documentBody: "The Q4 financial performance indicates a 12% variance in operational expenditures, primarily driven by the unexpected server migration costs. We recommend reallocating the surplus from the marketing budget to cover this deficit. Attached are the detailed ledgers for your review."
+    summary: "Analysis of Q4 spending against projected budget with variance explanations. Requires immediate approval.",
+    documentBody: "The Q4 financial performance indicates a 12% variance in operational expenditures, primarily driven by the unexpected server migration costs. We recommend reallocating the surplus from the marketing budget to cover this deficit. Attached are the detailed ledgers for your review.",
+    history: [
+        { timestamp: '2025-12-07T10:45:00Z', actor: 'Raj Patel', event: 'Sent for Approval', stateChange: 'Pending', note: 'Ready for Amit. Critical item due to year-end closing.' },
+        { timestamp: '2025-12-06T09:00:00Z', actor: 'Raj Patel', event: 'Draft Created', stateChange: 'Draft', note: 'Initial creation of the file.' },
+    ]
   },
   { 
     id: 'RNPL-1002', 
@@ -59,8 +76,13 @@ const initialFiles = [
     lastUpdated: '2025-12-01', 
     sender: 'Anya Sharma', 
     isApproverAction: false, 
-    summary: "Updated guidelines for remote onboarding process.",
-    documentBody: "PURPOSE: To standardize the remote onboarding experience.\n\nSCOPE: All full-time employees joining after Jan 1st, 2026.\n\nPOLICY: All IT assets must be shipped 3 days prior to the start date. Access credentials will be provisioned via the IDM portal automatically upon contract signature."
+    summary: "Updated guidelines for remote onboarding process. Final approval needed.",
+    documentBody: "PURPOSE: To standardize the remote onboarding experience.\n\nSCOPE: All full-time employees joining after Jan 1st, 2026.\n\nPOLICY: All IT assets must be shipped 3 days prior to the start date. Access credentials will be provisioned via the IDM portal automatically upon contract signature.",
+    history: [
+        { timestamp: '2025-12-01T15:00:00Z', actor: 'Amit Singh (Approver)', event: 'Approved', stateChange: 'Approved', note: 'Policy looks solid. Go live next week.' },
+        { timestamp: '2025-12-01T10:00:00Z', actor: 'Anya Sharma', event: 'Sent for Approval', stateChange: 'Pending', note: 'Please review the scope changes.' },
+        { timestamp: '2025-11-28T09:00:00Z', actor: 'Anya Sharma', event: 'Draft Created', stateChange: 'Draft', note: 'Initial policy draft.' },
+    ]
   },
   { 
     id: 'RNPL-1003', 
@@ -70,8 +92,13 @@ const initialFiles = [
     lastUpdated: '2025-12-02', 
     sender: 'Siddharth Khan', 
     isApproverAction: true, 
-    summary: "Cost estimates for 3rd floor renovation including new meeting rooms.",
-    documentBody: "Vendor: A-1 Construction\nEstimate: $45,000\nTimeline: 3 Weeks\n\nScope of Work includes demolition of existing cubicles, installation of glass partitions, and electrical rewiring for 4 new conference rooms."
+    summary: "Cost estimates for 3rd floor renovation including new meeting rooms. Resubmission required.",
+    documentBody: "Vendor: A-1 Construction\nEstimate: $45,000\nTimeline: 3 Weeks\n\nScope of Work includes demolition of existing cubicles, installation of glass partitions, and electrical rewiring for 4 new conference rooms.",
+    history: [
+        { timestamp: '2025-12-02T16:30:00Z', actor: 'Anya Sharma (Approver)', event: 'Returned', stateChange: 'Returned', note: 'Cost is too high. Find a cheaper vendor and resubmit.' },
+        { timestamp: '2025-12-02T11:00:00Z', actor: 'Siddharth Khan', event: 'Sent for Approval', stateChange: 'Pending', note: 'Urgent renovation request.' },
+        { timestamp: '2025-12-01T09:00:00Z', actor: 'Siddharth Khan', event: 'Draft Created', stateChange: 'Draft', note: 'Initial estimate.' },
+    ]
   },
   { 
     id: 'RNPL-1004', 
@@ -82,7 +109,10 @@ const initialFiles = [
     sender: 'Anya Sharma', 
     isApproverAction: false, 
     summary: "Request for 3 new blades for the primary cluster.",
-    documentBody: "We are currently reaching 85% capacity on our primary compute cluster. To ensure stability during the upcoming peak season, we request the procurement of 3x Dell PowerEdge blades. \n\nTotal Cost: $12,000."
+    documentBody: "We are currently reaching 85% capacity on our primary compute cluster. To ensure stability during the upcoming peak season, we request the procurement of 3x Dell PowerEdge blades. \n\nTotal Cost: $12,000.",
+    history: [
+        { timestamp: '2025-12-03T10:00:00Z', actor: 'Anya Sharma', event: 'Draft Saved', stateChange: 'Draft', note: 'Initial draft, pending content review.' },
+    ]
   },
   { 
     id: 'RNPL-1005', 
@@ -92,8 +122,12 @@ const initialFiles = [
     lastUpdated: '2025-12-04', 
     sender: 'Jane Doe', 
     isApproverAction: true, 
-    summary: "Q1 Social Media blitz strategy.",
-    documentBody: "Strategy: Aggressive targeted ads on LinkedIn and Twitter focusing on our new Enterprise features.\nBudget: $5,000/month\nDuration: Jan - March 2026."
+    summary: "Q1 Social Media blitz strategy. Needs budget sign-off.",
+    documentBody: "Strategy: Aggressive targeted ads on LinkedIn and Twitter focusing on our new Enterprise features.\nBudget: $5,000/month\nDuration: Jan - March 2026.",
+    history: [
+        { timestamp: '2025-12-04T12:00:00Z', actor: 'Jane Doe', event: 'Sent for Approval', stateChange: 'Pending', note: 'Submitted to Finance for budget review.' },
+        { timestamp: '2025-12-04T09:00:00Z', actor: 'Jane Doe', event: 'Draft Created', stateChange: 'Draft', note: 'Campaign shell built.' },
+    ]
   },
 ];
 
@@ -225,7 +259,7 @@ const NotificationPopover = ({ notifications, onAction, onClose }) => {
                 <div>
                   <p className="text-sm font-medium text-slate-800 group-hover:text-indigo-600 transition-colors">{notif.message}</p>
                   <p className="text-xs text-slate-500 mt-0.5">{notif.subtext}</p>
-                  <p className="text-[10px] text-slate-400 mt-2 font-medium">{notif.timestamp}</p>
+                  <p className="text-[10px] text-slate-400 mt-2 font-medium">{formatTimestamp(notif.timestamp)}</p>
                 </div>
               </div>
             </div>
@@ -253,7 +287,7 @@ const TopNavBar = ({ user, activeModule, setActiveModule, notifications, onNotif
         </div>
 
         <nav className="hidden md:flex items-center gap-1 bg-slate-100/50 p-1 rounded-xl border border-slate-200/50">
-          {['Dashboard', 'My Files', user.role === 'Approver' ? 'Pending Approvals' : null].filter(Boolean).map(module => (
+          {['Dashboard', 'My Nothis', user.role === 'Approver' ? 'Pending Approvals' : null].filter(Boolean).map(module => (
             <button
               key={module}
               onClick={() => { setActiveModule(module); setIsNotificationOpen(false); }}
@@ -270,10 +304,10 @@ const TopNavBar = ({ user, activeModule, setActiveModule, notifications, onNotif
 
         <div className="flex items-center gap-4">
           <button 
-            onClick={() => setActiveModule('Create File')}
+            onClick={() => setActiveModule('Create Nothi')} // Terminology Change
             className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-slate-900 text-white text-sm font-medium rounded-lg hover:bg-slate-800 active:scale-95 transition-all shadow-sm"
           >
-            <Plus size={16} /> New File
+            <Plus size={16} /> New Nothi
           </button>
 
           <div className="h-6 w-px bg-slate-200 mx-1"></div>
@@ -320,23 +354,23 @@ const StatCard = ({ title, value, icon: Icon, onClick, colorClass }) => (
   </div>
 );
 
-const FileListItem = ({ file, onClick }) => (
-  <div onClick={() => onClick(file)} className="group flex items-center justify-between p-4 bg-white rounded-xl border border-slate-100 shadow-sm hover:shadow-md hover:border-indigo-100 cursor-pointer transition-all duration-200">
+const NothiListItem = ({ nothi, onClick }) => ( // Component renamed to NothiListItem
+  <div onClick={() => onClick(nothi)} className="group flex items-center justify-between p-4 bg-white rounded-xl border border-slate-100 shadow-sm hover:shadow-md hover:border-indigo-100 cursor-pointer transition-all duration-200">
     <div className="flex items-center gap-4 overflow-hidden">
       <div className="bg-slate-50 p-2.5 rounded-lg text-slate-400 group-hover:text-indigo-600 group-hover:bg-indigo-50 transition-colors">
         <FileText size={20} />
       </div>
       <div className="min-w-0">
-        <h4 className="text-sm font-semibold text-slate-900 truncate group-hover:text-indigo-700 transition-colors">{file.title}</h4>
+        <h4 className="text-sm font-semibold text-slate-900 truncate group-hover:text-indigo-700 transition-colors">{nothi.title}</h4>
         <p className="text-xs text-slate-500 truncate flex items-center gap-2">
-          <span>{file.id}</span>
+          <span>{nothi.id}</span>
           <span className="w-1 h-1 rounded-full bg-slate-300"></span>
-          <span>{file.sender}</span>
+          <span>{nothi.sender}</span>
         </p>
       </div>
     </div>
     <div className="flex items-center gap-4 pl-4 shrink-0">
-      <StatusBadge status={file.status} />
+      <StatusBadge status={nothi.status} />
       <ChevronRight size={16} className="text-slate-300 group-hover:text-indigo-400 group-hover:translate-x-1 transition-all" />
     </div>
   </div>
@@ -363,8 +397,8 @@ const Dashboard = ({ user, files, onOpenFile, setActiveModule }) => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <StatCard title="Create New File" icon={Plus} colorClass="bg-indigo-600 text-indigo-600" onClick={() => setActiveModule('Create File')} />
-        <StatCard title="My Files" value={files.filter(f => f.sender === user.name).length} icon={Folder} colorClass="bg-blue-500 text-blue-500" onClick={() => setActiveModule('My Files')} />
+        <StatCard title="Create New Nothi" icon={Plus} colorClass="bg-indigo-600 text-indigo-600" onClick={() => setActiveModule('Create Nothi')} /> {/* Terminology Change */}
+        <StatCard title="My Nothis" value={files.filter(f => f.sender === user.name).length} icon={Folder} colorClass="bg-blue-500 text-blue-500" onClick={() => setActiveModule('My Nothis')} /> {/* Terminology Change */}
         {isApprover && (
           <StatCard title="Pending Approvals" value={pendingCount} icon={CheckCircle} colorClass="bg-amber-500 text-amber-500" onClick={() => setActiveModule('Pending Approvals')} />
         )}
@@ -373,22 +407,22 @@ const Dashboard = ({ user, files, onOpenFile, setActiveModule }) => {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold text-slate-800">
-            {isApprover ? 'Requires Attention' : 'Recent Activity'}
+            {isApprover ? 'Nothis Requiring Attention' : 'Recent Nothi Activity'} {/* Terminology Change */}
           </h2>
-          <button onClick={() => setActiveModule(isApprover ? 'Pending Approvals' : 'My Files')} className="text-sm font-medium text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
+          <button onClick={() => setActiveModule(isApprover ? 'Pending Approvals' : 'My Nothis')} className="text-sm font-medium text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
             View All <ArrowRight size={14} />
           </button>
         </div>
         
         <div className="grid gap-3">
           {relevantFiles.length > 0 ? (
-            relevantFiles.map(file => <FileListItem key={file.id} file={file} onClick={onOpenFile} />)
+            relevantFiles.map(file => <NothiListItem key={file.id} nothi={file} onClick={onOpenFile} />) // Component Renamed
           ) : (
              <div className="p-10 border border-dashed border-slate-200 rounded-xl flex flex-col items-center justify-center text-center bg-slate-50/50">
                 <div className="bg-white p-3 rounded-full shadow-sm mb-3">
                     <Folder className="text-slate-300" size={24} />
                 </div>
-                <p className="text-slate-500 text-sm font-medium">No files currently require your attention.</p>
+                <p className="text-slate-500 text-sm font-medium">No nothis currently require your attention.</p> {/* Terminology Change */}
              </div>
           )}
         </div>
@@ -418,7 +452,7 @@ const FileListTable = ({ user, files, title, filterFn, onOpenFile }) => {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
             <input 
               type="text" 
-              placeholder="Search..." 
+              placeholder="Search Nothis..." // Terminology Change
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
               className="pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 w-full md:w-64 transition-all"
@@ -439,7 +473,7 @@ const FileListTable = ({ user, files, title, filterFn, onOpenFile }) => {
         <table className="w-full text-left">
           <thead className="bg-slate-50 border-b border-slate-100">
             <tr>
-              {['File', 'Status', 'Category', 'Last Updated', ''].map((h, i) => (
+              {['Nothi', 'Status', 'Category', 'Last Updated', ''].map((h, i) => ( // Terminology Change
                 <th key={i} className="px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">{h}</th>
               ))}
             </tr>
@@ -460,7 +494,7 @@ const FileListTable = ({ user, files, title, filterFn, onOpenFile }) => {
               </tr>
             ))}
             {filteredFiles.length === 0 && (
-              <tr><td colSpan={5} className="px-6 py-12 text-center text-slate-400 italic">No files found matching your criteria.</td></tr>
+              <tr><td colSpan={5} className="px-6 py-12 text-center text-slate-400 italic">No nothis found matching your criteria.</td></tr>
             )}
           </tbody>
         </table>
@@ -476,6 +510,17 @@ const CreateFile = ({ user, onCreateSuccess }) => {
   
   const handleSave = (isDraft) => {
     if (!formData.title || !formData.category) return; // Simple validation
+    
+    const newHistory = [
+        { 
+            timestamp: new Date().toISOString(), 
+            actor: user.name, 
+            event: isDraft ? 'Draft Saved' : 'Sent for Approval', 
+            stateChange: isDraft ? 'Draft' : 'Pending', 
+            note: isDraft ? 'Nothi created and saved as draft.' : 'Initiated new approval request.'
+        }
+    ];
+
     const newFile = {
       ...formData,
       id: `RNPL-${Math.floor(Math.random() * 8999) + 1000}`,
@@ -483,7 +528,8 @@ const CreateFile = ({ user, onCreateSuccess }) => {
       status: isDraft ? 'Draft' : 'Pending',
       lastUpdated: new Date().toISOString().slice(0, 10),
       isApproverAction: !isDraft,
-      documentBody: formData.documentBody || "No content provided."
+      documentBody: formData.documentBody || "No content provided.",
+      history: newHistory, // Attach history
     };
     onCreateSuccess(newFile, isDraft);
   };
@@ -491,12 +537,12 @@ const CreateFile = ({ user, onCreateSuccess }) => {
   return (
     <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden animate-in slide-in-from-bottom-4 duration-500">
       <div className="px-8 py-6 border-b border-slate-100 bg-slate-50/30">
-        <h2 className="text-xl font-bold text-slate-900">Create New File</h2>
+        <h2 className="text-xl font-bold text-slate-900">Create New Nothi</h2> {/* Terminology Change */}
         <p className="text-slate-500 text-sm mt-1">Start a new workflow or save a draft for later.</p>
       </div>
       <div className="p-8 space-y-6">
         <div>
-          <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">File Title <span className="text-rose-500">*</span></label>
+          <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Nothi Title <span className="text-rose-500">*</span></label> {/* Terminology Change */}
           <input 
             type="text" 
             className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none" 
@@ -557,8 +603,66 @@ const CreateFile = ({ user, onCreateSuccess }) => {
   );
 };
 
+// --- HISTORY COMPONENT ---
+
+const DocumentHistory = ({ history }) => {
+    // History is already ordered chronologically (oldest first) in mock data, 
+    // so we reverse it for display (newest first).
+    const reversedHistory = useMemo(() => [...history].reverse(), [history]);
+    const totalSteps = reversedHistory.length;
+
+    const getIconForEvent = (event) => {
+        switch(event) {
+            case 'Approved': return <CheckCircle size={16} className="text-emerald-600" />;
+            case 'Returned': return <RotateCcw size={16} className="text-rose-600" />;
+            case 'Sent for Approval': 
+            case 'Resubmitted for Approval': 
+            case 'Forwarded': return <Send size={16} className="text-amber-600" />;
+            case 'Draft Created':
+            case 'Draft Saved': return <File size={16} className="text-slate-500" />;
+            default: return <Clock size={16} className="text-indigo-600" />;
+        }
+    };
+
+    return (
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/60">
+            <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4">Nothi Journey ({totalSteps} Steps)</h3> {/* Terminology Change */}
+            <div className="relative pl-4 space-y-6 before:absolute before:left-0 before:top-2 before:bottom-0 before:w-0.5 before:bg-slate-200">
+                {reversedHistory.map((step, index) => {
+                    const isCurrent = index === 0;
+                    const eventIcon = getIconForEvent(step.event);
+
+                    return (
+                        <div key={index} className="relative pl-6 pb-2 group">
+                            {/* Timeline Dot */}
+                            <div className={`absolute left-[-6px] top-1 w-3 h-3 rounded-full flex items-center justify-center 
+                                ${isCurrent ? 'bg-indigo-600 ring-4 ring-indigo-50/50' : 'bg-slate-300 ring-4 ring-white'}`}>
+                                <div className="p-0.5 bg-white rounded-full">
+                                    {eventIcon}
+                                </div>
+                            </div>
+                            
+                            <p className="text-xs text-slate-400 mb-0.5 font-mono">{formatTimestamp(step.timestamp)}</p>
+                            <p className={`text-sm font-semibold ${isCurrent ? 'text-indigo-700' : 'text-slate-800'}`}>
+                                {step.event}
+                                <span className="text-xs font-normal text-slate-500 ml-2">by {step.actor}</span>
+                            </p>
+                            <p className="text-xs text-slate-500 mt-1">Status: <span className="font-medium text-slate-700">{step.stateChange}</span></p>
+
+                            {step.note && (
+                                <p className="text-xs mt-2 p-2 bg-slate-50 border border-slate-100 rounded-lg text-slate-600 italic max-w-sm">
+                                    <span className="font-semibold text-slate-800 mr-1">Note:</span> {step.note}
+                                </p>
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+    );
+};
+
 // --- FILE INSPECTOR (THE DRAWER) ---
-// UPDATED: Now supports "Split View" Logic via Tabs
 
 const FileInspector = ({ file, user, onClose, onUpdate }) => {
   const [activeTab, setActiveTab] = useState('notes'); // 'notes' | 'document'
@@ -569,9 +673,28 @@ const FileInspector = ({ file, user, onClose, onUpdate }) => {
   
   const handleActionSubmit = (note) => {
     let updates = { lastUpdated: new Date().toISOString().slice(0, 10) };
-    if (action === 'approve') updates = { status: 'Approved', approvalComment: note, isApproverAction: false };
-    if (action === 'return') updates = { status: 'Returned', returnComment: note, isApproverAction: true };
-    if (action === 'forward') updates = { status: 'Pending', forwardingNote: note, isApproverAction: true };
+    const newTimestamp = new Date().toISOString();
+    const actor = user.name + (isApprover ? ' (Approver)' : '');
+
+    let newHistoryEntry = {
+        timestamp: newTimestamp,
+        actor: actor,
+        note: note || `Action taken by ${user.name}.`
+    };
+
+    if (action === 'approve') {
+        updates = { status: 'Approved', approvalComment: note, isApproverAction: false };
+        newHistoryEntry = { ...newHistoryEntry, event: 'Approved', stateChange: 'Approved' };
+    } else if (action === 'return') {
+        updates = { status: 'Returned', returnComment: note, isApproverAction: true };
+        newHistoryEntry = { ...newHistoryEntry, event: 'Returned', stateChange: 'Returned' };
+    } else if (action === 'forward') {
+        updates = { status: 'Pending', forwardingNote: note, isApproverAction: true };
+        newHistoryEntry = { ...newHistoryEntry, event: 'Forwarded', stateChange: 'Pending' };
+    }
+    
+    // Crucial: Prepend new entry to the existing history
+    updates.history = [newHistoryEntry, ...file.history];
     
     onUpdate(file.id, updates);
     setAction(null);
@@ -583,6 +706,27 @@ const FileInspector = ({ file, user, onClose, onUpdate }) => {
       <Icon size={18} /> {label}
     </button>
   );
+
+  const getNextActionGuidance = (status) => {
+    if (file.sender === user.name) {
+        if (status === 'Draft') return { type: 'Info', text: 'Edit your content and submit it for approval when ready.' };
+        if (status === 'Returned') return { type: 'Warning', text: 'Review the Approver’s comments and resubmit the Nothi.' };
+        if (status === 'Pending') return { type: 'Info', text: 'Waiting for the Approver to take action.' };
+        if (status === 'Approved') return { type: 'Success', text: 'The Nothi is complete. Proceed with the documented task.' };
+    } else if (isApprover) {
+        if (status === 'Pending') return { type: 'Action', text: 'You need to Approve, Return, or Forward this Nothi.' };
+        if (status === 'Returned') return { type: 'Action', text: 'The sender has resubmitted. Review and decide on approval.' };
+    }
+    return { type: 'Info', text: 'The Nothi is currently following its established workflow path.' };
+  };
+
+  const guidance = getNextActionGuidance(file.status);
+  const guidanceStyles = {
+    Info: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+    Warning: 'bg-rose-50 text-rose-700 border-rose-200',
+    Success: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    Action: 'bg-amber-50 text-amber-700 border-amber-200',
+  };
 
   return (
     <>
@@ -599,7 +743,7 @@ const FileInspector = ({ file, user, onClose, onUpdate }) => {
                 onClick={() => setActiveTab('document')}
                 className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${activeTab === 'document' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}
             >
-                Document (Draft)
+                Attached Document
             </button>
         </div>
 
@@ -607,7 +751,7 @@ const FileInspector = ({ file, user, onClose, onUpdate }) => {
             {/* VIEW 1: NOTE SHEET (Metadata & History) */}
             {activeTab === 'notes' && (
                 <div className="animate-in fade-in duration-300 space-y-8">
-                    {/* Status Header */}
+                    {/* Status Header & Next Action Guidance */}
                     <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/60">
                         <div className="flex justify-between items-start">
                             <div>
@@ -617,6 +761,15 @@ const FileInspector = ({ file, user, onClose, onUpdate }) => {
                             <StatusBadge status={file.status} />
                         </div>
                     
+                        {/* Next Action Guidance (New Feature) */}
+                        <div className={`mt-4 p-4 rounded-xl border ${guidanceStyles[guidance.type]} flex items-start gap-3`}>
+                            <Zap size={20} className="mt-0.5 shrink-0" />
+                            <div>
+                                <p className="text-sm font-semibold leading-tight">Next Expected Action:</p>
+                                <p className="text-sm mt-1 leading-relaxed">{guidance.text}</p>
+                            </div>
+                        </div>
+
                         {/* Primary Actions Area */}
                         {canAct && (
                             <div className="mt-6 pt-6 border-t border-slate-100 flex gap-3">
@@ -628,13 +781,32 @@ const FileInspector = ({ file, user, onClose, onUpdate }) => {
                         {/* Resubmit Action */}
                         {file.sender === user.name && file.status === 'Returned' && (
                             <div className="mt-6 pt-6 border-t border-slate-100">
-                                <button onClick={() => { onUpdate(file.id, { status: 'Pending', isApproverAction: true }); onClose(); }} className="w-full py-3 bg-indigo-600 text-white rounded-xl font-medium shadow-sm hover:bg-indigo-700 active:scale-95 transition-all">Resubmit for Approval</button>
+                                <button 
+                                    onClick={() => { 
+                                        const newHistoryEntry = { 
+                                            timestamp: new Date().toISOString(), 
+                                            actor: user.name, 
+                                            event: 'Resubmitted for Approval', 
+                                            stateChange: 'Pending', 
+                                            note: 'Nothi has been corrected and resubmitted.' 
+                                        };
+                                        onUpdate(file.id, { 
+                                            status: 'Pending', 
+                                            isApproverAction: true, 
+                                            history: [newHistoryEntry, ...file.history] 
+                                        }); 
+                                        onClose(); 
+                                    }} 
+                                    className="w-full py-3 bg-indigo-600 text-white rounded-xl font-medium shadow-sm hover:bg-indigo-700 active:scale-95 transition-all"
+                                >
+                                    Resubmit Nothi for Approval
+                                </button>
                             </div>
                         )}
                     </div>
 
                     {/* Details Grid */}
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/60">
                             <p className="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-1">Category</p>
                             <p className="font-medium text-slate-800">{file.category}</p>
@@ -646,34 +818,23 @@ const FileInspector = ({ file, user, onClose, onUpdate }) => {
                                 {file.sender}
                             </p>
                         </div>
-                        <div className="col-span-2 bg-white p-5 rounded-2xl shadow-sm border border-slate-200/60">
+                        <div className="col-span-1 md:col-span-2 bg-white p-5 rounded-2xl shadow-sm border border-slate-200/60">
                             <p className="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-2">Executive Summary</p>
                             <p className="text-slate-600 leading-relaxed text-sm">{file.summary || "No summary provided."}</p>
                         </div>
                     </div>
 
-                    {/* History Stream */}
-                    <div className="relative pl-4 space-y-6 before:absolute before:left-0 before:top-2 before:bottom-0 before:w-0.5 before:bg-slate-200">
-                        <div className="relative pl-6">
-                            <div className="absolute left-[-5px] top-1 w-2.5 h-2.5 rounded-full bg-slate-300 ring-4 ring-slate-50"></div>
-                            <p className="text-xs text-slate-400 mb-0.5">{file.lastUpdated}</p>
-                            <p className="text-sm font-medium text-slate-800">Current Status: {file.status}</p>
-                        </div>
-                        <div className="relative pl-6">
-                            <div className="absolute left-[-5px] top-1 w-2.5 h-2.5 rounded-full bg-indigo-300 ring-4 ring-slate-50"></div>
-                            <p className="text-xs text-slate-400 mb-0.5">2025-11-28</p>
-                            <p className="text-sm font-medium text-slate-800">File Created</p>
-                            <p className="text-xs text-slate-500 mt-1">Initiated by {file.sender}</p>
-                        </div>
-                    </div>
+                    {/* History Stream Component */}
+                    {file.history && <DocumentHistory history={file.history} />}
+                    
                 </div>
             )}
 
             {/* VIEW 2: DOCUMENT PREVIEW (The "Attachment") */}
             {activeTab === 'document' && (
                 <div className="animate-in fade-in duration-300 flex flex-col items-center">
-                    {/* The "Paper" Container */}
-                    <div className="bg-white w-full aspect-[1/1.414] shadow-lg border border-slate-200 p-8 md:p-12 relative mx-auto max-w-lg">
+                    {/* The "Paper" Container - Enhanced with a subtle grain texture/shadow */}
+                    <div className="bg-white w-full aspect-[1/1.414] shadow-lg border border-slate-200 p-8 md:p-12 relative mx-auto max-w-lg document-paper-texture">
                         {/* Watermark / Letterhead */}
                         <div className="absolute top-8 left-8 right-8 border-b-2 border-slate-900 pb-4 flex justify-between items-end">
                             <div>
@@ -694,9 +855,10 @@ const FileInspector = ({ file, user, onClose, onUpdate }) => {
 
                         {/* Signature Area */}
                         <div className="absolute bottom-12 right-12 text-center">
-                            <div className="font-cursive text-xl text-slate-900 mb-1">{file.sender}</div>
+                            {/* A mock digital signature placeholder */}
+                            <div className="font-cursive text-xl text-slate-900 mb-1 leading-none">{file.sender}</div>
                             <div className="border-t border-slate-400 w-32 pt-1">
-                                <p className="text-[10px] uppercase tracking-wider text-slate-500">Signed By</p>
+                                <p className="text-[10px] uppercase tracking-wider text-slate-500">Digital Signature</p>
                             </div>
                         </div>
                     </div>
@@ -704,7 +866,7 @@ const FileInspector = ({ file, user, onClose, onUpdate }) => {
                     {/* Floating Action Button for Approver Context */}
                     {canAct && (
                         <div className="sticky bottom-6 mt-6 bg-slate-900/90 backdrop-blur text-white px-6 py-3 rounded-full shadow-xl flex items-center gap-4 animate-in slide-in-from-bottom-2">
-                             <span className="text-sm font-medium">Ready to decide?</span>
+                             <span className="text-sm font-medium">Ready to decide on this Nothi?</span>
                              <button onClick={() => setActiveTab('notes')} className="text-sm font-bold text-indigo-300 hover:text-white underline decoration-indigo-300/50 underline-offset-4">Go to Actions</button>
                         </div>
                     )}
@@ -714,14 +876,14 @@ const FileInspector = ({ file, user, onClose, onUpdate }) => {
       </div>
 
       {/* Action Modal */}
-      <Modal isOpen={!!action} onClose={() => setAction(null)} title={`${action ? action.charAt(0).toUpperCase() + action.slice(1) : ''} File`}>
+      <Modal isOpen={!!action} onClose={() => setAction(null)} title={`${action ? action.charAt(0).toUpperCase() + action.slice(1) : ''} Nothi`}> {/* Terminology Change */}
          <div className="space-y-4">
             <p className="text-slate-600 text-sm">Please provide a comment or note for this action.</p>
             <textarea 
                id="action-note"
                className="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none text-sm" 
                rows={4} 
-               placeholder="Type your comments here..." 
+               placeholder="Type your official comments here..." 
             />
             <div className="flex justify-end gap-3 pt-2">
                <button onClick={() => setAction(null)} className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors text-sm font-medium">Cancel</button>
@@ -754,7 +916,7 @@ const App = () => {
   
   const handleCreateSuccess = (newFile, isDraft) => {
     setFiles([newFile, ...files]);
-    setActiveModule(isDraft ? 'My Files' : 'Dashboard');
+    setActiveModule(isDraft ? 'My Nothis' : 'Dashboard'); // Terminology Change
     if (!isDraft) setViewingFile(newFile);
   };
 
@@ -770,12 +932,19 @@ const App = () => {
       <script src="https://cdn.tailwindcss.com"></script>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
         body { font-family: 'Inter', sans-serif; }
-        .font-serif { font-family: 'Playfair Display', serif; }
+        /* Serif font for official documents */
+        .font-serif { font-family: 'Playfair Display', serif; } 
         .font-cursive { font-family: 'Dancing Script', cursive; }
         
+        /* Subtle paper texture effect for document preview */
+        .document-paper-texture {
+            background-image: linear-gradient(to bottom, rgba(240, 240, 240, 0.5) 1px, transparent 1px);
+            background-size: 100% 1.5rem;
+        }
+
         /* Smooth Scroll & Animations */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -794,13 +963,13 @@ const App = () => {
 
       <main className="max-w-7xl mx-auto py-8 px-6">
         {activeModule === 'Dashboard' && <Dashboard user={user} files={files} onOpenFile={handleOpenFile} setActiveModule={setActiveModule} />}
-        {activeModule === 'My Files' && <FileListTable user={user} files={files} title="My Files" filterFn={filterMyFiles} onOpenFile={handleOpenFile} />}
+        {activeModule === 'My Nothis' && <FileListTable user={user} files={files} title="My Nothis" filterFn={filterMyFiles} onOpenFile={handleOpenFile} />} {/* Terminology Change */}
         {activeModule === 'Pending Approvals' && <FileListTable user={user} files={files} title="Pending Approvals" filterFn={filterPending} onOpenFile={handleOpenFile} />}
-        {activeModule === 'Create File' && <CreateFile user={user} onCreateSuccess={handleCreateSuccess} />}
+        {activeModule === 'Create Nothi' && <CreateFile user={user} onCreateSuccess={handleCreateSuccess} />} {/* Terminology Change */}
       </main>
 
       {/* The Context Drawer - Key UX Improvement */}
-      <SlideOver isOpen={!!viewingFile} onClose={() => setViewingFile(null)} title="File Inspector">
+      <SlideOver isOpen={!!viewingFile} onClose={() => setViewingFile(null)} title="Nothi Inspector"> {/* Terminology Change */}
         {viewingFile && <FileInspector file={viewingFile} user={user} onClose={() => setViewingFile(null)} onUpdate={handleUpdateFile} />}
       </SlideOver>
     </div>
