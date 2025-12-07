@@ -1,0 +1,10 @@
+# Dependencies
+node_modules
+.next
+out
+build
+
+# Backup/Reference files
+docs/experiment-backup.tsx
+docs/experiment.ts
+
