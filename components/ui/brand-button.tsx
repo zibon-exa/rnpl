@@ -17,7 +17,7 @@ const brandButtonVariants = cva(
   }
 )
 
-export interface BrandButtonProps extends ButtonProps {
+export interface BrandButtonProps extends Omit<ButtonProps, "variant"> {
   variant?: "brand" | "brand-alt" | "brand-outline" | "brand-ghost" | ButtonProps["variant"]
 }
 
@@ -31,11 +31,14 @@ export interface BrandButtonProps extends ButtonProps {
 const BrandButton = React.forwardRef<HTMLButtonElement, BrandButtonProps>(
   ({ className, variant, ...props }, ref) => {
     // If it's a brand variant, apply brand styles
-    if (variant && ["brand", "brand-alt", "brand-outline", "brand-ghost"].includes(variant)) {
+    const brandVariants = ["brand", "brand-alt", "brand-outline", "brand-ghost"] as const;
+    const isBrandVariant = variant && brandVariants.includes(variant as typeof brandVariants[number]);
+    
+    if (isBrandVariant) {
       return (
         <Button
           ref={ref}
-          className={cn(brandButtonVariants({ variant }), className)}
+          className={cn(brandButtonVariants({ variant: variant as "brand" | "brand-alt" | "brand-outline" | "brand-ghost" }), className)}
           {...props}
         />
       )
