@@ -17,7 +17,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const storedUser = localStorage.getItem('rnpl_user');
       if (storedUser) {
         try {
-          setUser(JSON.parse(storedUser));
+          const parsedUser = JSON.parse(storedUser);
+          // Migrate old user data if needed
+          if (parsedUser.name === 'Abdul Karim') {
+            parsedUser.name = 'Toufique Joarder';
+            parsedUser.email = 'toufique.joarder@rnpl.com';
+            localStorage.setItem('rnpl_user', JSON.stringify(parsedUser));
+          }
+          setUser(parsedUser);
         } catch (error) {
           // Invalid stored data, clear it
           localStorage.removeItem('rnpl_user');
@@ -33,8 +40,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Prototype: Always create Admin user with all permissions
     const adminUser: User = {
       id: 'admin-001',
-      name: 'Abdul Karim',
-      email: 'abdul.karim@rnpl.com',
+      name: 'Toufique Joarder',
+      email: 'toufique.joarder@rnpl.com',
       role: 'Admin',
       office: 'Administration',
     };

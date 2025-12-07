@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
+import { useFiles } from '@/lib/files-context';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,62 +17,106 @@ import {
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Bell, Clock, CheckCircle, X, FileText, ArrowRight } from 'lucide-react';
+import { Bell, Clock, CheckCircle, X, FileText, ArrowRight, AlertCircle } from 'lucide-react';
+import { Notification } from '@/types/file';
 
 export function Header() {
   const { user, logout } = useAuth();
+  const { files, getPendingFiles } = useFiles();
   const pathname = usePathname();
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const notificationRef = useRef<HTMLDivElement>(null);
 
-  // Dummy notifications - mimicking real notification data
-  const [notifications] = useState([
-    {
-      id: 'notif-1',
-      type: 'Action',
-      message: 'Approval Request: Annual Budget Proposal 2025',
-      subtext: 'From: Rashida Begum • Finance Department',
-      icon: <Clock size={16} className="text-amber-500" />,
-      fileId: 'FILE-2025-001',
-      timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
-    },
-    {
-      id: 'notif-2',
-      type: 'Success',
-      message: 'Approved: Staff Recruitment Plan',
-      subtext: 'Ready for processing',
-      icon: <CheckCircle size={16} className="text-emerald-500" />,
-      fileId: 'FILE-2025-002',
-      timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000), // 5 hours ago
-    },
-    {
-      id: 'notif-3',
-      type: 'Attention',
-      message: 'Returned: Office Equipment Purchase Request',
-      subtext: 'Review comments required',
-      icon: <X size={16} className="text-rose-500" />,
-      fileId: 'FILE-2025-003',
-      timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), // 1 day ago
-    },
-    {
-      id: 'notif-4',
-      type: 'Info',
-      message: 'File Forwarded: Training Program Proposal',
-      subtext: 'Forwarded to: Mohammad Hasan',
-      icon: <ArrowRight size={16} className="text-blue-500" />,
-      fileId: 'FILE-2025-004',
-      timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
-    },
-    {
-      id: 'notif-5',
-      type: 'Info',
-      message: 'Document Attached: Meeting Minutes',
-      subtext: 'File: FILE-2025-005',
-      icon: <FileText size={16} className="text-indigo-500" />,
-      fileId: 'FILE-2025-005',
-      timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
-    },
-  ]);
+  // Generate notifications based on actual file data
+  const notifications = useMemo<Notification[]>(() => {
+    if (!user) return [];
+
+    const notifs: Notification[] = [];
+    const now = new Date();
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+    files.forEach((file) => {
+      // Get the most recent history entry
+      const latestHistory = file.history?.[0];
+      if (!latestHistory) return;
+
+      const historyDate = new Date(latestHistory.timestamp);
+      
+      // Only include notifications from the last 7 days
+      if (historyDate < sevenDaysAgo) return;
+
+      // Pending files requiring approval (for Admin/Approver)
+      if (file.status === 'Pending' && file.isApproverAction && user.role === 'Admin') {
+        notifs.push({
+          id: `notif-pending-${file.id}`,
+          type: 'Action',
+          message: `Approval Request: ${file.title}`,
+          subtext: `From: ${file.sender} • ${file.category}`,
+          icon: <Clock size={16} className="text-amber-500" />,
+          fileId: file.id,
+          timestamp: historyDate,
+        });
+      }
+
+      // Returned files (for the sender)
+      if (file.status === 'Returned' && file.sender === user.name) {
+        notifs.push({
+          id: `notif-returned-${file.id}`,
+          type: 'Attention',
+          message: `Returned: ${file.title}`,
+          subtext: file.returnComment || 'Review comments required',
+          icon: <X size={16} className="text-rose-500" />,
+          fileId: file.id,
+          timestamp: historyDate,
+        });
+      }
+
+      // Approved files (for the sender)
+      if (file.status === 'Approved' && file.sender === user.name && latestHistory.event === 'Approved') {
+        notifs.push({
+          id: `notif-approved-${file.id}`,
+          type: 'Success',
+          message: `Approved: ${file.title}`,
+          subtext: `Approved by: ${latestHistory.actor}`,
+          icon: <CheckCircle size={16} className="text-emerald-500" />,
+          fileId: file.id,
+          timestamp: historyDate,
+        });
+      }
+
+      // Forwarded files
+      if (latestHistory.event === 'Forwarded' && latestHistory.actor !== user.name) {
+        notifs.push({
+          id: `notif-forwarded-${file.id}`,
+          type: 'Info',
+          message: `File Forwarded: ${file.title}`,
+          subtext: `Forwarded by: ${latestHistory.actor}`,
+          icon: <ArrowRight size={16} className="text-blue-500" />,
+          fileId: file.id,
+          timestamp: historyDate,
+        });
+      }
+
+      // Urgent pending files (pending for more than 3 days)
+      if (file.status === 'Pending' && file.isApproverAction) {
+        const daysPending = Math.floor((now.getTime() - historyDate.getTime()) / (24 * 60 * 60 * 1000));
+        if (daysPending >= 3 && user.role === 'Admin') {
+          notifs.push({
+            id: `notif-urgent-${file.id}`,
+            type: 'Urgent',
+            message: `Urgent: ${file.title}`,
+            subtext: `Pending for ${daysPending} days • From: ${file.sender}`,
+            icon: <AlertCircle size={16} className="text-rose-500" />,
+            fileId: file.id,
+            timestamp: historyDate,
+          });
+        }
+      }
+    });
+
+    // Sort by timestamp (most recent first)
+    return notifs.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+  }, [files, user]);
 
   // Close notification popover when clicking outside
   useEffect(() => {
@@ -119,12 +164,10 @@ export function Header() {
     { label: 'Dashboard', href: '/dashboard', value: 'dashboard' },
     { label: 'My Files', href: '/dashboard/files', value: 'files' },
     { label: 'Pending Approvals', href: '/dashboard/pending', value: 'pending' },
-    { label: 'Admin Panel', href: '/admin/dashboard', value: 'admin' },
   ];
 
   // Determine active tab based on pathname
   const getActiveTab = () => {
-    if (pathname?.startsWith('/admin')) return 'admin';
     if (pathname?.includes('/files')) return 'files';
     if (pathname?.includes('/pending')) return 'pending';
     return 'dashboard';
@@ -200,10 +243,10 @@ export function Header() {
                               {notif.icon}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium text-slate-800 group-hover:text-indigo-600 transition-colors">
+                              <p className="text-sm font-medium text-slate-800 group-hover:text-indigo-600 transition-colors font-bangla">
                                 {notif.message}
                               </p>
-                              <p className="text-xs text-slate-500 mt-0.5">{notif.subtext}</p>
+                              <p className="text-xs text-slate-500 mt-0.5 font-bangla">{notif.subtext}</p>
                               <p className="text-[10px] text-slate-400 mt-2 font-medium">
                                 {formatNotificationTime(notif.timestamp)}
                               </p>

@@ -123,3 +123,40 @@ This file tracks all AI-assisted changes made to the project.
   - Improved document scrollability
   - Enhanced mock data with realistic corporate documents
 
+## 2025-12-07 19:13:12
+
+### File Inspector UI Improvements and Table Refactoring
+- **Description**: Redesigned file inspector Details tab with cleaner layout, replaced custom grid table with shadcn table component, added copy functionality for Ref value, and improved overall UI consistency
+- **Files Created**:
+  - `components/ui/table.tsx` - shadcn table component
+  - `components/ui/tooltip.tsx` - shadcn tooltip component (updated with Portal for clipping fix)
+  - `components/ui/button-group.tsx` - shadcn button group component
+  - `components/document-paper.tsx` - Centralized document paper component
+  - `components/document-header.tsx` - Centralized document header component
+  - `components/document-content.tsx` - Centralized document content component
+  - `components/document-preview.tsx` - Document preview component for create page
+  - `components/ui/brand-button.tsx` - Brand-specific button wrapper
+  - `hooks/use-require-auth.ts` - Centralized authentication hook
+  - `lib/fonts.ts` - Centralized font imports using next/font
+  - `components/README-DOCUMENT-DESIGN.md` - Documentation for centralized document design
+- **Files Modified**:
+  - `components/file-inspector.tsx` - Complete redesign: moved Subject above table, removed Next Expected Action, reorganized into 3x2 shadcn table (Ref|Category|Status, Sender|Created|Last Updated), added copy icon for Ref, improved spacing and typography, renamed Document tab to Preview, renamed Executive Summary to Details with document body, added 2-column layout for Details text
+  - `components/ui/slide-over.tsx` - Added tabs, actions, and centerActions props for header customization, increased max width, fixed tooltip clipping with overflow-visible
+  - `components/header.tsx` - Updated notifications to use actual file data, added Bangla font support, removed Admin Panel from nav
+  - `app/(dashboard)/dashboard/page.tsx` - Updated greeting to Bangla format, added Create New File button, converted action cards to stat cards, updated to use centralized utilities
+  - `app/(dashboard)/dashboard/create/page.tsx` - Redesigned to split layout with form on left and live preview on right
+  - `app/globals.css` - Added custom font-face rules with unicode-range for automatic font selection, added brand hover color, removed duplicate font classes
+  - `app/layout.tsx` - Updated to use next/font for Inter and Tiro Bangla
+  - `lib/utils.ts` - Added centralized Bangla utility functions (toBanglaNumerals, formatFileIdToBangla, formatDateToBangla, getCurrentDateBangla)
+  - `lib/auth-context.tsx` - Added migration for name update (Abdul Karim → Toufique Joarder), added loading state
+  - `lib/mock-data.ts` - Updated all content to Bangla, replaced names
+  - `package.json` - Added shadcn table, tooltip, and button-group components
+- **Features**:
+  - Cleaner, less boxy Details tab design
+  - shadcn table component with proper borders and spacing
+  - Copy to clipboard functionality for Ref value with visual feedback
+  - Improved typography and spacing throughout
+  - Centralized document design system
+  - System-wide font solution using unicode-range
+  - DRY refactoring: removed duplicate code and consolidated utilities
+

@@ -33,6 +33,7 @@
     --color-light-gray: 210 14% 83%;
     --color-dark-orchid: 261 51% 51%;
     --color-brand: 196 60% 56%; /* Brand color */
+    --color-brand-hover: 196 60% 50%; /* Brand color hover */
     --color-brand-alt: 197 60% 56%; /* Brand color */
     --color-crimson: 354 70% 54%;
     --color-deep-pink: 332 79% 58%;
@@ -82,27 +83,26 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', sans-serif;
+    /* 
+     * Font stack: Inter for Latin, Tiro Bangla for Bengali.
+     * Inter comes first as the primary font.
+     * Tiro Bangla provides glyphs for Bengali characters that Inter doesn't have.
+     */
+    font-family: var(--font-inter), var(--font-tiro-bangla), sans-serif;
   }
   
   /* Serif font for official documents */
   .font-serif { 
-    font-family: 'Playfair Display', serif; 
+    font-family: var(--font-playfair), serif; 
   } 
   
   .font-cursive { 
-    font-family: 'Dancing Script', cursive; 
+    font-family: var(--font-cursive), cursive; 
   }
   
-  /* Bangla font - default for all Bangla text */
+  /* Explicit Bangla-only font (if needed for override) */
   .font-bangla { 
-    font-family: 'Tiro Bangla', serif; 
-  }
-  
-  /* Auto-detect and apply Bangla font to elements containing Bangla characters */
-  [lang="bn"],
-  [lang="bn-BD"] {
-    font-family: 'Tiro Bangla', serif;
+    font-family: var(--font-tiro-bangla), serif; 
   }
 }
 

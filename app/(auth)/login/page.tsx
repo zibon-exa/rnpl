@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useAuth } from '@/lib/auth-context';
 
 export default function LoginPage() {
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { login, isAuthenticated, isLoading: authLoading } = useAuth();
@@ -66,6 +67,25 @@ export default function LoginPage() {
 
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Username Field */}
+            <div>
+              <label
+                htmlFor="username"
+                className="block text-sm font-medium text-[hsl(var(--color-charcoal))] mb-2"
+              >
+                Username
+              </label>
+              <input
+                id="username"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Enter any username (prototype)"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[hsl(var(--color-medium-turquoise))] focus:border-[hsl(var(--color-medium-turquoise))] outline-none"
+                required
+              />
+            </div>
+
             {/* Password Field */}
             <div>
               <label
@@ -84,7 +104,7 @@ export default function LoginPage() {
                 required
               />
               <p className="mt-1 text-xs text-[hsl(var(--color-slate-gray))]">
-                Prototype: Any password will work
+                Prototype: Any username and password will work
               </p>
             </div>
 

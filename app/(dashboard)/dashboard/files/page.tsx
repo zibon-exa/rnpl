@@ -1,28 +1,21 @@
 'use client';
 
-import { useAuth } from '@/lib/auth-context';
+import { useRequireAuth } from '@/hooks/use-require-auth';
 import { useFiles } from '@/lib/files-context';
 import { Header } from '@/components/header';
 import { FileListTable } from '@/components/file-list-table';
 import { FileInspector } from '@/components/file-inspector';
 import { SlideOver } from '@/components/ui/slide-over';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { File } from '@/types/file';
 
 export default function MyFilesPage() {
-  const { user, isAuthenticated, isLoading } = useAuth();
+  const { user } = useRequireAuth();
   const { files, getMyFiles, updateFile } = useFiles();
-  const router = useRouter();
   const [viewingFile, setViewingFile] = useState<File | null>(null);
   const [fileTabs, setFileTabs] = useState<React.ReactNode>(null);
-
-  useEffect(() => {
-    if (isLoading) return;
-    if (!isAuthenticated) {
-      router.push('/login');
-    }
-  }, [isAuthenticated, isLoading, router]);
+  const [fileActions, setFileActions] = useState<React.ReactNode>(null);
+  const [fileCenterActions, setFileCenterActions] = useState<React.ReactNode>(null);
 
   if (!user) {
     return null;
@@ -59,9 +52,13 @@ export default function MyFilesPage() {
         onClose={() => {
           setViewingFile(null);
           setFileTabs(null);
+          setFileActions(null);
+          setFileCenterActions(null);
         }} 
         title="Details"
         tabs={fileTabs}
+        actions={fileActions}
+        centerActions={fileCenterActions}
       >
         {viewingFile && (
           <FileInspector 
@@ -70,9 +67,13 @@ export default function MyFilesPage() {
             onClose={() => {
               setViewingFile(null);
               setFileTabs(null);
+              setFileActions(null);
+              setFileCenterActions(null);
             }} 
             onUpdate={handleUpdateFile}
             onTabsReady={(tabs) => setFileTabs(tabs)}
+            onActionsReady={(actions) => setFileActions(actions)}
+            onCenterActionsReady={(actions) => setFileCenterActions(actions)}
           />
         )}
       </SlideOver>

@@ -3,6 +3,9 @@
 import { useState } from 'react';
 import { User } from '@/types/user';
 import { File, FileStatus } from '@/types/file';
+import { DocumentPreview } from '@/components/document-preview';
+import { Button } from '@/components/ui/button';
+import { Save, Send, X } from 'lucide-react';
 
 interface CreateFileFormProps {
   user: User;
@@ -10,7 +13,7 @@ interface CreateFileFormProps {
   onCancel?: () => void;
 }
 
-const mockCategories = ['HR', 'Finance', 'IT', 'Administration', 'Operations'];
+const mockCategories = ['অর্থ', 'মানবসম্পদ', 'আইটি', 'প্রশাসন', 'কার্যক্রম'];
 
 export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFormProps) {
   const [formData, setFormData] = useState({ 
@@ -48,90 +51,125 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFo
   };
 
   return (
-    <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden animate-in slide-in-from-bottom-4 duration-500">
-      <div className="px-8 py-6 border-b border-slate-100 bg-slate-50/30">
-        <h2 className="text-xl font-bold text-slate-900">Create New File</h2>
-        <p className="text-slate-500 text-sm mt-1">Start a new workflow or save a draft for later.</p>
-      </div>
-      <div className="p-8 space-y-6">
-        <div>
-          <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
-            File Title <span className="text-rose-500">*</span>
-          </label>
-          <input 
-            type="text" 
-            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none" 
-            placeholder="e.g. Q3 Marketing Budget"
-            value={formData.title}
-            onChange={e => setFormData({...formData, title: e.target.value})}
-          />
+    <div className="flex h-full">
+      {/* Left Sidebar - Input Fields */}
+      <div className="w-96 border-r border-slate-200 bg-white flex flex-col">
+        {/* Header */}
+        <div className="px-6 py-4 border-b border-slate-100">
+          <h2 className="text-lg font-bold text-slate-900">Create New File</h2>
+          <p className="text-slate-500 text-xs mt-1">Fill in the details below</p>
         </div>
-        <div className="grid grid-cols-2 gap-6">
+
+        {/* Form Fields - Scrollable */}
+        <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5">
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
+              File Title <span className="text-rose-500">*</span>
+            </label>
+            <input 
+              type="text" 
+              className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none" 
+              placeholder="Enter file title..."
+              value={formData.title}
+              onChange={e => setFormData({...formData, title: e.target.value})}
+            />
+          </div>
+
           <div>
             <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
               Category <span className="text-rose-500">*</span>
             </label>
             <select 
-              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none appearance-none"
+              className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none appearance-none"
               value={formData.category}
               onChange={e => setFormData({...formData, category: e.target.value})}
             >
-              <option value="">Select...</option>
+              <option value="">Select category...</option>
               {mockCategories.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
+
           <div>
-            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Tags</label>
-            <input 
-              type="text" 
-              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none" 
-              placeholder="comma, separated"
-              value={formData.tags}
-              onChange={e => setFormData({...formData, tags: e.target.value})}
+            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
+              Executive Summary
+            </label>
+            <textarea 
+              rows={3}
+              className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none resize-none" 
+              placeholder="Brief description for the cover sheet..."
+              value={formData.summary}
+              onChange={e => setFormData({...formData, summary: e.target.value})}
             />
           </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
+              Document Body <span className="text-rose-500">*</span>
+            </label>
+            <textarea 
+              rows={8}
+              className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none resize-none font-mono" 
+              placeholder="Draft the main content of the letter or report here..."
+              value={formData.documentBody}
+              onChange={e => setFormData({...formData, documentBody: e.target.value})}
+            />
+            <p className="text-xs text-slate-400 mt-1">This will appear in the document preview</p>
+          </div>
         </div>
-        <div>
-          <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Executive Summary</label>
-          <textarea 
-            rows={2}
-            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none resize-none" 
-            placeholder="Brief description for the cover sheet..."
-            value={formData.summary}
-            onChange={e => setFormData({...formData, summary: e.target.value})}
-          />
-        </div>
-        <div>
-          <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Document Body (The "Attachment")</label>
-          <textarea 
-            rows={6}
-            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none resize-none font-serif" 
-            placeholder="Draft the main content of the letter or report here..."
-            value={formData.documentBody}
-            onChange={e => setFormData({...formData, documentBody: e.target.value})}
-          />
-        </div>
-        <div className="pt-6 flex items-center justify-end gap-3 border-t border-slate-100">
-          {onCancel && (
-            <button 
-              onClick={onCancel} 
-              className="px-5 py-2.5 text-slate-600 font-medium hover:bg-slate-50 rounded-lg transition-colors"
+
+        {/* Secondary Actions - Fixed at Bottom */}
+        <div className="px-6 py-4 border-t border-slate-100 bg-slate-50/50 space-y-2">
+          <div className="flex gap-2">
+            {onCancel && (
+              <Button
+                variant="outline"
+                onClick={onCancel}
+                className="flex-1"
+              >
+                <X size={16} className="mr-2" />
+                Cancel
+              </Button>
+            )}
+            <Button
+              variant="outline"
+              onClick={() => handleSave(true)}
+              disabled={!formData.title || !formData.category}
+              className="flex-1"
             >
-              Cancel
-            </button>
-          )}
-          <button 
-            onClick={() => handleSave(true)} 
-            className="px-5 py-2.5 text-slate-600 font-medium hover:bg-slate-50 rounded-lg transition-colors"
-          >
-            Save Draft
-          </button>
-          <button 
-            onClick={() => handleSave(false)} 
-            className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg shadow-sm hover:shadow-md active:scale-95 transition-all"
-          >
-            Create & Submit
-          </button>
+              <Save size={16} className="mr-2" />
+              Save Draft
+            </Button>
+            <Button
+              onClick={() => handleSave(false)}
+              disabled={!formData.title || !formData.category || !formData.documentBody}
+              className="flex-1 bg-[hsl(var(--color-brand))] hover:bg-[hsl(var(--color-brand-hover))] text-white"
+            >
+              <Send size={16} className="mr-2" />
+              Submit
+            </Button>
+          </div>
+          <p className="text-xs text-slate-400 text-center">
+            Preview updates in real-time as you type
+          </p>
+        </div>
+      </div>
+
+      {/* Right Side - Preview Area */}
+      <div className="flex-1 flex flex-col bg-slate-50">
+        {/* Preview Header */}
+        <div className="px-6 py-4 border-b border-slate-200 bg-white">
+          <h3 className="text-sm font-semibold text-slate-700">Document Preview</h3>
+          <p className="text-xs text-slate-500 mt-0.5">Live preview of your document</p>
+        </div>
+
+        {/* Preview Content */}
+        <div className="flex-1 overflow-hidden">
+          <DocumentPreview
+            title={formData.title}
+            category={formData.category}
+            documentBody={formData.documentBody}
+            sender={user.name}
+          />
         </div>
       </div>
     </div>

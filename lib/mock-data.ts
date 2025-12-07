@@ -27,7 +27,7 @@ export const initialFiles: File[] = [
     summary: 'দূরবর্তী অনবোর্ডিং প্রক্রিয়ার জন্য আপডেট করা নির্দেশিকা। চূড়ান্ত অনুমোদনের প্রয়োজন।',
     documentBody: 'নীতি নম্বর: HR-POL-2025-12\nপ্রয়োগের তারিখ: ১ জানুয়ারি ২০২৬\n\nউদ্দেশ্য:\nদূরবর্তী অনবোর্ডিং অভিজ্ঞতাকে মানসম্মত করা এবং নতুন কর্মচারীদের জন্য একটি সুসংগঠিত প্রক্রিয়া নিশ্চিত করা।\n\nপরিধি:\n২০২৬ সালের ১ জানুয়ারির পর যোগদানকারী সকল পূর্ণকালীন কর্মচারী এই নীতির আওতায় আসবে।\n\nনীতি বিবরণ:\n১. শুরু হওয়ার তারিখের ৩ দিন আগে সকল আইটি সম্পদ (ল্যাপটপ, মাউস, কিবোর্ড) পাঠাতে হবে।\n২. চুক্তি স্বাক্ষরের পর স্বয়ংক্রিয়ভাবে IDM পোর্টালের মাধ্যমে অ্যাক্সেস ক্রেডেনশিয়াল সরবরাহ করা হবে।\n৩. প্রথম দিন একটি ভার্চুয়াল ওরিয়েন্টেশন সেশন অনুষ্ঠিত হবে।\n৪. প্রথম সপ্তাহে প্রতিদিন একজন মেন্টর নিয়োগ করা হবে।',
     history: [
-      { timestamp: '2025-12-01T15:00:00Z', actor: 'Abdul Karim (Approver)', event: 'Approved', stateChange: 'Approved', note: 'Policy looks solid. Go live next week.' },
+      { timestamp: '2025-12-01T15:00:00Z', actor: 'Toufique Joarder (Approver)', event: 'Approved', stateChange: 'Approved', note: 'Policy looks solid. Go live next week.' },
       { timestamp: '2025-12-01T10:00:00Z', actor: 'Karim Uddin', event: 'Sent for Approval', stateChange: 'Pending', note: 'Please review the scope changes.' },
       { timestamp: '2025-11-28T09:00:00Z', actor: 'Karim Uddin', event: 'Draft Created', stateChange: 'Draft', note: 'Initial policy draft.' },
     ]
@@ -43,7 +43,7 @@ export const initialFiles: File[] = [
     summary: 'নতুন মিটিং রুম সহ তৃতীয় তলার সংস্কারের জন্য খরচ অনুমান। পুনরায় জমা দেওয়ার প্রয়োজন।',
     documentBody: 'প্রস্তাবিত প্রকল্প: তৃতীয় তলার অফিস স্পেস সংস্কার\n\nভেন্ডর: A-1 Construction Ltd.\nঅনুমানকৃত খরচ: ৩৫,০০,০০০ টাকা\nসময়সীমা: ৩ সপ্তাহ\n\nকাজের পরিধি:\n১. বিদ্যমান ক্যুবিকল ভাঙা এবং অপসারণ\n২. কাচের পার্টিশন স্থাপন (মোট ২০০ বর্গফুট)\n৩. ৪টি নতুন কনফারেন্স রুমের জন্য বৈদ্যুতিক রিওয়্যারিং\n৪. নতুন LED লাইটিং সিস্টেম ইনস্টলেশন\n৫. HVAC সিস্টেম আপগ্রেড\n\nঅনুমোদনের জন্য জমা দেওয়া হয়েছে।',
     history: [
-      { timestamp: '2025-12-02T16:30:00Z', actor: 'Abdul Karim (Approver)', event: 'Returned', stateChange: 'Returned', note: 'Cost is too high. Find a cheaper vendor and resubmit.' },
+      { timestamp: '2025-12-02T16:30:00Z', actor: 'Toufique Joarder (Approver)', event: 'Returned', stateChange: 'Returned', note: 'Cost is too high. Find a cheaper vendor and resubmit.' },
       { timestamp: '2025-12-02T11:00:00Z', actor: 'Fatima Ahmed', event: 'Sent for Approval', stateChange: 'Pending', note: 'Urgent renovation request.' },
       { timestamp: '2025-12-01T09:00:00Z', actor: 'Fatima Ahmed', event: 'Draft Created', stateChange: 'Draft', note: 'Initial estimate.' },
     ]
@@ -54,12 +54,12 @@ export const initialFiles: File[] = [
     category: 'আইটি', 
     status: 'Draft', 
     lastUpdated: '2025-12-03', 
-    sender: 'Abdul Karim', 
+    sender: 'Toufique Joarder', 
     isApproverAction: false, 
     summary: 'প্রাথমিক ক্লাস্টারের জন্য ৩টি নতুন ব্লেডের অনুরোধ।',
     documentBody: 'বিষয়: প্রাথমিক কম্পিউট ক্লাস্টার সম্প্রসারণ\n\nবর্তমান অবস্থা:\nআমরা বর্তমানে আমাদের প্রাথমিক কম্পিউট ক্লাস্টারে ৮৫% ক্ষমতায় পৌঁছেছি। বর্তমানে ১২টি ব্লেড সক্রিয় রয়েছে।\n\nপ্রস্তাব:\nআসন্ন পিক সিজনে স্থিতিশীলতা নিশ্চিত করতে, আমরা ৩টি Dell PowerEdge R750 ব্লেড সার্ভারের ক্রয়ের অনুরোধ করছি।\n\nবিশদ:\n- মডেল: Dell PowerEdge R750\n- প্রসেসর: Intel Xeon Silver 4314 (2.4GHz, 16-core)\n- RAM: 128GB DDR4\n- স্টোরেজ: 2x 1.92TB NVMe SSD\n- মোট খরচ: ১২,০০,০০০ টাকা\n\nপ্রত্যাশিত ডেলিভারি: ২ সপ্তাহ',
     history: [
-      { timestamp: '2025-12-03T10:00:00Z', actor: 'Abdul Karim', event: 'Draft Saved', stateChange: 'Draft', note: 'Initial draft, pending content review.' },
+      { timestamp: '2025-12-03T10:00:00Z', actor: 'Toufique Joarder', event: 'Draft Saved', stateChange: 'Draft', note: 'Initial draft, pending content review.' },
     ]
   },
   { 
@@ -88,7 +88,7 @@ export const initialFiles: File[] = [
     summary: 'Comprehensive security audit findings and recommendations for Q1 2026 improvements.',
     documentBody: 'Subject: Annual Security Audit Report - 2025\n\nExecutive Summary:\nThis report presents the findings from our comprehensive annual security audit conducted in November 2025. The audit covered network infrastructure, application security, access controls, and compliance with ISO 27001 standards.\n\nKey Findings:\n1. Network Security: 95% compliance - Minor improvements needed in firewall rules\n2. Application Security: 88% compliance - Two medium-risk vulnerabilities identified\n3. Access Controls: 92% compliance - Some inactive accounts need deactivation\n4. Data Backup: 100% compliance - All systems properly backed up\n\nRecommendations:\n1. Update firewall rules by January 15, 2026\n2. Patch identified vulnerabilities by December 20, 2025\n3. Review and deactivate inactive user accounts monthly\n4. Implement two-factor authentication for all admin accounts\n\nOverall Security Rating: A- (Excellent)\n\nThis report has been reviewed and approved by the IT Security Committee.',
     history: [
-      { timestamp: '2025-12-05T14:00:00Z', actor: 'Abdul Karim (Approver)', event: 'Approved', stateChange: 'Approved', note: 'Excellent work. Implement recommendations as scheduled.' },
+      { timestamp: '2025-12-05T14:00:00Z', actor: 'Toufique Joarder (Approver)', event: 'Approved', stateChange: 'Approved', note: 'Excellent work. Implement recommendations as scheduled.' },
       { timestamp: '2025-12-05T10:00:00Z', actor: 'Mohammad Hasan', event: 'Sent for Approval', stateChange: 'Pending', note: 'Annual audit complete. Ready for review.' },
       { timestamp: '2025-11-30T08:00:00Z', actor: 'Mohammad Hasan', event: 'Draft Created', stateChange: 'Draft', note: 'Compiling audit results.' },
     ]

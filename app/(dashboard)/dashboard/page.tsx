@@ -1,51 +1,50 @@
 'use client';
 
-import { useAuth } from '@/lib/auth-context';
+import { useRequireAuth } from '@/hooks/use-require-auth';
 import { useFiles } from '@/lib/files-context';
 import { Header } from '@/components/header';
 import { StatCard } from '@/components/ui/stat-card';
 import { FileListItem } from '@/components/file-list-item';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { Plus, Folder, CheckCircle, ArrowRight } from 'lucide-react';
+import { useState } from 'react';
+import { Plus, Folder, CheckCircle, ArrowRight, FileText, Clock, RotateCcw } from 'lucide-react';
 import { File } from '@/types/file';
 import { SlideOver } from '@/components/ui/slide-over';
 import { FileInspector } from '@/components/file-inspector';
+import { Button } from '@/components/ui/button';
+import { getCurrentDateBangla } from '@/lib/utils';
 
 export default function DashboardPage() {
-  const { user, isAuthenticated, isLoading } = useAuth();
+  const { user } = useRequireAuth();
   const { files, getMyFiles, getPendingFiles, updateFile } = useFiles();
   const router = useRouter();
   const [viewingFile, setViewingFile] = useState<File | null>(null);
   const [fileTabs, setFileTabs] = useState<React.ReactNode>(null);
-
-  useEffect(() => {
-    if (isLoading) return;
-    if (!isAuthenticated) {
-      router.push('/login');
-    }
-  }, [isAuthenticated, isLoading, router]);
+  const [fileActions, setFileActions] = useState<React.ReactNode>(null);
+  const [fileCenterActions, setFileCenterActions] = useState<React.ReactNode>(null);
 
   if (!user) {
     return null;
   }
 
-  const currentDate = new Date().toLocaleDateString('en-US', {
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric',
-  });
-
   const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return 'Good morning';
-    if (hour < 18) return 'Good afternoon';
-    return 'Good evening';
+    return `স্বাগতম, ${user.name}! আজ ${getCurrentDateBangla()}`;
   };
 
   const myFiles = getMyFiles();
   const pendingFiles = getPendingFiles();
+  
+  // Calculate statistics
+  const totalFiles = files.length;
   const pendingCount = pendingFiles.length;
+  const approvedFiles = files.filter(f => f.status === 'Approved').length;
+  const myFilesCount = myFiles.filter(f => f.sender === user.name).length;
+  const returnedFiles = files.filter(f => f.status === 'Returned' && f.sender === user.name).length;
+  const filesThisMonth = files.filter(f => {
+    const fileDate = new Date(f.lastUpdated);
+    const now = new Date();
+    return fileDate.getMonth() === now.getMonth() && fileDate.getFullYear() === now.getFullYear();
+  }).length;
   
   // Show recent files requiring attention (pending approvals) or recent user files
   const relevantFiles = pendingFiles.length > 0 
@@ -69,37 +68,64 @@ export default function DashboardPage() {
           {/* Header Section */}
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-slate-900">Workspace</h1>
-              <p className="text-slate-500 mt-1">
-                {getGreeting()}, {user.name}. Here's what's happening today.
+              <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
+              <p className="text-slate-500 mt-1 font-bangla">
+                {getGreeting()}
               </p>
             </div>
-            <span className="text-sm font-medium text-slate-400 bg-slate-50 px-3 py-1 rounded-full border border-slate-100">
-              {currentDate}
-            </span>
+            <Button 
+              onClick={() => router.push('/dashboard/create')}
+              className="text-white"
+              style={{ 
+                backgroundColor: 'hsl(var(--color-brand))',
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'hsl(196, 60%, 50%)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'hsl(var(--color-brand))'}
+            >
+              <Plus size={18} className="mr-2" />
+              Create New File
+            </Button>
           </div>
 
           {/* Stat Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
             <StatCard
-              title="Create New File"
-              icon={Plus}
+              title="Total"
+              value={totalFiles}
+              icon={FileText}
               colorClass="bg-indigo-600 text-indigo-600"
-              onClick={() => router.push('/dashboard/create')}
+            />
+            <StatCard
+              title="Pending"
+              value={pendingCount}
+              icon={Clock}
+              colorClass="bg-amber-500 text-amber-500"
+              onClick={() => router.push('/dashboard/pending')}
+            />
+            <StatCard
+              title="Approved"
+              value={approvedFiles}
+              icon={CheckCircle}
+              colorClass="bg-emerald-500 text-emerald-500"
             />
             <StatCard
               title="My Files"
-              value={myFiles.filter(f => f.sender === user.name).length}
+              value={myFilesCount}
               icon={Folder}
               colorClass="bg-blue-500 text-blue-500"
               onClick={() => router.push('/dashboard/files')}
             />
             <StatCard
-              title="Pending Approvals"
-              value={pendingCount}
-              icon={CheckCircle}
-              colorClass="bg-amber-500 text-amber-500"
-              onClick={() => router.push('/dashboard/pending')}
+              title="Returned"
+              value={returnedFiles}
+              icon={RotateCcw}
+              colorClass="bg-rose-500 text-rose-500"
+            />
+            <StatCard
+              title="This Month"
+              value={filesThisMonth}
+              icon={FileText}
+              colorClass="bg-purple-500 text-purple-500"
             />
           </div>
 
@@ -143,9 +169,13 @@ export default function DashboardPage() {
         onClose={() => {
           setViewingFile(null);
           setFileTabs(null);
+          setFileActions(null);
+          setFileCenterActions(null);
         }} 
         title="Details"
         tabs={fileTabs}
+        actions={fileActions}
+        centerActions={fileCenterActions}
       >
         {viewingFile && (
           <FileInspector 
@@ -154,9 +184,13 @@ export default function DashboardPage() {
             onClose={() => {
               setViewingFile(null);
               setFileTabs(null);
+              setFileActions(null);
+              setFileCenterActions(null);
             }} 
             onUpdate={handleUpdateFile}
             onTabsReady={(tabs) => setFileTabs(tabs)}
+            onActionsReady={(actions) => setFileActions(actions)}
+            onCenterActionsReady={(actions) => setFileCenterActions(actions)}
           />
         )}
       </SlideOver>
