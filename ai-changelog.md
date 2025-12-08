@@ -9,6 +9,15 @@ This file tracks all AI-assisted changes made to the project.
 
 ---
 
+## 2025-12-08 13:50:51
+
+### Redesigned File Journey (History) Component
+- **Description**: Redesigned the DocumentHistory component to match the clean, simple style of the sidebar info cells. Removed card styling, timeline elements, and icons. Now uses the same label/value pattern as other sidebar sections.
+- **Files Modified**:
+  - `components/document-history.tsx` - Simplified design to match sidebar info cells style, removed timeline UI elements
+
+---
+
 ## 2025-01-XX XX:XX:XX
 
 ### Initial Project Setup
@@ -246,4 +255,138 @@ This file tracks all AI-assisted changes made to the project.
 - **Standardization**:
   - User-facing labels, placeholders, and messages: "File"
   - Component names for document rendering: "Document" (e.g., DocumentPaper, DocumentPreview) - these are internal and refer to the visual representation
+
+## 2025-12-08 11:26:21
+
+### File View Redesign - Dedicated Page with Blog Post Layout
+- **Description**: Moved FileInspector from SlideOver to a dedicated page route and redesigned Details tab as a clean, modern blog post layout
+- **Files Created**:
+  - `app/(dashboard)/dashboard/files/[id]/page.tsx` - New dedicated file view page with blog post-style Details tab and Preview tab with A4 document preview
+- **Files Modified**:
+  - `app/(dashboard)/dashboard/page.tsx` - Removed SlideOver and FileInspector, updated file click handlers to navigate to new page route
+  - `app/(dashboard)/dashboard/files/page.tsx` - Removed SlideOver and FileInspector, updated to navigate to new page route
+  - `app/(dashboard)/dashboard/pending/page.tsx` - Removed SlideOver and FileInspector, updated to navigate to new page route
+  - `app/(dashboard)/dashboard/create/page.tsx` - Removed SlideOver and FileInspector, updated to navigate to new page route after file creation
+- **Features**:
+  - **Dedicated Page Route**: Files now open at `/dashboard/files/[id]` instead of SlideOver
+  - **Blog Post Layout**: Details tab redesigned with:
+    - Large, prominent title (text-4xl)
+    - Clean meta information bar with Ref, Category, Status, Attachments
+    - Author and date information (Created/Updated)
+    - Main content area with improved typography (text-lg, leading-8)
+    - History section at the bottom
+    - Full-width layout with max-width constraint for readability
+  - **Header Controls**: All controls moved to page header:
+    - Tabs (Details/Preview) in header
+    - Download and Print buttons always visible
+    - Action buttons (Approve, Return, Forward) shown when applicable
+  - **Preview Tab**: Maintains A4 document preview with official letterhead styling
+  - **Back Navigation**: Added back button to return to previous page
+  - **Responsive Design**: Clean, modern layout optimized for reading
+- **UX Improvements**:
+  - More space for content (full page vs slide-over)
+  - Better readability with blog post typography
+  - Clearer visual hierarchy
+  - All controls accessible in header
+  - Better navigation flow
+
+---
+
+2025-12-08 12:00:00 - Updated all CTAs to use consistent brand color instead of indigo colors
+- Changed notification button, file action buttons, stat cards, and hover states from indigo to brand turquoise color
+- Updated header notification button, file detail page CTAs, file inspector buttons, dashboard stat cards, and all hover states
+- Maintained design consistency where users learn that brand color indicates clickable/interactive elements
+Files Modified:
+- components/header.tsx
+- app/(dashboard)/dashboard/files/[id]/page.tsx
+- components/file-inspector.tsx
+- app/(dashboard)/dashboard/page.tsx
+- components/file-list-table.tsx
+- components/file-list-item.tsx
+- components/ui/stat-card.tsx
+- Fixed StatCard icon rendering issue by updating icon prop handling and background styling
+
+2025-12-08 12:10:00 - Adjusted FileView layout to enable scrolling without gaps
+- Made root container flex column and set document area to overflow-y-auto
+- Simplified paper container height to min-h-full and cleaned nested wrappers
+- Ensured sidebar remains independently scrollable while main content now scrolls
+Files Modified:
+- app/(dashboard)/dashboard/files/[id]/page.tsx
+
+2025-12-08 12:15:00 - Applied custom scrollbar styling to FileView document scroll area
+- Re-applied custom scrollbar class to the document scroll container for consistent styling
+Files Modified:
+- app/(dashboard)/dashboard/files/[id]/page.tsx
+
+2025-12-08 12:20:00 - Updated FileView back button to icon-only shadcn button
+- Replaced text back button with ghost/icon Button component for cleaner UI
+Files Modified:
+- app/(dashboard)/dashboard/files/[id]/page.tsx
+
+2025-12-08 12:25:00 - Matched FileView back button styling to grouped buttons
+- Switched back button to outline icon style with 9x9 sizing to align with grouped controls
+Files Modified:
+- app/(dashboard)/dashboard/files/[id]/page.tsx
+
+2025-12-08 12:35:00 - Added Noto Serif Bengali and updated Bangla titles
+- Added Noto Serif Bengali (semibold) to font stack and globals utility class
+- Applied new font to Bangla document titles and reduced main title size to 3xl
+- Updated document content labels to use serif Bangla styling
+Files Modified:
+- lib/fonts.ts
+- app/layout.tsx
+- app/globals.css
+- app/(dashboard)/dashboard/files/[id]/page.tsx
+- components/document-content.tsx
+
+2025-12-08 12:40:00 - Adjusted document typography sizes
+- Reduced FileView document title to 2xl and set body text to 15px/leading-7
+- Updated preview document body to 15px for consistency
+Files Modified:
+- app/(dashboard)/dashboard/files/[id]/page.tsx
+- components/document-content.tsx
+
+2025-12-08 12:50:00 - Added signature and distribution sections to FileView
+- Added signature block with designation and company name
+- Added distribution list matching official document footer style
+Files Modified:
+- app/(dashboard)/dashboard/files/[id]/page.tsx
+
+2025-12-08 12:55:00 - Added placeholder signature in FileView
+- Inserted cursive placeholder text inside signature line for legibility
+Files Modified:
+- app/(dashboard)/dashboard/files/[id]/page.tsx
+
+2025-12-08 13:00:00 - Center-aligned FileView signature block
+- Centered all signature block elements for consistent alignment
+Files Modified:
+- app/(dashboard)/dashboard/files/[id]/page.tsx
+
+2025-12-08 13:05:00 - Increased page margins in FileView
+- Expanded document area padding and inner article padding for generous margins
+Files Modified:
+- app/(dashboard)/dashboard/files/[id]/page.tsx
+
+2025-12-08 13:10:00 - Added download format dropdown with colorful icons
+- Replaced toolbar download button with dropdown for PNG/JPG/PDF/DOCX options
+- Added download handler placeholder for future wiring
+Files Modified:
+- app/(dashboard)/dashboard/files/[id]/page.tsx
+
+2025-12-08 13:15:00 - Added pointer cues to download dropdown items
+- Ensured dropdown trigger and items show pointer cursor (non-functional state)
+Files Modified:
+- app/(dashboard)/dashboard/files/[id]/page.tsx
+
+2025-12-08 13:20:00 - Added spacing between download/print and action groups
+- Increased gap between toolbar groups and slightly widened action group spacing
+Files Modified:
+- app/(dashboard)/dashboard/files/[id]/page.tsx
+
+
+
+
+
+
+
 

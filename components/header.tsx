@@ -176,7 +176,7 @@ export function Header() {
   const activeTab = getActiveTab();
 
   return (
-    <header className="border-b bg-white">
+    <header className="sticky top-0 z-50 border-b bg-white">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
@@ -219,7 +219,7 @@ export function Header() {
             <div className="relative" ref={notificationRef}>
               <button
                 onClick={() => setIsNotificationOpen(!isNotificationOpen)}
-                className="text-slate-500 hover:text-indigo-600 p-2 rounded-full hover:bg-indigo-50 transition-all relative"
+                className="text-slate-500 hover:text-[hsl(var(--color-brand))] p-2 rounded-full hover:bg-[hsl(var(--color-brand))]/10 transition-all relative"
               >
                 <Bell size={20} />
                 {notifications.length > 0 && (
@@ -243,7 +243,7 @@ export function Header() {
                               {notif.icon}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium text-slate-800 group-hover:text-indigo-600 transition-colors font-bangla">
+                              <p className="text-sm font-medium text-slate-800 group-hover:text-[hsl(var(--color-brand))] transition-colors font-bangla">
                                 {notif.message}
                               </p>
                               <p className="text-xs text-slate-500 mt-0.5 font-bangla">{notif.subtext}</p>

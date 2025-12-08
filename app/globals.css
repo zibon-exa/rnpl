@@ -100,9 +100,12 @@
     font-family: var(--font-cursive), cursive; 
   }
   
-  /* Explicit Bangla-only font (if needed for override) */
+  /* Bangla fonts */
   .font-bangla { 
     font-family: var(--font-tiro-bangla), serif; 
+  }
+  .font-bangla-serif {
+    font-family: var(--font-noto-serif-bengali), serif;
   }
 }
 

@@ -24,14 +24,14 @@ export function DocumentContent({
       {/* Subject */}
       <div className="mb-4">
         <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1 font-bangla">বিষয়</p>
-        <p className="text-sm font-semibold text-slate-900 font-bangla">
+        <p className="text-sm font-semibold text-slate-900 font-bangla-serif">
           {title || (showPlaceholders ? <span className="text-slate-400 italic">বিষয়বস্তু যোগ করুন...</span> : '')}
         </p>
       </div>
       
       {/* Category */}
       <div className="mb-4">
-        <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1 font-bangla">বিভাগ</p>
+        <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1 font-bangla-serif">বিভাগ</p>
         <p className="text-xs text-slate-700 font-bangla">
           {category || (showPlaceholders ? <span className="text-slate-400 italic">বিভাগ নির্বাচন করুন...</span> : '')}
         </p>
@@ -39,8 +39,8 @@ export function DocumentContent({
       
       {/* Document Body */}
       <div className="mb-4">
-        <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1 font-bangla">বিষয়বস্তু</p>
-        <div className="text-xs text-slate-700 leading-relaxed font-bangla">
+        <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1 font-bangla-serif">বিষয়বস্তু</p>
+        <div className="text-[15px] leading-7 text-slate-700 font-bangla">
           {documentBody || (showPlaceholders ? <span className="text-slate-400 italic">কোন নথি বিষয়বস্তু পাওয়া যায়নি।</span> : '')}
         </div>
       </div>

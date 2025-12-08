@@ -71,7 +71,7 @@ export function FileListTable({ files, title, onOpenFile }: FileListTableProps) 
                 className="hover:bg-slate-50/80 cursor-pointer transition-colors group"
               >
                 <td className="px-6 py-4">
-                  <div className="font-medium text-slate-900 group-hover:text-indigo-700 transition-colors font-bangla">
+                  <div className="font-medium text-slate-900 group-hover:text-[hsl(var(--color-brand-hover))] transition-colors font-bangla">
                     {file.title}
                   </div>
                   <div className="text-xs text-slate-400 mt-1 font-mono">{file.id}</div>
@@ -80,7 +80,7 @@ export function FileListTable({ files, title, onOpenFile }: FileListTableProps) 
                   <div className="flex items-center gap-2">
                     <StatusBadge status={file.status} />
                     {file.attachments && file.attachments.length > 0 && (
-                      <div className="flex items-center gap-1 text-slate-400 group-hover:text-indigo-500 transition-colors">
+                      <div className="flex items-center gap-1 text-slate-400 group-hover:text-[hsl(var(--color-brand))] transition-colors">
                         <Paperclip size={14} />
                         <span className="text-xs font-medium">{file.attachments.length}</span>
                       </div>
@@ -90,7 +90,7 @@ export function FileListTable({ files, title, onOpenFile }: FileListTableProps) 
                 <td className="px-6 py-4 text-sm text-slate-600 font-bangla">{file.category}</td>
                 <td className="px-6 py-4 text-sm text-slate-500 font-mono">{file.lastUpdated}</td>
                 <td className="px-6 py-4 text-right">
-                  <ChevronRight size={18} className="text-slate-300 group-hover:text-indigo-500 ml-auto" />
+                  <ChevronRight size={18} className="text-slate-300 group-hover:text-[hsl(var(--color-brand))] ml-auto" />
                 </td>
               </tr>
             ))}

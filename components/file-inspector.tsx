@@ -430,7 +430,7 @@ export function FileInspector({ file, user, onClose, onUpdate, onTabsReady, onAc
                       }); 
                       onClose(); 
                     }} 
-                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
+                    className="w-full bg-[hsl(var(--color-brand))] hover:bg-[hsl(var(--color-brand-hover))] text-white"
                   >
                     Resubmit File for Approval
                   </Button>
@@ -486,7 +486,7 @@ export function FileInspector({ file, user, onClose, onUpdate, onTabsReady, onAc
                 const noteElement = document.getElementById('action-note') as HTMLTextAreaElement;
                 handleActionSubmit(noteElement.value);
               }} 
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 shadow-sm active:scale-95 transition-all text-sm font-medium"
+              className="px-4 py-2 bg-[hsl(var(--color-brand))] text-white rounded-lg hover:bg-[hsl(var(--color-brand-hover))] shadow-sm active:scale-95 transition-all text-sm font-medium"
             >
               Confirm
             </button>

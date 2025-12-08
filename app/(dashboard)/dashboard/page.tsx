@@ -8,8 +8,6 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Plus, Folder, CheckCircle, ArrowRight, FileText, Clock, RotateCcw, ChevronRight, Paperclip, Search } from 'lucide-react';
 import { File } from '@/types/file';
-import { SlideOver } from '@/components/ui/slide-over';
-import { FileInspector } from '@/components/file-inspector';
 import { Button } from '@/components/ui/button';
 import { getCurrentDateBangla } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -19,10 +17,6 @@ export default function DashboardPage() {
   const { user } = useRequireAuth();
   const { files, getMyFiles, getPendingFiles, updateFile } = useFiles();
   const router = useRouter();
-  const [viewingFile, setViewingFile] = useState<File | null>(null);
-  const [fileTabs, setFileTabs] = useState<React.ReactNode>(null);
-  const [fileActions, setFileActions] = useState<React.ReactNode>(null);
-  const [fileCenterActions, setFileCenterActions] = useState<React.ReactNode>(null);
   const [searchTerm, setSearchTerm] = useState('');
 
   if (!user) {
@@ -57,7 +51,7 @@ export default function DashboardPage() {
     .slice(0, 5);
 
   const handleOpenFile = (file: File) => {
-    setViewingFile(file);
+    router.push(`/dashboard/files/${file.id}`);
   };
 
   const handleUpdateFile = (id: string, updates: Partial<File>) => {
@@ -110,7 +104,7 @@ export default function DashboardPage() {
               title="Total"
               value={totalFiles}
               icon={FileText}
-              colorClass="bg-indigo-600 text-indigo-600"
+              colorClass="bg-[hsl(var(--color-brand))] text-[hsl(var(--color-brand))]"
             />
             <StatCard
               title="Pending"
@@ -157,7 +151,7 @@ export default function DashboardPage() {
                   </CardTitle>
                   <button 
                     onClick={() => router.push('/dashboard/pending')} 
-                    className="text-sm font-medium text-indigo-600 hover:text-indigo-800 flex items-center gap-1"
+                    className="text-sm font-medium text-[hsl(var(--color-brand))] hover:text-[hsl(var(--color-brand-hover))] flex items-center gap-1"
                   >
                     View All <ArrowRight size={14} />
                   </button>
@@ -173,11 +167,11 @@ export default function DashboardPage() {
                         className="group flex items-center justify-between p-3 hover:bg-slate-50 cursor-pointer transition-colors"
                       >
                         <div className="flex items-center gap-3 overflow-hidden min-w-0 flex-1">
-                          <div className="bg-slate-50 p-2 rounded-lg text-slate-400 group-hover:text-indigo-600 group-hover:bg-indigo-50 transition-colors shrink-0">
+                          <div className="bg-slate-50 p-2 rounded-lg text-slate-400 group-hover:text-[hsl(var(--color-brand))] group-hover:bg-[hsl(var(--color-brand))]/10 transition-colors shrink-0">
                             <FileText size={18} />
                           </div>
                           <div className="min-w-0 flex-1">
-                            <h4 className="text-sm font-semibold text-slate-900 truncate group-hover:text-indigo-700 transition-colors font-bangla">
+                            <h4 className="text-sm font-semibold text-slate-900 truncate group-hover:text-[hsl(var(--color-brand-hover))] transition-colors font-bangla">
                               {file.title}
                             </h4>
                             <p className="text-xs text-slate-500 truncate flex items-center gap-2">
@@ -189,7 +183,7 @@ export default function DashboardPage() {
                         </div>
                         <div className="flex items-center gap-3 pl-3 shrink-0">
                           {file.attachments && file.attachments.length > 0 && (
-                            <div className="flex items-center gap-1 text-slate-400 group-hover:text-indigo-500 transition-colors">
+                            <div className="flex items-center gap-1 text-slate-400 group-hover:text-[hsl(var(--color-brand))] transition-colors">
                               <Paperclip size={14} />
                               <span className="text-xs font-medium">{file.attachments.length}</span>
                             </div>
@@ -197,7 +191,7 @@ export default function DashboardPage() {
                           <StatusBadge status={file.status} />
                           <ChevronRight 
                             size={16} 
-                            className="text-slate-300 group-hover:text-indigo-400 group-hover:translate-x-1 transition-all" 
+                            className="text-slate-300 group-hover:text-[hsl(var(--color-light-sea-green))] group-hover:translate-x-1 transition-all" 
                           />
                         </div>
                       </div>
@@ -225,7 +219,7 @@ export default function DashboardPage() {
                   </CardTitle>
                   <button 
                     onClick={() => router.push('/dashboard/files')} 
-                    className="text-sm font-medium text-indigo-600 hover:text-indigo-800 flex items-center gap-1"
+                    className="text-sm font-medium text-[hsl(var(--color-brand))] hover:text-[hsl(var(--color-brand-hover))] flex items-center gap-1"
                   >
                     View All <ArrowRight size={14} />
                   </button>
@@ -241,11 +235,11 @@ export default function DashboardPage() {
                         className="group flex items-center justify-between p-3 hover:bg-slate-50 cursor-pointer transition-colors"
                       >
                         <div className="flex items-center gap-3 overflow-hidden min-w-0 flex-1">
-                          <div className="bg-slate-50 p-2 rounded-lg text-slate-400 group-hover:text-indigo-600 group-hover:bg-indigo-50 transition-colors shrink-0">
+                          <div className="bg-slate-50 p-2 rounded-lg text-slate-400 group-hover:text-[hsl(var(--color-brand))] group-hover:bg-[hsl(var(--color-brand))]/10 transition-colors shrink-0">
                             <FileText size={18} />
                           </div>
                           <div className="min-w-0 flex-1">
-                            <h4 className="text-sm font-semibold text-slate-900 truncate group-hover:text-indigo-700 transition-colors font-bangla">
+                            <h4 className="text-sm font-semibold text-slate-900 truncate group-hover:text-[hsl(var(--color-brand-hover))] transition-colors font-bangla">
                               {file.title}
                             </h4>
                             <p className="text-xs text-slate-500 truncate flex items-center gap-2">
@@ -257,7 +251,7 @@ export default function DashboardPage() {
                         </div>
                         <div className="flex items-center gap-3 pl-3 shrink-0">
                           {file.attachments && file.attachments.length > 0 && (
-                            <div className="flex items-center gap-1 text-slate-400 group-hover:text-indigo-500 transition-colors">
+                            <div className="flex items-center gap-1 text-slate-400 group-hover:text-[hsl(var(--color-brand))] transition-colors">
                               <Paperclip size={14} />
                               <span className="text-xs font-medium">{file.attachments.length}</span>
                             </div>
@@ -265,7 +259,7 @@ export default function DashboardPage() {
                           <StatusBadge status={file.status} />
                           <ChevronRight 
                             size={16} 
-                            className="text-slate-300 group-hover:text-indigo-400 group-hover:translate-x-1 transition-all" 
+                            className="text-slate-300 group-hover:text-[hsl(var(--color-light-sea-green))] group-hover:translate-x-1 transition-all" 
                           />
                         </div>
                       </div>
@@ -287,37 +281,6 @@ export default function DashboardPage() {
         </div>
       </main>
 
-      {/* File Inspector Slide Over */}
-      <SlideOver 
-        isOpen={!!viewingFile} 
-        onClose={() => {
-          setViewingFile(null);
-          setFileTabs(null);
-          setFileActions(null);
-          setFileCenterActions(null);
-        }} 
-        title="Details"
-        tabs={fileTabs}
-        actions={fileActions}
-        centerActions={fileCenterActions}
-      >
-        {viewingFile && (
-          <FileInspector 
-            file={viewingFile} 
-            user={user} 
-            onClose={() => {
-              setViewingFile(null);
-              setFileTabs(null);
-              setFileActions(null);
-              setFileCenterActions(null);
-            }} 
-            onUpdate={handleUpdateFile}
-            onTabsReady={(tabs) => setFileTabs(tabs)}
-            onActionsReady={(actions) => setFileActions(actions)}
-            onCenterActionsReady={(actions) => setFileCenterActions(actions)}
-          />
-        )}
-      </SlideOver>
     </div>
   );
 }
