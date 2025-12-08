@@ -19,8 +19,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         try {
           const parsedUser = JSON.parse(storedUser);
           // Migrate old user data if needed
-          if (parsedUser.name === 'Abdul Karim') {
-            parsedUser.name = 'Toufique Joarder';
+          if (parsedUser.name === 'Abdul Karim' || parsedUser.name === 'Toufique Joarder') {
+            parsedUser.name = 'তৌফিক জোয়ার্দার';
             parsedUser.email = 'toufique.joarder@rnpl.com';
             localStorage.setItem('rnpl_user', JSON.stringify(parsedUser));
           }
@@ -40,7 +40,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Prototype: Always create Admin user with all permissions
     const adminUser: User = {
       id: 'admin-001',
-      name: 'Toufique Joarder',
+      name: 'তৌফিক জোয়ার্দার',
       email: 'toufique.joarder@rnpl.com',
       role: 'Admin',
       office: 'Administration',

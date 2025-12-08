@@ -24,7 +24,8 @@ export default function DashboardPage() {
   }
 
   const getGreeting = () => {
-    return `স্বাগতম, ${user.name}! আজ ${getCurrentDateBangla()}`;
+    const banglaName = user.name.split('(')[0].trim();
+    return `স্বাগতম, ${banglaName}! আজ ${getCurrentDateBangla()}`;
   };
 
   const myFiles = getMyFiles();

@@ -144,7 +144,7 @@ export default function FileViewPage() {
   return (
     <div className="h-screen overflow-hidden bg-slate-50/50 flex flex-col">
       <Header />
-
+      
       {/* Page Header with Controls */}
       <div className="bg-white border-b border-slate-200 flex-shrink-0">
         <div className="container mx-auto px-4 py-4">
@@ -168,9 +168,9 @@ export default function FileViewPage() {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="outline" size="sm" className="flex items-center gap-2 cursor-pointer">
-                          <Download size={16} />
+                        <Download size={16} />
                           Download
-                        </Button>
+                      </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent className="w-52" align="start">
                         <DropdownMenuLabel className="text-sm font-semibold text-slate-800">
@@ -196,7 +196,7 @@ export default function FileViewPage() {
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
-
+                  
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button
@@ -235,7 +235,7 @@ export default function FileViewPage() {
                           <p>Return</p>
                         </TooltipContent>
                       </Tooltip>
-
+                      
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Button
@@ -251,8 +251,8 @@ export default function FileViewPage() {
                         </TooltipContent>
                       </Tooltip>
                     </ButtonGroup>
-
-                    <Button
+                    
+                    <Button 
                       onClick={() => setAction('approve')}
                       variant="default"
                       size="sm"
@@ -278,30 +278,30 @@ export default function FileViewPage() {
               {/* White Paper Container */}
               <div className="bg-white rounded-lg shadow-lg border border-slate-200/50 min-h-full">
 
-                {/* Blog Post Style Content */}
+              {/* Blog Post Style Content */}
                 <article className="prose prose-slate max-w-none relative z-10 p-16">
                   {/* Document Header */}
                   <DocumentHeader fileId={file.id} date={file.lastUpdated} />
 
-                  {/* Title */}
-                  <header className="mb-8 text-center">
+                {/* Title */}
+                <header className="mb-8 text-center">
                     <h1 className="text-2xl font-semibold text-slate-900 mb-4 leading-tight font-bangla-serif">
-                      {file.title}
-                    </h1>
-                  </header>
+                    {file.title}
+                  </h1>
+                </header>
 
-                  {/* Main Content */}
-                  <div className="mb-12">
-                    {file.documentBody ? (
-                      <div className="prose prose-slate max-w-none">
+            {/* Main Content */}
+            <div className="mb-12">
+              {file.documentBody ? (
+                <div className="prose prose-slate max-w-none">
                         <div className="whitespace-pre-wrap text-[15px] leading-7 text-slate-700 font-bangla">
-                          {file.documentBody}
-                        </div>
-                      </div>
-                    ) : (
-                      <p className="text-slate-400 italic">No content provided.</p>
-                    )}
+                    {file.documentBody}
                   </div>
+                </div>
+              ) : (
+                <p className="text-slate-400 italic">No content provided.</p>
+              )}
+            </div>
 
                   {/* Signature Area */}
                   <div className="mt-16 flex justify-end">
@@ -334,33 +334,33 @@ export default function FileViewPage() {
                     </ol>
                   </div>
 
-                  {/* Resubmit Action */}
-                  {file.sender === user.name && file.status === 'Returned' && (
-                    <div className="pt-8 border-t border-slate-200">
-                      <Button
-                        onClick={() => {
-                          const newHistoryEntry = {
-                            timestamp: new Date().toISOString(),
-                            actor: user.name,
-                            event: 'Resubmitted for Approval',
-                            stateChange: 'Pending' as FileStatus,
-                            note: 'File has been corrected and resubmitted.'
-                          };
-                          updateFile(file.id, {
-                            status: 'Pending',
-                            isApproverAction: true,
-                            history: [newHistoryEntry, ...file.history],
-                            lastUpdated: new Date().toISOString().slice(0, 10),
-                          });
-                          router.push('/dashboard');
-                        }}
+            {/* Resubmit Action */}
+            {file.sender === user.name && file.status === 'Returned' && (
+              <div className="pt-8 border-t border-slate-200">
+                <Button 
+                  onClick={() => { 
+                    const newHistoryEntry = { 
+                      timestamp: new Date().toISOString(), 
+                      actor: user.name, 
+                      event: 'Resubmitted for Approval', 
+                      stateChange: 'Pending' as FileStatus, 
+                      note: 'File has been corrected and resubmitted.' 
+                    };
+                    updateFile(file.id, { 
+                      status: 'Pending', 
+                      isApproverAction: true, 
+                      history: [newHistoryEntry, ...file.history],
+                      lastUpdated: new Date().toISOString().slice(0, 10),
+                    }); 
+                    router.push('/dashboard');
+                  }} 
                         className="w-full bg-[hsl(var(--color-brand))] hover:bg-[hsl(var(--color-brand-hover))] text-white"
-                      >
-                        Resubmit File for Approval
-                      </Button>
-                    </div>
-                  )}
-                </article>
+                >
+                  Resubmit File for Approval
+                </Button>
+              </div>
+            )}
+              </article>
               </div>
             </div>
           </div>

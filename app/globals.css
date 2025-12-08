@@ -107,6 +107,9 @@
   .font-bangla-serif {
     font-family: var(--font-noto-serif-bengali), serif;
   }
+  .font-mina {
+    font-family: var(--font-mina), sans-serif;
+  }
 }
 
 /* Custom Scrollbar for Notification Popover */

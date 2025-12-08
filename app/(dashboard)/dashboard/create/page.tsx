@@ -27,17 +27,16 @@ export default function CreateFilePage() {
 
 
   return (
-    <div className="min-h-screen bg-slate-50/50">
+    <div className="h-screen overflow-hidden bg-slate-50/50 flex flex-col">
       <Header />
       
-      <main className="h-[calc(100vh-64px)]">
+      <main className="flex-1 overflow-hidden">
         <CreateFileForm 
           user={user} 
           onCreateSuccess={handleCreateSuccess}
           onCancel={() => router.push('/dashboard')}
         />
       </main>
-
     </div>
   );
 }

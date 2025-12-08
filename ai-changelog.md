@@ -383,6 +383,93 @@ Files Modified:
 Files Modified:
 - app/(dashboard)/dashboard/files/[id]/page.tsx
 
+---
+
+2025-12-08 13:25:00 - Replaced document viewer in Create File page with new design
+- Replaced old DocumentPreview component with new paper-on-desk design
+- Added DocumentHeader, signature block, and distribution list to preview
+- Updated layout to match FileViewPage structure with proper scrolling
+- Maintains real-time preview as user types
+Files Modified:
+- app/(dashboard)/dashboard/create/page.tsx
+- components/create-file-form.tsx
+
+---
+
+2025-12-08 14:00:00 - Updated signature area in Create File to show current user
+- Signature placeholder and name now display the user creating the file
+- Kept role (কোম্পানি সচিব) and company name (আরএনপিএল) unchanged
+- Signature dynamically updates based on logged-in user
+Files Modified:
+- components/create-file-form.tsx
+
+---
+
+2025-12-08 14:05:00 - Made signature area language-aware in Create File
+- Signature name and initials now change based on selected language (Bangla/English)
+- Role text also changes based on language selection
+- Removed duplicate name display (shows only one name based on language)
+Files Modified:
+- components/create-file-form.tsx
+
+---
+
+2025-12-08 14:10:00 - Fixed signature name display to show only one language
+- Enhanced getUserName function to handle name extraction from parentheses format
+- Added fallback logic to extract Bangla/English names when both are present
+- Ensures only the selected language name is displayed in signature
+Files Modified:
+- components/create-file-form.tsx
+
+---
+
+2025-12-08 14:15:00 - Made company name language-aware in signature area
+- Company name now displays "আরএনপিএল" for Bangla and "RNPL" for English
+- Signature area fully adapts to selected language
+Files Modified:
+- components/create-file-form.tsx
+
+---
+
+2025-12-08 14:20:00 - Updated signature to show full name with Mina font for Bangla
+- Added Mina font from Google Fonts for Bengali signatures
+- Signature now displays full name instead of initials
+- Bangla signatures use Mina font, English signatures use cursive font
+- Increased signature container width to accommodate full names
+Files Modified:
+- lib/fonts.ts
+- app/layout.tsx
+- app/globals.css
+- components/create-file-form.tsx
+
+---
+
+2025-12-08 14:25:00 - Improved user dropdown menu in Navbar
+- Added avatar before user name in dropdown
+- Name now displays only in English (extracted from Bangla name)
+- Added "Admin Panel" option for Admin users
+- Improved dropdown layout with better spacing and visual hierarchy
+Files Modified:
+- components/header.tsx
+
+2025-12-08 13:35:00 - Enhanced Create File form sidebar and preview
+- Added back button, language toggle (default Bangla), reference display, date input
+- Localized categories, updated details field, and added send-to and send-copies management
+- Applied custom scrollbar and aligned preview top; DocumentHeader now supports language toggle
+Files Modified:
+- components/create-file-form.tsx
+- components/document-header.tsx
+
+2025-12-08 13:45:00 - Adjusted dashboard greeting to Bangla-only name
+- Greeting now strips any English parenthetical and uses Bangla name only
+Files Modified:
+- app/(dashboard)/dashboard/page.tsx
+
+2025-12-08 13:50:00 - Added under-construction placeholder for Profile
+- Added /dashboard/profile with Under Construction placeholder and navigation buttons
+Files Modified:
+- app/(dashboard)/dashboard/profile/page.tsx
+
 
 
 

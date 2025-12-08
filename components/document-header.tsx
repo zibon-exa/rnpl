@@ -6,15 +6,23 @@ import { formatFileIdToBangla, formatDateToBangla } from '@/lib/utils';
 interface DocumentHeaderProps {
   fileId?: string;
   date?: string;
+  language?: 'bn' | 'en';
 }
 
 /**
  * Centralized document header component
  * Used in all document previews to ensure consistent design
  */
-export function DocumentHeader({ fileId, date }: DocumentHeaderProps) {
+export function DocumentHeader({ fileId, date, language = 'bn' }: DocumentHeaderProps) {
   const previewFileId = fileId || 'RNPL-0000';
   const previewDate = date || new Date().toISOString().slice(0, 10);
+
+  const formattedDate =
+    language === 'en'
+      ? new Date(previewDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+      : formatDateToBangla(previewDate);
+
+  const formattedRef = language === 'en' ? previewFileId : formatFileIdToBangla(previewFileId);
 
   return (
     <div className="mb-6 pb-4">
@@ -65,10 +73,10 @@ export function DocumentHeader({ fileId, date }: DocumentHeaderProps) {
       {/* Reference and Date */}
       <div className="flex items-center justify-between pt-3 border-t border-slate-200">
         <div>
-          <p className="text-[10px] text-slate-600 font-bangla">স্মারক নং: {formatFileIdToBangla(previewFileId)}</p>
+          <p className="text-[10px] text-slate-600 font-bangla">স্মারক নং: {formattedRef}</p>
         </div>
         <div className="text-right">
-          <p className="text-[10px] text-slate-600 font-bangla">তারিখ: {formatDateToBangla(previewDate)}</p>
+          <p className="text-[10px] text-slate-600 font-bangla">তারিখ: {formattedDate}</p>
         </div>
       </div>
     </div>

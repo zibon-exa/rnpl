@@ -1,4 +1,4 @@
-import { Inter, Tiro_Bangla, Playfair_Display, Dancing_Script, Noto_Serif_Bengali } from 'next/font/google';
+import { Inter, Tiro_Bangla, Playfair_Display, Dancing_Script, Noto_Serif_Bengali, Mina } from 'next/font/google';
 
 // Inter for Latin/English text - primary font for the app
 export const inter = Inter({
@@ -39,6 +39,15 @@ export const notoSerifBengali = Noto_Serif_Bengali({
   subsets: ['bengali'],
   display: 'swap',
   variable: '--font-noto-serif-bengali',
+  preload: true,
+});
+
+// Mina for Bengali signatures
+export const mina = Mina({
+  weight: ['400', '700'],
+  subsets: ['bengali', 'latin'],
+  display: 'swap',
+  variable: '--font-mina',
   preload: true,
 });
 
