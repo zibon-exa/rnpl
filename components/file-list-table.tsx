@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Search, ChevronRight } from 'lucide-react';
+import { Search, ChevronRight, Paperclip } from 'lucide-react';
 import { File } from '@/types/file';
 import { StatusBadge } from '@/components/ui/status-badge';
 
@@ -77,7 +77,15 @@ export function FileListTable({ files, title, onOpenFile }: FileListTableProps) 
                   <div className="text-xs text-slate-400 mt-1 font-mono">{file.id}</div>
                 </td>
                 <td className="px-6 py-4">
-                  <StatusBadge status={file.status} />
+                  <div className="flex items-center gap-2">
+                    <StatusBadge status={file.status} />
+                    {file.attachments && file.attachments.length > 0 && (
+                      <div className="flex items-center gap-1 text-slate-400 group-hover:text-indigo-500 transition-colors">
+                        <Paperclip size={14} />
+                        <span className="text-xs font-medium">{file.attachments.length}</span>
+                      </div>
+                    )}
+                  </div>
                 </td>
                 <td className="px-6 py-4 text-sm text-slate-600 font-bangla">{file.category}</td>
                 <td className="px-6 py-4 text-sm text-slate-500 font-mono">{file.lastUpdated}</td>

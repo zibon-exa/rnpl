@@ -14,6 +14,11 @@ export const initialFiles: File[] = [
     history: [
       { timestamp: '2025-12-07T10:45:00Z', actor: 'Rashida Begum', event: 'Sent for Approval', stateChange: 'Pending', note: 'Ready for review. Critical item due to year-end closing.' },
       { timestamp: '2025-12-06T09:00:00Z', actor: 'Rashida Begum', event: 'Draft Created', stateChange: 'Draft', note: 'Initial creation of the file.' },
+    ],
+    attachments: [
+      { id: 'att-1', name: 'বাজেট_বিশ্লেষণ.xlsx', type: 'excel', size: 245760 },
+      { id: 'att-2', name: 'খরচ_বিবরণ.pdf', type: 'pdf', size: 512000 },
+      { id: 'att-3', name: 'চার্ট_চিত্র.png', type: 'image', size: 128000 },
     ]
   },
   { 
@@ -46,6 +51,10 @@ export const initialFiles: File[] = [
       { timestamp: '2025-12-02T16:30:00Z', actor: 'Toufique Joarder (Approver)', event: 'Returned', stateChange: 'Returned', note: 'Cost is too high. Find a cheaper vendor and resubmit.' },
       { timestamp: '2025-12-02T11:00:00Z', actor: 'Fatima Ahmed', event: 'Sent for Approval', stateChange: 'Pending', note: 'Urgent renovation request.' },
       { timestamp: '2025-12-01T09:00:00Z', actor: 'Fatima Ahmed', event: 'Draft Created', stateChange: 'Draft', note: 'Initial estimate.' },
+    ],
+    attachments: [
+      { id: 'att-4', name: 'ভেন্ডর_প্রস্তাব.pdf', type: 'pdf', size: 1024000 },
+      { id: 'att-5', name: 'ফ্লোর_প্ল্যান.jpg', type: 'image', size: 768000 },
     ]
   },
   { 
@@ -75,6 +84,9 @@ export const initialFiles: File[] = [
     history: [
       { timestamp: '2025-12-04T12:00:00Z', actor: 'Nusrat Jahan', event: 'Sent for Approval', stateChange: 'Pending', note: 'Submitted to Finance for budget review.' },
       { timestamp: '2025-12-04T09:00:00Z', actor: 'Nusrat Jahan', event: 'Draft Created', stateChange: 'Draft', note: 'Campaign shell built.' },
+    ],
+    attachments: [
+      { id: 'att-6', name: 'ক্যাম্পেইন_বাজেট.xlsx', type: 'excel', size: 384000 },
     ]
   },
   { 
@@ -91,6 +103,11 @@ export const initialFiles: File[] = [
       { timestamp: '2025-12-05T14:00:00Z', actor: 'Toufique Joarder (Approver)', event: 'Approved', stateChange: 'Approved', note: 'Excellent work. Implement recommendations as scheduled.' },
       { timestamp: '2025-12-05T10:00:00Z', actor: 'Mohammad Hasan', event: 'Sent for Approval', stateChange: 'Pending', note: 'Annual audit complete. Ready for review.' },
       { timestamp: '2025-11-30T08:00:00Z', actor: 'Mohammad Hasan', event: 'Draft Created', stateChange: 'Draft', note: 'Compiling audit results.' },
+    ],
+    attachments: [
+      { id: 'att-7', name: 'Security_Audit_Report.pdf', type: 'pdf', size: 2048000 },
+      { id: 'att-8', name: 'Vulnerability_Scan_Results.xlsx', type: 'excel', size: 512000 },
+      { id: 'att-9', name: 'Network_Diagram.png', type: 'image', size: 640000 },
     ]
   },
   { 

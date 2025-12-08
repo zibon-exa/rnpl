@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { CheckCircle, RotateCcw, Forward, Zap, Download, Printer, Copy, Check } from 'lucide-react';
+import { CheckCircle, RotateCcw, Forward, Zap, Download, Printer, Copy, Check, Paperclip } from 'lucide-react';
 import { File, FileStatus } from '@/types/file';
 import { User } from '@/types/user';
 import { StatusBadge } from '@/components/ui/status-badge';
@@ -133,7 +133,7 @@ export function FileInspector({ file, user, onClose, onUpdate, onTabsReady, onAc
     </Tabs>
   ), [activeTab]);
 
-  // Action buttons for header (shown when viewing document tab and can act)
+  // Action buttons for header (shown when viewing file preview tab and can act)
   // Gmail-style: Approve with label, Return/Forward icon-only with tooltips
   const headerActions = useMemo(() => {
     if (!canAct || activeTab !== 'document') return null;
@@ -340,13 +340,29 @@ export function FileInspector({ file, user, onClose, onUpdate, onTabsReady, onAc
                     </TableBody>
                   </Table>
                 </div>
+
+                {/* Attachment Note */}
+                {file.attachments && file.attachments.length > 0 && (
+                  <div className="mt-4 flex items-center gap-2 text-sm text-slate-600">
+                    <Paperclip size={16} className="text-slate-400" />
+                    <span>This file has {file.attachments.length} attachment{file.attachments.length > 1 ? 's' : ''}</span>
+                  </div>
+                )}
               </div>
 
               {/* Details Section */}
               <div className="pt-6">
                 <p className="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-3">Details</p>
-                <div className={`text-slate-600 leading-relaxed text-base font-bangla ${isDetailsExpanded ? 'columns-1 md:columns-2 gap-16' : 'line-clamp-3'}`}>
-                  {file.documentBody || 'No details provided.'}
+                <div className={`bg-slate-50 rounded-xl border border-slate-100 p-6 ${isDetailsExpanded ? '' : 'line-clamp-3'}`}>
+                  <div className="max-w-3xl">
+                    {file.documentBody ? (
+                      <div className="whitespace-pre-wrap leading-7 text-[15px] text-slate-700 font-bangla">
+                        {file.documentBody}
+                      </div>
+                    ) : (
+                      <p className="text-slate-400 italic leading-7">No details provided.</p>
+                    )}
+                  </div>
                 </div>
                 {file.documentBody && file.documentBody.length > 150 && (
                   <button
@@ -426,7 +442,7 @@ export function FileInspector({ file, user, onClose, onUpdate, onTabsReady, onAc
           </div>
         )}
 
-        {/* VIEW 2: DOCUMENT PREVIEW (The "Attachment") */}
+        {/* VIEW 2: FILE PREVIEW (The "Attachment") */}
         {activeTab === 'document' && (
           <div className="flex-1 pt-6 pb-6 px-6 animate-in fade-in duration-300 flex flex-col items-center bg-slate-100 noise-texture overflow-y-auto">
             <DocumentPaper>

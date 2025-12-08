@@ -4,15 +4,16 @@ import { useRequireAuth } from '@/hooks/use-require-auth';
 import { useFiles } from '@/lib/files-context';
 import { Header } from '@/components/header';
 import { StatCard } from '@/components/ui/stat-card';
-import { FileListItem } from '@/components/file-list-item';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Plus, Folder, CheckCircle, ArrowRight, FileText, Clock, RotateCcw } from 'lucide-react';
+import { Plus, Folder, CheckCircle, ArrowRight, FileText, Clock, RotateCcw, ChevronRight, Paperclip, Search } from 'lucide-react';
 import { File } from '@/types/file';
 import { SlideOver } from '@/components/ui/slide-over';
 import { FileInspector } from '@/components/file-inspector';
 import { Button } from '@/components/ui/button';
 import { getCurrentDateBangla } from '@/lib/utils';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { StatusBadge } from '@/components/ui/status-badge';
 
 export default function DashboardPage() {
   const { user } = useRequireAuth();
@@ -22,6 +23,7 @@ export default function DashboardPage() {
   const [fileTabs, setFileTabs] = useState<React.ReactNode>(null);
   const [fileActions, setFileActions] = useState<React.ReactNode>(null);
   const [fileCenterActions, setFileCenterActions] = useState<React.ReactNode>(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   if (!user) {
     return null;
@@ -46,10 +48,13 @@ export default function DashboardPage() {
     return fileDate.getMonth() === now.getMonth() && fileDate.getFullYear() === now.getFullYear();
   }).length;
   
-  // Show recent files requiring attention (pending approvals) or recent user files
-  const relevantFiles = pendingFiles.length > 0 
-    ? pendingFiles.slice(0, 3)
-    : myFiles.filter(f => f.sender === user.name).slice(0, 3);
+  // Get files requiring attention (pending files)
+  const filesRequiringAttention = pendingFiles.slice(0, 5);
+  
+  // Get recent files (sorted by lastUpdated, descending)
+  const recentFiles = [...files]
+    .sort((a, b) => new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime())
+    .slice(0, 5);
 
   const handleOpenFile = (file: File) => {
     setViewingFile(file);
@@ -73,18 +78,30 @@ export default function DashboardPage() {
                 {getGreeting()}
               </p>
             </div>
-            <Button 
-              onClick={() => router.push('/dashboard/create')}
-              className="text-white"
-              style={{ 
-                backgroundColor: 'hsl(var(--color-brand))',
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'hsl(196, 60%, 50%)'}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'hsl(var(--color-brand))'}
-            >
-              <Plus size={18} className="mr-2" />
-              Create New File
-            </Button>
+            <div className="flex items-center gap-8">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                <input 
+                  type="text" 
+                  placeholder="Search files..." 
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 w-64 transition-all"
+                />
+              </div>
+              <Button 
+                onClick={() => router.push('/dashboard/create')}
+                className="text-white"
+                style={{ 
+                  backgroundColor: 'hsl(var(--color-brand))',
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'hsl(196, 60%, 50%)'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'hsl(var(--color-brand))'}
+              >
+                <Plus size={18} className="mr-2" />
+                Create New File
+              </Button>
+            </div>
           </div>
 
           {/* Stat Cards Grid */}
@@ -129,36 +146,143 @@ export default function DashboardPage() {
             />
           </div>
 
-          {/* Recent Activity Section */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-slate-800">
-                {pendingFiles.length > 0 ? 'Files Requiring Attention' : 'Recent File Activity'}
-              </h2>
-              <button 
-                onClick={() => router.push(pendingFiles.length > 0 ? '/dashboard/pending' : '/dashboard/files')} 
-                className="text-sm font-medium text-indigo-600 hover:text-indigo-800 flex items-center gap-1"
-              >
-                View All <ArrowRight size={14} />
-              </button>
-            </div>
-            
-            <div className="grid gap-3">
-              {relevantFiles.length > 0 ? (
-                relevantFiles.map(file => (
-                  <FileListItem key={file.id} file={file} onClick={handleOpenFile} />
-                ))
-              ) : (
-                <div className="p-10 border border-dashed border-slate-200 rounded-xl flex flex-col items-center justify-center text-center bg-slate-50/50">
-                  <div className="bg-white p-3 rounded-full shadow-sm mb-3">
-                    <Folder className="text-slate-300" size={24} />
-                  </div>
-                  <p className="text-slate-500 text-sm font-medium">
-                    No files currently require your attention.
-                  </p>
+          {/* Files Section - Two Columns */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Column 1: Files Requiring Attention */}
+            <Card className="bg-white">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-lg font-semibold text-slate-800">
+                    Files Requiring Attention
+                  </CardTitle>
+                  <button 
+                    onClick={() => router.push('/dashboard/pending')} 
+                    className="text-sm font-medium text-indigo-600 hover:text-indigo-800 flex items-center gap-1"
+                  >
+                    View All <ArrowRight size={14} />
+                  </button>
                 </div>
-              )}
-            </div>
+              </CardHeader>
+              <CardContent>
+                {filesRequiringAttention.length > 0 ? (
+                  <div className="space-y-0 divide-y divide-slate-100">
+                    {filesRequiringAttention.map((file, index) => (
+                      <div
+                        key={file.id}
+                        onClick={() => handleOpenFile(file)}
+                        className="group flex items-center justify-between p-3 hover:bg-slate-50 cursor-pointer transition-colors"
+                      >
+                        <div className="flex items-center gap-3 overflow-hidden min-w-0 flex-1">
+                          <div className="bg-slate-50 p-2 rounded-lg text-slate-400 group-hover:text-indigo-600 group-hover:bg-indigo-50 transition-colors shrink-0">
+                            <FileText size={18} />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <h4 className="text-sm font-semibold text-slate-900 truncate group-hover:text-indigo-700 transition-colors font-bangla">
+                              {file.title}
+                            </h4>
+                            <p className="text-xs text-slate-500 truncate flex items-center gap-2">
+                              <span>{file.id}</span>
+                              <span className="w-1 h-1 rounded-full bg-slate-300"></span>
+                              <span>{file.sender}</span>
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3 pl-3 shrink-0">
+                          {file.attachments && file.attachments.length > 0 && (
+                            <div className="flex items-center gap-1 text-slate-400 group-hover:text-indigo-500 transition-colors">
+                              <Paperclip size={14} />
+                              <span className="text-xs font-medium">{file.attachments.length}</span>
+                            </div>
+                          )}
+                          <StatusBadge status={file.status} />
+                          <ChevronRight 
+                            size={16} 
+                            className="text-slate-300 group-hover:text-indigo-400 group-hover:translate-x-1 transition-all" 
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-10 border border-dashed border-slate-200 rounded-xl flex flex-col items-center justify-center text-center bg-slate-50/50">
+                    <div className="bg-white p-3 rounded-full shadow-sm mb-3">
+                      <Folder className="text-slate-300" size={24} />
+                    </div>
+                    <p className="text-slate-500 text-sm font-medium">
+                      No files currently require your attention.
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Column 2: Recent Files */}
+            <Card className="bg-white">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-lg font-semibold text-slate-800">
+                    Recent Files
+                  </CardTitle>
+                  <button 
+                    onClick={() => router.push('/dashboard/files')} 
+                    className="text-sm font-medium text-indigo-600 hover:text-indigo-800 flex items-center gap-1"
+                  >
+                    View All <ArrowRight size={14} />
+                  </button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {recentFiles.length > 0 ? (
+                  <div className="space-y-0 divide-y divide-slate-100">
+                    {recentFiles.map((file) => (
+                      <div
+                        key={file.id}
+                        onClick={() => handleOpenFile(file)}
+                        className="group flex items-center justify-between p-3 hover:bg-slate-50 cursor-pointer transition-colors"
+                      >
+                        <div className="flex items-center gap-3 overflow-hidden min-w-0 flex-1">
+                          <div className="bg-slate-50 p-2 rounded-lg text-slate-400 group-hover:text-indigo-600 group-hover:bg-indigo-50 transition-colors shrink-0">
+                            <FileText size={18} />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <h4 className="text-sm font-semibold text-slate-900 truncate group-hover:text-indigo-700 transition-colors font-bangla">
+                              {file.title}
+                            </h4>
+                            <p className="text-xs text-slate-500 truncate flex items-center gap-2">
+                              <span>{file.id}</span>
+                              <span className="w-1 h-1 rounded-full bg-slate-300"></span>
+                              <span>{file.sender}</span>
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3 pl-3 shrink-0">
+                          {file.attachments && file.attachments.length > 0 && (
+                            <div className="flex items-center gap-1 text-slate-400 group-hover:text-indigo-500 transition-colors">
+                              <Paperclip size={14} />
+                              <span className="text-xs font-medium">{file.attachments.length}</span>
+                            </div>
+                          )}
+                          <StatusBadge status={file.status} />
+                          <ChevronRight 
+                            size={16} 
+                            className="text-slate-300 group-hover:text-indigo-400 group-hover:translate-x-1 transition-all" 
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-10 border border-dashed border-slate-200 rounded-xl flex flex-col items-center justify-center text-center bg-slate-50/50">
+                    <div className="bg-white p-3 rounded-full shadow-sm mb-3">
+                      <Folder className="text-slate-300" size={24} />
+                    </div>
+                    <p className="text-slate-500 text-sm font-medium">
+                      No recent files.
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           </div>
         </div>
       </main>

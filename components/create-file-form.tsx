@@ -104,7 +104,7 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFo
 
           <div>
             <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
-              Document Body <span className="text-rose-500">*</span>
+              File Body <span className="text-rose-500">*</span>
             </label>
             <textarea 
               rows={8}
@@ -113,7 +113,7 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFo
               value={formData.documentBody}
               onChange={e => setFormData({...formData, documentBody: e.target.value})}
             />
-            <p className="text-xs text-slate-400 mt-1">This will appear in the document preview</p>
+            <p className="text-xs text-slate-400 mt-1">This will appear in the file preview</p>
           </div>
         </div>
 
@@ -158,8 +158,8 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFo
       <div className="flex-1 flex flex-col bg-slate-50">
         {/* Preview Header */}
         <div className="px-6 py-4 border-b border-slate-200 bg-white">
-          <h3 className="text-sm font-semibold text-slate-700">Document Preview</h3>
-          <p className="text-xs text-slate-500 mt-0.5">Live preview of your document</p>
+          <h3 className="text-sm font-semibold text-slate-700">File Preview</h3>
+          <p className="text-xs text-slate-500 mt-0.5">Live preview of your file</p>
         </div>
 
         {/* Preview Content */}

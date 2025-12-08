@@ -8,6 +8,14 @@ export interface HistoryEntry {
   note?: string;
 }
 
+export interface Attachment {
+  id: string;
+  name: string;
+  type: 'image' | 'pdf' | 'excel' | 'word' | 'other';
+  size: number; // in bytes
+  url?: string;
+}
+
 export interface File {
   id: string;
   title: string;
@@ -23,6 +31,7 @@ export interface File {
   approvalComment?: string;
   returnComment?: string;
   forwardingNote?: string;
+  attachments?: Attachment[];
 }
 
 export interface Notification {

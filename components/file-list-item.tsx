@@ -1,6 +1,6 @@
 'use client';
 
-import { FileText, ChevronRight } from 'lucide-react';
+import { FileText, ChevronRight, Paperclip } from 'lucide-react';
 import { File } from '@/types/file';
 import { StatusBadge } from '@/components/ui/status-badge';
 
@@ -31,6 +31,12 @@ export function FileListItem({ file, onClick }: FileListItemProps) {
         </div>
       </div>
       <div className="flex items-center gap-4 pl-4 shrink-0">
+        {file.attachments && file.attachments.length > 0 && (
+          <div className="flex items-center gap-1 text-slate-400 group-hover:text-indigo-500 transition-colors">
+            <Paperclip size={14} />
+            <span className="text-xs font-medium">{file.attachments.length}</span>
+          </div>
+        )}
         <StatusBadge status={file.status} />
         <ChevronRight 
           size={16} 

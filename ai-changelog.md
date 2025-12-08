@@ -160,3 +160,90 @@ This file tracks all AI-assisted changes made to the project.
   - System-wide font solution using unicode-range
   - DRY refactoring: removed duplicate code and consolidated utilities
 
+## 2025-12-08 10:54:35
+
+### Dashboard Two-Column Layout
+- **Description**: Redesigned dashboard to display files in a 2-column layout with single container cards. Files are now listed without individual cards, using a cleaner inline list design.
+- **Files Modified**:
+  - `app/(dashboard)/dashboard/page.tsx` - Converted single-column "Recent Activity" section to 2-column grid layout with Card containers. Column 1: "Files Requiring Attention" (pending files), Column 2: "Recent Files" (sorted by lastUpdated). Files are displayed as inline list items within each card container (no individual file cards). Removed FileListItem component usage, replaced with inline list item design with hover effects.
+- **Features**:
+  - Two-column responsive grid layout (stacks on mobile)
+  - Single Card container for each column
+  - Files listed as inline items with dividers (no individual cards)
+  - Hover effects and smooth transitions
+  - "View All" buttons for navigation
+  - Empty state handling for both columns
+
+## 2025-12-08 10:59:57
+
+### File Attachments Feature
+- **Description**: Added attachment support to files with visual indicators showing attachment icon and count for documents that have attached files (images, PDFs, Excel files, etc.)
+- **Files Modified**:
+  - `types/file.ts` - Added Attachment interface and optional attachments array to File type. Attachment includes id, name, type (image/pdf/excel/word/other), size, and optional url.
+  - `lib/mock-data.ts` - Added attachments to 4 files: RNPL-1001 (3 attachments: Excel, PDF, image), RNPL-1003 (2 attachments: PDF, image), RNPL-1005 (1 attachment: Excel), RNPL-1006 (3 attachments: PDF, Excel, image)
+  - `app/(dashboard)/dashboard/page.tsx` - Added Paperclip icon import and attachment indicator display in both "Files Requiring Attention" and "Recent Files" columns. Shows paperclip icon with count when file has attachments.
+  - `components/file-list-item.tsx` - Added Paperclip icon import and attachment indicator display. Shows paperclip icon with count when file has attachments.
+  - `components/file-list-table.tsx` - Added Paperclip icon import and attachment indicator display in the Status column. Shows paperclip icon with count when file has attachments.
+- **Features**:
+  - Attachment icon (Paperclip) with count displayed next to status badge
+  - Only shows when file has attachments (conditional rendering)
+  - Hover effect on attachment indicator (changes color on hover)
+  - Consistent styling across dashboard and file list components
+
+## 2025-12-08 11:02:08
+
+### File Inspector Attachment Note
+- **Description**: Added attachment indicator note in FileInspector component, displayed just below the info table when a document has attachments
+- **Files Modified**:
+  - `components/file-inspector.tsx` - Added Paperclip icon import and attachment note section below the info table. Shows "This document has {count} attachment(s)" with paperclip icon when file has attachments.
+- **Features**:
+  - Attachment note appears only when file has attachments (conditional rendering)
+  - Shows attachment count with proper pluralization
+  - Positioned directly below the info table in the Details tab
+  - Consistent styling with slate colors and icon
+
+## 2025-12-08 11:04:15
+
+### File Inspector Details Section Readability Improvements
+- **Description**: Changed Details section from 2-column layout to single column with improved readability settings for long text
+- **Files Modified**:
+  - `components/file-inspector.tsx` - Removed 2-column layout (`columns-1 md:columns-2`), added max-width constraint (max-w-3xl) to prevent overly long lines, improved line-height (leading-7), increased font size slightly (text-[15px]), and preserved whitespace formatting with whitespace-pre-wrap
+- **Features**:
+  - Single column layout for better focus and readability
+  - Max-width constraint (approximately 48rem/768px) prevents lines from stretching too wide
+  - Improved line-height (1.75rem) for comfortable reading
+  - Slightly larger font size (15px) for better legibility
+  - Preserves original formatting and line breaks from document body
+  - Clean, minimal design that maintains visual hierarchy
+  - Added styled container with background (bg-slate-50), border (border-slate-100), rounded corners (rounded-xl), and generous padding (p-6) to make details text stand out from the rest of the interface
+
+## 2025-12-08 11:10:18
+
+### Dashboard File Search Box
+- **Description**: Added a file search input box to the left of the "Create New File" button on the dashboard page
+- **Files Modified**:
+  - `app/(dashboard)/dashboard/page.tsx` - Added Search icon import, search state (searchTerm), and search input field positioned to the left of the Create New File button with 32px gap (gap-8). Search box includes search icon, placeholder text, and focus styling.
+- **Features**:
+  - Search input with search icon on the left
+  - Positioned with 32px gap (gap-8) from Create New File button
+  - Styled with white background, border, rounded corners, and focus states
+  - Width of 256px (w-64) for comfortable input
+  - Placeholder text: "Search files..."
+
+## 2025-12-08 11:12:24
+
+### UX Copy Consistency Audit - Standardized on "File" Terminology
+- **Description**: Audited codebase for inconsistent naming between "File" and "Document" and standardized all user-facing text to use "File" terminology for consistency
+- **Files Modified**:
+  - `app/(dashboard)/dashboard/page.tsx` - Changed search placeholder from "Search documents..." to "Search files..."
+  - `components/file-inspector.tsx` - Changed attachment note from "This document has..." to "This file has...", updated code comments from "document tab" to "file preview tab", changed comment from "DOCUMENT PREVIEW" to "FILE PREVIEW"
+  - `components/create-file-form.tsx` - Changed label from "Document Body" to "File Body", changed helper text from "document preview" to "file preview", changed preview header from "Document Preview" to "File Preview", changed description from "Live preview of your document" to "Live preview of your file"
+  - `ai-changelog.md` - Updated changelog entry title from "Dashboard Document Search Box" to "Dashboard File Search Box"
+- **Rationale**:
+  - Type system uses "File" (File interface, FileStatus, etc.)
+  - Consistent terminology improves UX clarity
+  - All user-facing text now uses "File" while component names like "DocumentPaper", "DocumentHeader" remain as they refer to the visual document representation
+- **Standardization**:
+  - User-facing labels, placeholders, and messages: "File"
+  - Component names for document rendering: "Document" (e.g., DocumentPaper, DocumentPreview) - these are internal and refer to the visual representation
+
