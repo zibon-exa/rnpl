@@ -11,7 +11,7 @@ The system enables users to create, manage, track, and approve digital files wit
 - **Styling:** Tailwind CSS
 - **UI Components:** shadcn/ui
 - **Additional UI:** Magic UI components
-- **Deployment:** Netlify / Vercel (for prototype sharing)
+- **Deployment:** Netlify / Vercel
 
 ## MVP Scope
 
@@ -68,7 +68,7 @@ _Setup instructions will be added as the project develops._
 
 ## Development
 
-This is a functional prototype for stakeholder review. It may be deployed to Netlify or Vercel for sharing purposes.
+This is a functional application for stakeholder review. It may be deployed to Netlify or Vercel for sharing purposes.
 
 ## Documentation
 

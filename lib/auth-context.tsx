@@ -36,8 +36,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const login = (password: string) => {
-    // Prototype: Always create Admin user with all permissions
+  const login = (username: string, password: string): boolean => {
+    // Validate credentials
+    const validUsername = 'rnpl-demo';
+    const validPassword = '123123';
+    
+    if (username !== validUsername || password !== validPassword) {
+      return false;
+    }
+
     const adminUser: User = {
       id: 'admin-001',
       name: 'তৌফিক জোয়ার্দার',
@@ -52,8 +59,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem('rnpl_user', JSON.stringify(adminUser));
     }
 
-    // Always redirect to dashboard
+    // Redirect to dashboard
     router.push('/dashboard');
+    return true;
   };
 
   const logout = () => {

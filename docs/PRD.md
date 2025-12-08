@@ -317,7 +317,7 @@ Admins can:
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS
 - **UI Components:** shadcn/ui, Magic UI
-- **Deployment:** Netlify / Vercel (for prototype)
+- **Deployment:** Netlify / Vercel
 
 ### 5.2 Data Requirements
 - User accounts with role-based permissions
@@ -361,7 +361,7 @@ The MVP is considered successful when:
 3. In-app notifications keep users informed of workflow changes
 4. Admins can manage users, offices, and system settings
 5. System is deployable to Netlify/Vercel for stakeholder review
-6. Core functionality is stable and usable for prototype demonstration
+6. Core functionality is stable and usable for demonstration
 
 ---
 

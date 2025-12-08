@@ -9,6 +9,7 @@ export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
   const { login, isAuthenticated, isLoading: authLoading } = useAuth();
   const router = useRouter();
 
@@ -32,13 +33,18 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
     setIsLoading(true);
     
     // Simulate a brief delay for better UX
     await new Promise(resolve => setTimeout(resolve, 300));
     
-    login(password);
+    const success = login(username, password);
     setIsLoading(false);
+    
+    if (!success) {
+      setError('Invalid username or password. Please try again.');
+    }
   };
 
   return (
@@ -67,6 +73,13 @@ export default function LoginPage() {
 
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Error Message */}
+            {error && (
+              <div className="bg-rose-50 border border-rose-200 text-rose-700 px-4 py-3 rounded-lg text-sm">
+                {error}
+              </div>
+            )}
+
             {/* Username Field */}
             <div>
               <label
@@ -79,8 +92,11 @@ export default function LoginPage() {
                 id="username"
                 type="text"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Enter any username (prototype)"
+                onChange={(e) => {
+                  setUsername(e.target.value);
+                  setError('');
+                }}
+                placeholder="Enter your username"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[hsl(var(--color-medium-turquoise))] focus:border-[hsl(var(--color-medium-turquoise))] outline-none"
                 required
               />
@@ -98,14 +114,14 @@ export default function LoginPage() {
                 id="password"
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter any password (prototype)"
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setError('');
+                }}
+                placeholder="Enter your password"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[hsl(var(--color-medium-turquoise))] focus:border-[hsl(var(--color-medium-turquoise))] outline-none"
                 required
               />
-              <p className="mt-1 text-xs text-[hsl(var(--color-slate-gray))]">
-                Prototype: Any username and password will work
-              </p>
             </div>
 
             {/* Submit Button */}
@@ -118,13 +134,6 @@ export default function LoginPage() {
               {isLoading ? 'Logging in...' : 'Login'}
             </button>
           </form>
-
-          {/* Footer Note */}
-          <div className="mt-6 text-center">
-            <p className="text-xs text-[hsl(var(--color-slate-gray))]">
-              This is a prototype. No validation required.
-            </p>
-          </div>
         </div>
       </div>
     </div>
