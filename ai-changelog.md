@@ -9,6 +9,15 @@ This file tracks all AI-assisted changes made to the project.
 
 ---
 
+## 2025-12-14 XX:XX:XX
+
+### Fixed Netlify Plugin Version
+- **Description**: Corrected @netlify/plugin-nextjs version from non-existent 4.45.0 to latest version 5.15.1 to fix npm install error during Netlify deployment
+- **Files Modified**:
+  - `package.json` - Updated @netlify/plugin-nextjs version to ^5.15.1
+
+---
+
 ## 2025-01-XX XX:XX:XX
 
 ### Netlify Deployment Configuration
