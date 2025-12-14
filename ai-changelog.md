@@ -9,6 +9,30 @@ This file tracks all AI-assisted changes made to the project.
 
 ---
 
+## 2025-01-XX XX:XX:XX
+
+### Netlify Deployment Configuration
+- **Description**: Added Netlify configuration file and Next.js plugin to fix "Page not found" error after switching to new Netlify account. Configured proper build settings for Next.js 16 App Router deployment.
+- **Files Created**:
+  - `netlify.toml` - Netlify build configuration with Next.js plugin, build command, publish directory, and Node.js version
+- **Files Modified**:
+  - `package.json` - Added `@netlify/plugin-nextjs` as dev dependency for proper Next.js runtime support on Netlify
+- **Configuration Details**:
+  - Build command: `npm run build`
+  - Publish directory: `.next`
+  - Node.js version: 20
+  - Uses `@netlify/plugin-nextjs` plugin for automatic Next.js App Router support
+- **Next Steps for User**:
+  1. Run `npm install` to install the new plugin dependency
+  2. Commit and push the changes to trigger a new Netlify deployment
+  3. Verify build settings in Netlify dashboard match the configuration:
+     - Build command: `npm run build`
+     - Publish directory: `.next`
+     - Node version: 20
+  4. The plugin will automatically handle Next.js routing and rewrites
+
+---
+
 ## 2025-12-08 13:50:51
 
 ### Redesigned File Journey (History) Component
