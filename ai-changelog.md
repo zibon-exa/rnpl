@@ -9,6 +9,15 @@ This file tracks all AI-assisted changes made to the project.
 
 ---
 
+## 2025-12-14 17:57:47
+
+### Created RNPL-Scope Documentation
+- **Description**: Created new scope documentation file with initial requirements for signup/login, admin review, and dashboard structure
+- **Files Created**:
+  - `docs/RNPL-Scope.md` - Scope document covering signup & login, password recovery, admin role assignment, and main dashboard navigation structure
+
+---
+
 ## 2025-12-14 XX:XX:XX
 
 ### Fixed Netlify Plugin Version
