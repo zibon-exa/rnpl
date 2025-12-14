@@ -25,7 +25,7 @@
     "tailwind-merge": "^2.5.4"
   },
   "devDependencies": {
-    "@netlify/plugin-nextjs": "^4.45.0",
+    "@netlify/plugin-nextjs": "^5.15.1",
     "@types/node": "^22.10.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
