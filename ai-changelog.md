@@ -9,6 +9,15 @@ This file tracks all AI-assisted changes made to the project.
 
 ---
 
+## 2025-12-15 13:05:30
+
+### Expanded RNPL-Scope Documentation
+- **Description**: Added comprehensive scope details including navbar behavior, dashboard layout, file management pages, document creation workflow, review/approval process, and document viewer specifications
+- **Files Modified**:
+  - `docs/RNPL-Scope.md` - Added sections 4.1-4.2 (Awaiting Task, Recent Files), sections 5-13 covering footer, pending files, my files, all files, notifications, admin panel, document creation, review/approval process, and document viewer. Updated section 4 with navbar details and dashboard main page structure. Added note about Tiptap Editor library choice.
+
+---
+
 ## 2025-12-14 17:57:47
 
 ### Created RNPL-Scope Documentation
