@@ -2,7 +2,6 @@
 
 import { useRequireAuth } from '@/hooks/use-require-auth';
 import { useFiles } from '@/lib/files-context';
-import { Header } from '@/components/header';
 import { FileListTable } from '@/components/file-list-table';
 import { useRouter } from 'next/navigation';
 import { File } from '@/types/file';
@@ -27,8 +26,6 @@ export default function MyFilesPage() {
 
   return (
     <div className="min-h-screen bg-slate-50/50">
-      <Header />
-      
       <main className="max-w-7xl mx-auto py-8 px-6">
         <FileListTable 
           files={myFiles} 

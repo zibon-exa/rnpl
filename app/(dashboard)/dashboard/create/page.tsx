@@ -2,7 +2,6 @@
 
 import { useRequireAuth } from '@/hooks/use-require-auth';
 import { useFiles } from '@/lib/files-context';
-import { Header } from '@/components/header';
 import { CreateFileForm } from '@/components/create-file-form';
 import { useRouter } from 'next/navigation';
 import { File } from '@/types/file';
@@ -28,8 +27,6 @@ export default function CreateFilePage() {
 
   return (
     <div className="h-screen overflow-hidden bg-slate-50/50 flex flex-col">
-      <Header />
-      
       <main className="flex-1 overflow-hidden">
         <CreateFileForm 
           user={user} 

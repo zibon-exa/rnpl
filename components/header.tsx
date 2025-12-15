@@ -16,9 +16,30 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Bell, Clock, CheckCircle, X, FileText, ArrowRight, AlertCircle } from 'lucide-react';
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  navigationMenuTriggerStyle,
+} from '@/components/ui/navigation-menu';
+import { 
+  Bell, 
+  Clock, 
+  CheckCircle, 
+  X, 
+  FileText, 
+  ArrowRight, 
+  AlertCircle,
+  LayoutDashboard,
+  Folder,
+  Library,
+  Archive,
+  BarChart,
+  HelpCircle
+} from 'lucide-react';
 import { Notification } from '@/types/file';
+import { cn } from '@/lib/utils';
 
 export function Header() {
   const { user, logout } = useAuth();
@@ -182,23 +203,26 @@ export function Header() {
   };
 
   const navItems = [
-    { label: 'Dashboard', href: '/dashboard', value: 'dashboard' },
-    { label: 'My Files', href: '/dashboard/files', value: 'files' },
-    { label: 'Pending Approvals', href: '/dashboard/pending', value: 'pending' },
+    { label: 'Dashboard', href: '/dashboard', value: 'dashboard', icon: LayoutDashboard },
+    { label: 'Pending', href: '/dashboard/pending', value: 'pending', icon: Clock },
+    { label: 'My Files', href: '/dashboard/files', value: 'files', icon: Folder },
+    { label: 'Library', href: '/dashboard/library', value: 'library', icon: Library },
+    { label: 'Archive', href: '/dashboard/archive', value: 'archive', icon: Archive },
+    { label: 'Reports', href: '/dashboard/reports', value: 'reports', icon: BarChart },
+    { label: 'Help', href: '/dashboard/help', value: 'help', icon: HelpCircle },
   ];
 
-  // Determine active tab based on pathname
-  const getActiveTab = () => {
-    if (pathname?.includes('/files')) return 'files';
-    if (pathname?.includes('/pending')) return 'pending';
-    return 'dashboard';
+  // Determine if a nav item is active based on pathname
+  const isActive = (href: string) => {
+    if (href === '/dashboard') {
+      return pathname === '/dashboard';
+    }
+    return pathname?.includes(href);
   };
-
-  const activeTab = getActiveTab();
 
   return (
     <header className="sticky top-0 z-50 border-b bg-white">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-6 py-2">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
@@ -214,24 +238,35 @@ export function Header() {
             </Link>
           </div>
 
-          {/* Segmented Navigation Tabs - Centered */}
+          {/* Navigation Menu - Centered */}
           <div className="flex-1 flex justify-center">
-            <Tabs value={activeTab} className="hidden md:block">
-              <TabsList className="bg-[hsl(var(--color-ghost-white))] p-1 h-9">
-                {navItems.map((item) => (
-                  <TabsTrigger
-                    key={item.value}
-                    value={item.value}
-                    asChild
-                    className="data-[state=active]:bg-white data-[state=active]:shadow-sm"
-                  >
-                    <Link href={item.href} className="px-4 py-1.5 text-sm">
-                      {item.label}
-                    </Link>
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </Tabs>
+            <NavigationMenu className="hidden md:block">
+              <NavigationMenuList className="gap-2">
+                {navItems.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <NavigationMenuItem key={item.value}>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          href={item.href}
+                          className={cn(
+                            'inline-flex h-9 items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors whitespace-nowrap',
+                            'hover:bg-slate-100 hover:text-slate-900',
+                            'focus:bg-slate-100 focus:text-slate-900 focus:outline-none',
+                            isActive(item.href) 
+                              ? 'bg-slate-100 text-slate-900' 
+                              : 'text-slate-600'
+                          )}
+                        >
+                          <Icon size={16} />
+                          {item.label}
+                        </Link>
+                      </NavigationMenuLink>
+                    </NavigationMenuItem>
+                  );
+                })}
+              </NavigationMenuList>
+            </NavigationMenu>
           </div>
 
           {/* Notifications and User Profile */}

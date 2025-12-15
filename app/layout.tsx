@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import "./globals.css"
 import { AuthProvider } from "@/lib/auth-context"
 import { FilesProvider } from "@/lib/files-context"
+import { Header } from "@/components/header"
 import { inter, tiroBangla, playfairDisplay, dancingScript, notoSerifBengali, mina } from "@/lib/fonts"
 
 export const metadata: Metadata = {
@@ -22,7 +23,10 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${tiroBangla.variable} ${playfairDisplay.variable} ${dancingScript.variable} ${notoSerifBengali.variable} ${mina.variable}`}>
       <body>
         <AuthProvider>
-          <FilesProvider>{children}</FilesProvider>
+          <FilesProvider>
+            <Header />
+            {children}
+          </FilesProvider>
         </AuthProvider>
       </body>
     </html>

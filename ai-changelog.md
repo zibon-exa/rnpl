@@ -568,6 +568,124 @@ Files Modified:
 - app/(dashboard)/dashboard/profile/page.tsx
 - app/(dashboard)/dashboard/admin/page.tsx
 
+---
+
+2025-12-15 16:05:22 - Updated navbar items
+- Changed "Pending Approvals" to "Pending"
+- Added new navbar items: Library, Archive, Reports, Help
+- Updated navigation order: Dashboard, Pending, My Files, Library, Archive, Reports, Help
+- Updated getActiveTab function to handle new routes
+Files Modified:
+- components/header.tsx
+
+---
+
+2025-12-15 16:06:36 - Updated 404 page to show "Under Development" notice
+- Changed 404 page title from "Page Not Found" to "Under Development"
+- Updated message to indicate page is under development
+Files Modified:
+- app/not-found.tsx
+
+---
+
+2025-12-15 16:07:23 - Added navbar to 404 page
+- Updated 404 page to include Header component for consistent navigation
+- Changed layout structure to match other dashboard pages
+- Removed standalone mode from UnderConstruction component
+Files Modified:
+- app/not-found.tsx
+
+---
+
+2025-12-15 16:11:52 - Replaced segmented tabs with Navigation Menu component
+- Changed navbar from Tabs component to NavigationMenu component from shadcn/ui
+- Updated styling to maintain similar appearance with segmented background
+- Preserved active state highlighting with white background and shadow
+- Updated imports and removed unused Tabs-related code
+Files Modified:
+- components/header.tsx
+
+---
+
+2025-12-15 16:12:22 - Increased navbar padding
+- Increased horizontal padding from px-4 (16px) to px-6 (24px) for better spacing
+Files Modified:
+- components/header.tsx
+
+---
+
+2025-12-15 16:15:33 - Added icons to navigation menu items
+- Added Lucide icons to each navigation item: LayoutDashboard, Clock, Folder, Library, Archive, BarChart, HelpCircle
+- Icons displayed alongside labels with proper spacing (gap-2)
+- Icons sized at 16px for consistency
+Files Modified:
+- components/header.tsx
+
+---
+
+2025-12-15 16:18:29 - Added vertical padding to Header container
+- Added py-2 (8px) padding-top and padding-bottom to the Header container div
+- Applied CSS style changes from browser preview
+Files Modified:
+- components/header.tsx
+
+---
+
+2025-12-15 16:22:41 - Fixed build error: installed missing dependencies
+- Installed `clsx` (^2.1.1) and `tailwind-merge` (^3.4.0) packages
+- Resolved "Module not found: Can't resolve 'tailwind-merge'" build error
+- These packages are required by lib/utils.ts for the cn() utility function
+Files Modified:
+- package.json
+
+---
+
+2025-12-15 16:23:37 - Security update: fixed Next.js vulnerabilities
+- Updated Next.js from 16.0.7 to 16.0.10 to fix high severity vulnerabilities
+- Updated eslint-config-next from 16.0.7 to 16.0.10 to match Next.js version
+- Fixed: Next Server Actions Source Code Exposure (GHSA-w37m-7fhw-fmv9)
+- Fixed: Next Vulnerable to Denial of Service with Server Components (GHSA-mwv6-3258-q52c)
+- npm audit now reports 0 vulnerabilities
+Files Modified:
+- package.json
+
+---
+
+2025-12-15 16:30:39 - Fixed navbar jumping issue when switching nav items
+- Removed `font-semibold` from active nav item state to keep font weight consistent
+- Active and inactive nav items now both use `font-medium` to prevent width changes
+- Active state still visually distinct with `bg-slate-100` background
+Files Modified:
+- components/header.tsx
+
+---
+
+2025-12-15 16:32:42 - Additional fix for navbar jumping on 404 page
+- Added `whitespace-nowrap` to nav items to prevent text wrapping and ensure consistent sizing
+- Prevents layout shifts when switching between nav items on 404 page
+Files Modified:
+- components/header.tsx
+
+---
+
+2025-12-15 17:43:50 - Made navbar persistent across all pages
+- Moved Header component to root layout (app/layout.tsx) so it appears on all pages
+- Header automatically shows/hides based on authentication (returns null when no user)
+- Removed Header imports and usage from individual pages:
+  - app/not-found.tsx (404 page)
+  - All dashboard pages (dashboard, files, pending, create, profile, admin, files/[id])
+- Navbar now persists across all pages including 404, providing consistent navigation
+Files Modified:
+- app/layout.tsx
+- app/not-found.tsx
+- app/(dashboard)/dashboard/page.tsx
+- app/(dashboard)/dashboard/files/page.tsx
+- app/(dashboard)/dashboard/files/[id]/page.tsx
+- app/(dashboard)/dashboard/pending/page.tsx
+- app/(dashboard)/dashboard/create/page.tsx
+- app/(dashboard)/dashboard/profile/page.tsx
+- app/(dashboard)/dashboard/admin/page.tsx
+
 
 
 

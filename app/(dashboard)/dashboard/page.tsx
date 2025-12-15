@@ -2,7 +2,6 @@
 
 import { useRequireAuth } from '@/hooks/use-require-auth';
 import { useFiles } from '@/lib/files-context';
-import { Header } from '@/components/header';
 import { StatCard } from '@/components/ui/stat-card';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -61,8 +60,6 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-slate-50/50">
-      <Header />
-      
       <main className="max-w-7xl mx-auto py-8 px-6">
         <div className="space-y-8 animate-in fade-in duration-500">
           {/* Header Section */}

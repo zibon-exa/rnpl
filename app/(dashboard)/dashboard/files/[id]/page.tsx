@@ -4,7 +4,6 @@ import { useParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { useRequireAuth } from '@/hooks/use-require-auth';
 import { useFiles } from '@/lib/files-context';
-import { Header } from '@/components/header';
 import { CheckCircle, RotateCcw, Forward, Download, Printer, Copy, Check, Paperclip, ArrowLeft, Hash, FolderOpen, Calendar, User, FileText, FileSpreadsheet, FileImage, File as FileIcon, Clock } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { File, FileStatus } from '@/types/file';
@@ -143,8 +142,6 @@ export default function FileViewPage() {
 
   return (
     <div className="h-screen overflow-hidden bg-slate-50/50 flex flex-col">
-      <Header />
-      
       {/* Page Header with Controls */}
       <div className="bg-white border-b border-slate-200 flex-shrink-0">
         <div className="container mx-auto px-4 py-4">
