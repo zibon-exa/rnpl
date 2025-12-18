@@ -1,11 +1,13 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useRef, useEffect } from 'react';
 import { User } from '@/types/user';
 import { File, FileStatus } from '@/types/file';
 import { DocumentHeader } from '@/components/document-header';
+import { DocumentPreview } from '@/components/document-preview';
+import { TipTapEditorWithToolbar } from '@/components/tiptap-editor-with-toolbar';
 import { Button } from '@/components/ui/button';
-import { Save, Send, X, ArrowLeft, Calendar as CalendarIcon, Trash2, Plus } from 'lucide-react';
+import { Send, X, ArrowLeft, Calendar as CalendarIcon, Trash2, Plus, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -48,33 +50,104 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFo
     sendTo: '2',
     sendCopies: [''],
   });
-  const [reference] = useState('RNPL-0000');
+  const [reference, setReference] = useState('RNPL-0000');
+  const [isEditingRef, setIsEditingRef] = useState(false);
+  const [isEditingDate, setIsEditingDate] = useState(false);
   const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [viewMode, setViewMode] = useState<'edit' | 'preview'>('edit');
+  const [isSaving, setIsSaving] = useState(false);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [previewZoom, setPreviewZoom] = useState(1);
+  const [zoomControlLeft, setZoomControlLeft] = useState<number | null>(null);
+  const subjectTextareaRef = useRef<HTMLTextAreaElement>(null);
+  const sendCopiesTextareaRefs = useRef<(HTMLTextAreaElement | null)[]>([]);
+  const previewContainerRef = useRef<HTMLDivElement>(null);
+  const autoSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
-  const handleSave = (isDraft: boolean) => {
-    if (!formData.title || !formData.category) return; // Simple validation
+  // Generate file ID based on reference
+  const generateFileId = (ref: string) => {
+    const match = ref.match(/(\d+)/);
+    if (match) {
+      return `RNPL-${match[1]}`;
+    }
+    return ref;
+  };
+  
+  // Auto-save functionality (like Google Docs)
+  useEffect(() => {
+    // Skip auto-save if required fields are empty
+    if (!formData.title || !formData.category) return;
+
+    // Clear existing timeout
+    if (autoSaveTimeoutRef.current) {
+      clearTimeout(autoSaveTimeoutRef.current);
+    }
+
+    // Set new timeout for auto-save (2 seconds after last change)
+    autoSaveTimeoutRef.current = setTimeout(() => {
+      setIsSaving(true);
+      
+      const newHistory = [
+        { 
+          timestamp: new Date().toISOString(), 
+          actor: user.name, 
+          event: 'Draft Saved', 
+          stateChange: 'Draft' as FileStatus, 
+          note: 'Auto-saved draft.'
+        }
+      ];
+
+      const newFile: File = {
+        ...formData,
+        id: generateFileId(reference),
+        sender: user.name,
+        status: 'Draft',
+        lastUpdated: formData.date,
+        isApproverAction: false,
+        documentBody: formData.documentBody || 'No content provided.',
+        history: newHistory,
+      };
+      
+      // In a real app, this would be an API call
+      // For now, we'll just update the lastSaved time
+      setTimeout(() => {
+        setIsSaving(false);
+        setLastSaved(new Date());
+      }, 500);
+    }, 2000);
+
+    // Cleanup on unmount
+    return () => {
+      if (autoSaveTimeoutRef.current) {
+        clearTimeout(autoSaveTimeoutRef.current);
+      }
+    };
+  }, [formData.title, formData.category, formData.documentBody, formData.date, reference, user.name]);
+
+  const handleSubmit = () => {
+    if (!formData.title || !formData.category || !formData.documentBody) return;
     
     const newHistory = [
       { 
         timestamp: new Date().toISOString(), 
         actor: user.name, 
-        event: isDraft ? 'Draft Saved' : 'Sent for Approval', 
-        stateChange: (isDraft ? 'Draft' : 'Pending') as FileStatus, 
-        note: isDraft ? 'File created and saved as draft.' : 'Initiated new approval request.'
+        event: 'Sent for Approval', 
+        stateChange: 'Pending' as FileStatus, 
+        note: 'Initiated new approval request.'
       }
     ];
 
     const newFile: File = {
       ...formData,
-      id: `RNPL-${Math.floor(Math.random() * 8999) + 1000}`,
+      id: generateFileId(reference),
       sender: user.name,
-      status: isDraft ? 'Draft' : 'Pending',
+      status: 'Pending',
       lastUpdated: formData.date,
-      isApproverAction: !isDraft,
+      isApproverAction: true,
       documentBody: formData.documentBody || 'No content provided.',
       history: newHistory,
     };
-    onCreateSuccess(newFile, isDraft);
+    onCreateSuccess(newFile, false);
   };
 
   const displayCategory = useMemo(() => {
@@ -105,9 +178,6 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFo
     [updated[index], updated[newIndex]] = [updated[newIndex], updated[index]];
     setFormData({ ...formData, sendCopies: updated });
   };
-
-  const formatDateForHeader = formData.date;
-  const previewLanguage = formData.language;
   
   // Get user name based on selected language
   const getUserName = (lang: 'bn' | 'en') => {
@@ -139,72 +209,236 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFo
     return name.split(' ').map(n => n[0]).join('. ').toUpperCase();
   };
 
+  // Auto-resize subject textarea
+  useEffect(() => {
+    if (subjectTextareaRef.current) {
+      subjectTextareaRef.current.style.height = 'auto';
+      subjectTextareaRef.current.style.height = `${subjectTextareaRef.current.scrollHeight}px`;
+    }
+  }, [formData.title]);
+
+  // Auto-resize send copies textareas
+  useEffect(() => {
+    sendCopiesTextareaRefs.current.forEach((textarea) => {
+      if (textarea) {
+        textarea.style.height = 'auto';
+        textarea.style.height = `${textarea.scrollHeight + 2}px`; // +2 for borders
+      }
+    });
+  }, [formData.sendCopies]);
+
+  // Calculate zoom control position relative to preview container
+  useEffect(() => {
+    if (viewMode !== 'preview' || !previewContainerRef.current) {
+      setZoomControlLeft(null);
+      return;
+    }
+
+    const updateZoomControlPosition = () => {
+      if (!previewContainerRef.current) return;
+      
+      const container = previewContainerRef.current;
+      const rect = container.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      setZoomControlLeft(centerX);
+    };
+
+    updateZoomControlPosition();
+
+    // Find the scrollable parent container
+    const scrollContainer = previewContainerRef.current.closest('.overflow-y-auto');
+    
+    // Update on scroll and resize
+    const handleScroll = () => updateZoomControlPosition();
+    const handleResize = () => updateZoomControlPosition();
+
+    if (scrollContainer) {
+      scrollContainer.addEventListener('scroll', handleScroll);
+    }
+    window.addEventListener('scroll', handleScroll, true);
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      if (scrollContainer) {
+        scrollContainer.removeEventListener('scroll', handleScroll);
+      }
+      window.removeEventListener('scroll', handleScroll, true);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [viewMode, previewZoom]);
+
   return (
     <div className="flex h-full">
-      {/* Left Sidebar - Input Fields */}
-      <div className="w-96 border-r border-slate-200 bg-white flex flex-col">
-        {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-3">
-          <Button variant="ghost" size="icon" onClick={onCancel} aria-label="Back">
-            <ArrowLeft size={18} />
-          </Button>
-          <h2 className="text-lg font-bold text-slate-900">Create New File</h2>
-        </div>
-
-        {/* Form Fields - Scrollable */}
-        <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5 custom-scrollbar">
-          {/* Language Toggle */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold text-slate-600 uppercase tracking-wide">Language</span>
-            <div className="flex-1 flex justify-end">
+      {/* Main Document Editor */}
+      <div className="flex-1 flex flex-col bg-slate-50 overflow-hidden">
+        {/* Top Bar */}
+        <div className="px-6 py-3 border-b border-slate-200 bg-white flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" size="icon" onClick={onCancel} aria-label="Back">
+              <ArrowLeft size={18} />
+            </Button>
+            <h2 className="text-lg font-bold text-slate-900">New File</h2>
+          </div>
+          <div className="flex items-center gap-3">
+            {viewMode === 'edit' && (
               <Tabs value={formData.language} onValueChange={(val) => setFormData({ ...formData, language: val as 'bn' | 'en' })} className="w-auto">
                 <TabsList className="grid grid-cols-2 w-[160px]">
                   <TabsTrigger value="bn">বাংলা</TabsTrigger>
                   <TabsTrigger value="en">English</TabsTrigger>
                 </TabsList>
               </Tabs>
+            )}
+            <Tabs value={viewMode} onValueChange={(val) => setViewMode(val as 'edit' | 'preview')} className="w-auto">
+              <TabsList className="grid grid-cols-2 w-[160px]">
+                <TabsTrigger value="edit">Edit</TabsTrigger>
+                <TabsTrigger value="preview">Preview</TabsTrigger>
+              </TabsList>
+            </Tabs>
+            {isSaving && (
+              <span className="text-xs text-slate-500">Saving...</span>
+            )}
+            {isSaving && (
+              <span className="text-xs text-slate-500">Saving...</span>
+            )}
+            {!isSaving && lastSaved && (
+              <span className="text-xs text-slate-500">
+                Saved {lastSaved.toLocaleTimeString()}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Document Editor Content */}
+        {viewMode === 'edit' ? (
+          <div className="flex-1 overflow-y-auto custom-scrollbar flex items-start justify-center pt-8 pb-32 px-8">
+            <div className="max-w-4xl w-full">
+              {/* White Paper Container */}
+              <div className="bg-white rounded-lg shadow-lg border border-slate-200/50 p-12">
+                {/* Document Header */}
+                <DocumentHeader 
+                  fileId={generateFileId(reference)} 
+                  date={formData.date} 
+                  language={formData.language}
+                  onFileIdChange={(value) => setReference(value)}
+                  onDateChange={(value) => setFormData({ ...formData, date: value })}
+                  isEditingRef={isEditingRef}
+                  isEditingDate={isEditingDate}
+                  onEditRef={() => setIsEditingRef(true)}
+                  onEditDate={() => setIsEditingDate(true)}
+                  onSaveRef={() => setIsEditingRef(false)}
+                  onSaveDate={() => setIsEditingDate(false)}
+                  reference={reference}
+                />
+
+                {/* Subject Line - Editable */}
+                <div className="mb-6 text-center">
+                  <textarea
+                    ref={subjectTextareaRef}
+                    value={formData.title}
+                    onChange={(e) => setFormData({...formData, title: e.target.value})}
+                    placeholder={formData.language === 'bn' ? 'বিষয়: এখানে বিষয় লিখুন...' : 'Subject: Enter subject here...'}
+                    className="w-full text-2xl font-semibold text-slate-900 mb-4 leading-tight font-bangla-serif border-none outline-none bg-transparent focus:ring-0 placeholder:text-slate-400 text-center resize-none overflow-hidden"
+                    rows={1}
+                  />
+                </div>
+
+                {/* Document Body with TipTap Toolbar */}
+                <div className="mb-12">
+                  <TipTapEditorWithToolbar
+                    content={formData.documentBody}
+                    onChange={(content) => setFormData({...formData, documentBody: content})}
+                    placeholder={formData.language === 'bn' ? 'এখানে আপনার নথির মূল বিষয়বস্তু লিখুন...' : 'Start typing your document content here...'}
+                  />
+                </div>
+
+                {/* Signature Area */}
+                <div className="mt-16 flex justify-end">
+                  <div className="text-center space-y-1 font-bangla-serif">
+                    <div className="h-12 w-48 mx-auto relative">
+                      <span className={`absolute inset-0 flex items-center justify-center text-slate-800 text-sm select-none pointer-events-none ${formData.language === 'bn' ? 'font-mina' : 'font-cursive'}`}>
+                        {getUserName(formData.language)}
+                      </span>
+                      <div className="absolute bottom-0 left-0 right-0 border-b border-slate-300"></div>
+                    </div>
+                    <p className="text-[12px] text-slate-700">
+                      {formData.language === 'bn' ? 'কোম্পানি সচিব' : 'Company Secretary'}
+                    </p>
+                    <p className="text-[12px] text-slate-700">
+                      {formData.language === 'bn' ? 'আরএনপিএল' : 'RNPL'}
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
-              File Title <span className="text-rose-500">*</span>
-            </label>
-            <input 
-              type="text" 
-              className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none" 
-              placeholder="Enter file title..."
-              value={formData.title}
-              onChange={e => setFormData({...formData, title: e.target.value})}
-            />
-          </div>
-
-          {/* Reference */}
-          <div>
-            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
-              Reference
-            </label>
-            <div className="px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg text-slate-700">
-              {reference} <span className="text-slate-400">(Auto-generated on submit)</span>
+        ) : (
+          <div className="flex-1 overflow-y-auto custom-scrollbar relative">
+            <div ref={previewContainerRef} className="flex items-start justify-center pt-8 pb-32 px-8 min-h-full relative">
+              <div className="relative">
+                <DocumentPreview
+                  title={formData.title}
+                  category={displayCategory}
+                  documentBody={formData.documentBody}
+                  sender={getUserName(formData.language)}
+                  fileId={generateFileId(reference)}
+                  date={formData.date}
+                  zoom={previewZoom}
+                  language={formData.language}
+                />
+              </div>
+              {/* Zoom Controls - Fixed at bottom, centered relative to preview container */}
+              {zoomControlLeft !== null && (
+                <div 
+                  className="fixed bottom-8 bg-white border border-slate-200 rounded-lg shadow-lg px-3 py-2 flex items-center gap-2 z-50"
+                  style={{ left: `${zoomControlLeft}px`, transform: 'translateX(-50%)' }}
+                >
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={() => setPreviewZoom(Math.max(0.5, previewZoom - 0.1))}
+                  disabled={previewZoom <= 0.5}
+                >
+                  <ZoomOut size={16} />
+                </Button>
+                <span className="text-sm font-medium text-slate-700 min-w-[60px] text-center">
+                  {Math.round(previewZoom * 100)}%
+                </span>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={() => setPreviewZoom(Math.min(2, previewZoom + 0.1))}
+                  disabled={previewZoom >= 2}
+                >
+                  <ZoomIn size={16} />
+                </Button>
+                <div className="w-px h-6 bg-slate-300 mx-1" />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={() => setPreviewZoom(1)}
+                  disabled={previewZoom === 1}
+                >
+                  <RotateCcw size={16} />
+                </Button>
+                </div>
+              )}
             </div>
           </div>
+        )}
+      </div>
 
-          {/* Date */}
-          <div>
-            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
-              Date
-            </label>
-            <div className="flex items-center gap-2">
-              <input
-                type="date"
-                className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none"
-                value={formData.date}
-                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-              />
-              <CalendarIcon size={16} className="text-slate-400" />
-            </div>
-          </div>
+      {/* Right Sidebar - Metadata */}
+      <div className="w-80 border-l border-slate-200 bg-white flex flex-col">
+        {/* Sidebar Header */}
+        <div className="px-6 py-4 border-b border-slate-100">
+          <h3 className="text-sm font-semibold text-slate-900">Document Settings</h3>
+        </div>
 
+        {/* Sidebar Content - Scrollable */}
+        <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5 custom-scrollbar">
           {/* Category */}
           <div>
             <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
@@ -222,21 +456,6 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFo
                 </option>
               ))}
             </select>
-          </div>
-
-          {/* Details */}
-          <div>
-            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
-              Details <span className="text-rose-500">*</span>
-            </label>
-            <textarea 
-              rows={8}
-              className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none resize-none" 
-              placeholder="Draft the main content of the letter or report here..."
-              value={formData.documentBody}
-              onChange={e => setFormData({...formData, documentBody: e.target.value})}
-            />
-            <p className="text-xs text-slate-400 mt-1">This will appear in the file preview</p>
           </div>
 
           {/* Send To */}
@@ -316,15 +535,18 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFo
                     setDragIndex(null);
                   }}
                 >
-                  <div className="h-9 w-2 rounded bg-slate-200" />
-                  <input
-                    type="text"
-                    className="flex-1 px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none"
+                  <div className="h-9 w-2 rounded bg-slate-200 self-start mt-2" />
+                  <textarea
+                    ref={(el) => {
+                      sendCopiesTextareaRefs.current[idx] = el;
+                    }}
+                    className="flex-1 px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none resize-none min-h-[36px] overflow-hidden"
                     placeholder="Enter recipient name/designation"
                     value={copy}
                     onChange={(e) => handleSendCopyChange(e.target.value, idx)}
+                    rows={1}
                   />
-                  <Button variant="outline" size="icon" className="border-slate-200 hover:bg-slate-100 text-rose-500" onClick={() => handleRemoveCopy(idx)} aria-label="Remove">
+                  <Button variant="outline" size="icon" className="border-slate-200 hover:bg-slate-100 text-rose-500 self-start" onClick={() => handleRemoveCopy(idx)} aria-label="Remove">
                     <Trash2 size={14} />
                   </Button>
                 </div>
@@ -335,101 +557,17 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFo
               Add Recipient
             </Button>
           </div>
-        </div>
 
-        {/* Secondary Actions - Fixed at Bottom */}
-        <div className="px-6 py-4 border-t border-slate-100 bg-slate-50/50">
-          <div className="flex gap-2">
-            {onCancel && (
-              <Button
-                variant="outline"
-                onClick={onCancel}
-                className="flex-1"
-              >
-                <X size={16} className="mr-2" />
-                Cancel
-              </Button>
-            )}
+          {/* Submit Button */}
+          <div className="pt-4 border-t border-slate-200">
             <Button
-              onClick={() => handleSave(false)}
+              onClick={handleSubmit}
               disabled={!formData.title || !formData.category || !formData.documentBody}
-              className="flex-1 bg-[hsl(var(--color-brand))] hover:bg-[hsl(var(--color-brand-hover))] text-white"
+              className="w-full bg-[hsl(var(--color-brand))] hover:bg-[hsl(var(--color-brand-hover))] text-white"
             >
               <Send size={16} className="mr-2" />
               Submit
             </Button>
-          </div>
-        </div>
-      </div>
-
-      {/* Right Side - Preview Area */}
-      <div className="flex-1 flex flex-col bg-slate-50 overflow-hidden">
-        {/* Preview Content */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar flex items-start justify-center pt-6 pb-6 px-6">
-          <div className="max-w-4xl w-full">
-            {/* White Paper Container */}
-            <div className="bg-white rounded-lg shadow-lg border border-slate-200/50">
-              {/* Blog Post Style Content */}
-              <article className="prose prose-slate max-w-none relative z-10 p-16">
-                {/* Document Header */}
-                <DocumentHeader date={formatDateForHeader} language={previewLanguage} />
-
-                {/* Title */}
-                <header className="mb-8 text-center">
-                  <h1 className="text-2xl font-semibold text-slate-900 mb-4 leading-tight font-bangla-serif">
-                    {formData.title || <span className="text-slate-400 italic">বিষয়বস্তু যোগ করুন...</span>}
-                  </h1>
-                </header>
-
-                {/* Main Content */}
-                <div className="mb-12">
-                  {formData.documentBody ? (
-                    <div className="prose prose-slate max-w-none">
-                      <div className="whitespace-pre-wrap text-[15px] leading-7 text-slate-700 font-bangla">
-                        {formData.documentBody}
-                      </div>
-                    </div>
-                  ) : (
-                    <p className="text-slate-400 italic">No content provided.</p>
-                  )}
-                </div>
-
-                {/* Signature Area */}
-                <div className="mt-16 flex justify-end">
-                  <div className="text-center space-y-1 font-bangla-serif">
-                    <div className="h-12 w-48 mx-auto relative">
-                      <span className={`absolute inset-0 flex items-center justify-center text-slate-800 text-sm select-none pointer-events-none ${previewLanguage === 'bn' ? 'font-mina' : 'font-cursive'}`}>
-                        {getUserName(previewLanguage)}
-                      </span>
-                      <div className="absolute bottom-0 left-0 right-0 border-b border-slate-300"></div>
-                    </div>
-                    <p className="text-[12px] text-slate-700">
-                      {previewLanguage === 'bn' ? 'কোম্পানি সচিব' : 'Company Secretary'}
-                    </p>
-                    <p className="text-[12px] text-slate-700">
-                      {previewLanguage === 'bn' ? 'আরএনপিএল' : 'RNPL'}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Distribution List */}
-                {formData.sendCopies.some(c => c.trim() !== '') && (
-                  <div className="mt-12">
-                    <p className="text-[13px] font-semibold text-slate-900 mb-3 font-bangla-serif">
-                      বিতরণ জ্ঞাতার্থে / জ্ঞাতার্থে ও কার্যার্থে (জ্যেষ্ঠতার ক্রমানুসারে নয়):
-                    </p>
-                    <ol className="list-decimal pl-5 space-y-1 text-[13px] leading-6 text-slate-800 font-bangla">
-                      {formData.sendCopies
-                        .map(c => c.trim())
-                        .filter(Boolean)
-                        .map((c, idx) => (
-                          <li key={idx}>{c}</li>
-                        ))}
-                    </ol>
-                  </div>
-                )}
-              </article>
-            </div>
           </div>
         </div>
       </div>

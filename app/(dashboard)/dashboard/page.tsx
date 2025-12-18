@@ -90,8 +90,8 @@ export default function DashboardPage() {
                 onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'hsl(196, 60%, 50%)'}
                 onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'hsl(var(--color-brand))'}
               >
-                <Plus size={18} className="mr-2" />
-                Create New File
+                <Plus size={18} />
+                New File
               </Button>
             </div>
           </div>

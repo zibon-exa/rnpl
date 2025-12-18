@@ -69,7 +69,7 @@ export function SlideOver({ isOpen, onClose, children, title, tabs, actions, cen
             </div>
           </div>
           {/* Content */}
-          <div className="flex-1 overflow-y-auto bg-slate-50/50 custom-scrollbar noise-texture relative">
+          <div className="flex-1 overflow-y-auto bg-slate-50/50 custom-scrollbar relative">
             <div className="relative z-10">
               {children}
             </div>

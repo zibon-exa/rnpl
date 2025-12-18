@@ -11,6 +11,8 @@ interface DocumentPreviewProps {
   sender?: string;
   fileId?: string;
   date?: string;
+  zoom?: number;
+  language?: 'bn' | 'en';
 }
 
 /**
@@ -23,18 +25,21 @@ export function DocumentPreview({
   documentBody, 
   sender,
   fileId,
-  date 
+  date,
+  zoom = 1,
+  language = 'bn'
 }: DocumentPreviewProps) {
   return (
-    <div className="flex-1 flex flex-col items-center bg-slate-100 noise-texture overflow-y-auto">
-      <DocumentPaper>
-        <DocumentHeader fileId={fileId} date={date} />
+    <div className="flex flex-col items-center bg-slate-100">
+      <DocumentPaper zoom={zoom}>
+        <DocumentHeader fileId={fileId} date={date} language={language} />
         <DocumentContent 
           title={title}
           category={category}
           documentBody={documentBody}
           sender={sender}
           showPlaceholders={true}
+          language={language}
         />
       </DocumentPaper>
     </div>

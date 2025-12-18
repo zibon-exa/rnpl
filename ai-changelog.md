@@ -686,6 +686,90 @@ Files Modified:
 - app/(dashboard)/dashboard/profile/page.tsx
 - app/(dashboard)/dashboard/admin/page.tsx
 
+---
+
+2025-12-18 10:40:34 - Added TipTap editor and renamed "Create New File" to "New Doc"
+- Installed TipTap packages: @tiptap/react, @tiptap/starter-kit, @tiptap/pm, @tiptap/extension-placeholder
+- Created new TipTapEditor component (components/tiptap-editor.tsx) for rich text editing
+- Replaced textarea with TipTap editor in CreateFileForm for document body editing
+- Updated preview section to render HTML content from TipTap editor
+- Renamed "Create New File" to "New Doc" in:
+  - Dashboard page button (app/(dashboard)/dashboard/page.tsx)
+  - Create file form header (components/create-file-form.tsx)
+- Added TipTap editor styles to global CSS for proper formatting (headings, lists, blockquotes, etc.)
+- Editor supports rich text features: bold, italic, headings, lists, blockquotes, code blocks
+Files Modified:
+- package.json
+- components/tiptap-editor.tsx (new)
+- components/create-file-form.tsx
+- app/(dashboard)/dashboard/page.tsx
+- app/globals.css
+
+---
+
+2025-12-18 10:41:23 - Fixed TipTap SSR hydration error
+- Added `immediatelyRender: false` to useEditor configuration to prevent SSR hydration mismatches
+- Fixes "SSR has been detected, please set `immediatelyRender` explicitly to `false`" error
+Files Modified:
+- components/tiptap-editor.tsx
+
+---
+
+2025-12-18 10:47:45 - Redesigned Create New Doc page with document editor layout
+- Completely redesigned create-file-form to show document editor interface instead of sidebar+preview
+- Added DocumentHeader component at the top of the document
+- Made reference number and date editable with edit icons (Edit2 icon) - click to edit inline
+- Reference and date show meaningful icons indicating they can be changed
+- Subject line now appears as editable document field (no label, looks like document content)
+- Replaced TipTap editor with TipTapEditorWithToolbar component showing toolbar at top
+- Toolbar includes: Bold, Italic, H1, H2, Bullet List, Ordered List, Blockquote, Undo, Redo
+- Added active state styling for toolbar buttons
+- Moved metadata (category, recipients, send copies) to right sidebar
+- Top bar includes language toggle, Save Draft, and Submit buttons
+- Document editor shows white paper container with proper spacing and styling
+- Removed redundant margin from "New Doc" button icon (uses Button's built-in gap-2)
+Files Modified:
+- components/create-file-form.tsx
+- components/tiptap-editor-with-toolbar.tsx (new)
+- app/(dashboard)/dashboard/page.tsx
+- app/globals.css
+
+---
+
+2025-12-18 10:52:00 - Removed duplicate ref/date and made DocumentHeader editable
+- Removed duplicate reference number and date section from create-file-form
+- Made DocumentHeader component editable with edit icons for ref and date
+- Reference and date are now editable directly in the header
+- Labels are language-aware: "Ref No:" and "Date:" in English, "স্মারক নং:" and "তারিখ:" in Bangla
+- Edit icons (Edit2) appear next to ref and date in header when editable
+- Clicking edit icon shows inline input field for editing
+Files Modified:
+- components/document-header.tsx
+- components/create-file-form.tsx
+
+---
+
+2025-12-18 10:53:32 - Made TipTap editor placeholder language-aware
+- TipTap editor placeholder now updates dynamically when language changes
+- Placeholder shows English text ("Start typing your document content here...") in English mode
+- Placeholder shows Bangla text ("এখানে আপনার নথির মূল বিষয়বস্তু লিখুন...") in Bangla mode
+- Added useEffect to update data-placeholder attribute when placeholder prop changes
+- Updated CSS to ensure placeholder displays correctly when attribute changes
+Files Modified:
+- components/tiptap-editor-with-toolbar.tsx
+- app/globals.css
+
+---
+
+2025-12-18 10:55:00 - Fixed TipTap placeholder not updating on language switch
+- Updated `useEditor` hook to include `placeholder` in the dependency array
+- Forces editor re-initialization when placeholder prop changes (e.g. language switch)
+- Ensures the `Placeholder` extension is configured with the correct string on re-render
+- Removed manual DOM manipulation hacks as re-initialization handles it natively
+- Correctly preserves content during re-initialization
+Files Modified:
+- components/tiptap-editor-with-toolbar.tsx
+
 
 
 

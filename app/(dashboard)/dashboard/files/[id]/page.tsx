@@ -270,7 +270,7 @@ export default function FileViewPage() {
       <main className="bg-slate-50 flex-1 overflow-hidden">
         <div className="flex h-full">
           {/* Main Content */}
-          <div className="flex-1 overflow-y-auto px-14 py-14 custom-scrollbar">
+          <div className="flex-1 overflow-y-auto px-14 pt-14 pb-32 custom-scrollbar">
             <div className="max-w-4xl mx-auto">
               {/* White Paper Container */}
               <div className="bg-white rounded-lg shadow-lg border border-slate-200/50 min-h-full">

@@ -267,7 +267,7 @@ export function FileInspector({ file, user, onClose, onUpdate, onTabsReady, onAc
               {/* Header Section */}
               <div className="pb-6 border-b border-slate-100">
                 {/* Subject Section */}
-                <div className="mb-4">
+                <div className="mb-4 text-center">
                   <p className="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-3">Subject</p>
                   <h1 className="text-xl font-bold text-slate-900 leading-tight font-bangla">{file.title}</h1>
                 </div>
@@ -444,7 +444,7 @@ export function FileInspector({ file, user, onClose, onUpdate, onTabsReady, onAc
 
         {/* VIEW 2: FILE PREVIEW (The "Attachment") */}
         {activeTab === 'document' && (
-          <div className="flex-1 pt-6 pb-6 px-6 animate-in fade-in duration-300 flex flex-col items-center bg-slate-100 noise-texture overflow-y-auto">
+          <div className="flex-1 pt-6 pb-32 px-6 animate-in fade-in duration-300 flex flex-col items-center bg-slate-100 overflow-y-auto">
             <DocumentPaper>
               <DocumentHeader fileId={file.id} date={file.lastUpdated} />
               <DocumentContent 
@@ -453,6 +453,7 @@ export function FileInspector({ file, user, onClose, onUpdate, onTabsReady, onAc
                 documentBody={file.documentBody}
                 sender={file.sender}
                 showPlaceholders={false}
+                language="bn"
               />
             </DocumentPaper>
               

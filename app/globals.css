@@ -2,6 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'July Font';
+  src: url('https://cdn.jsdelivr.net/gh/Taraldinn/soroborno-cdn@main/public/fonts/July-Font/July-Bold-Italic.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+  size-adjust: 120%;
+}
+
+@font-face {
+  font-family: 'July Font';
+  src: url('https://cdn.jsdelivr.net/gh/Taraldinn/soroborno-cdn@main/public/fonts/July-Font/July-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  size-adjust: 120%;
+}
+
+@font-face {
+  font-family: 'July Font';
+  src: url('https://cdn.jsdelivr.net/gh/Taraldinn/soroborno-cdn@main/public/fonts/July-Font/July-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+  size-adjust: 120%;
+}
+
+@font-face {
+  font-family: 'July Font';
+  src: url('https://cdn.jsdelivr.net/gh/Taraldinn/soroborno-cdn@main/public/fonts/July-Font/July-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  size-adjust: 120%;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -84,11 +120,11 @@
   body {
     @apply bg-background text-foreground;
     /* 
-     * Font stack: Inter for Latin, Tiro Bangla for Bengali.
+     * Font stack: Inter for Latin, July Font for Bengali.
      * Inter comes first as the primary font.
-     * Tiro Bangla provides glyphs for Bengali characters that Inter doesn't have.
+     * July Font provides glyphs for Bengali characters that Inter doesn't have.
      */
-    font-family: var(--font-inter), var(--font-tiro-bangla), sans-serif;
+    font-family: var(--font-inter), 'July Font', sans-serif;
   }
   
   /* Serif font for official documents */
@@ -102,7 +138,7 @@
   
   /* Bangla fonts */
   .font-bangla { 
-    font-family: var(--font-tiro-bangla), serif; 
+    font-family: 'July Font', sans-serif; 
   }
   .font-bangla-serif {
     font-family: var(--font-noto-serif-bengali), serif;
@@ -160,24 +196,180 @@
   scrollbar-color: hsl(var(--color-light-gray)) transparent;
 }
 
-/* Noise texture for background containers */
-.noise-texture {
+/* TipTap Editor Styles */
+.ProseMirror {
+  outline: none;
+}
+
+.ProseMirror table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+.ProseMirror td,
+.ProseMirror th {
+  min-width: 1em;
+  border: 2px solid hsl(var(--color-light-gray));
+  padding: 3px 5px;
+  vertical-align: top;
+  box-sizing: border-box;
   position: relative;
 }
 
-.noise-texture::before {
-  content: '';
+.ProseMirror th {
+  font-weight: bold;
+  text-align: left;
+  background-color: hsl(var(--color-ghost-white));
+}
+
+.ProseMirror .selectedCell:after {
+  z-index: 2;
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
-  background-image: 
-    url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.2'/%3E%3C/svg%3E");
-  opacity: 1;
+  content: "";
+  left: 0; right: 0; top: 0; bottom: 0;
+  background: rgba(200, 200, 255, 0.4);
   pointer-events: none;
-  z-index: 0;
+}
+
+.ProseMirror .column-resize-handle {
+  position: absolute;
+  right: -2px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: #adf;
+  pointer-events: none;
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: hsl(var(--color-slate-gray));
+  pointer-events: none;
+  height: 0;
+}
+
+/* Ensure placeholder updates when data-placeholder attribute changes */
+.ProseMirror[data-placeholder] p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+}
+
+.ProseMirror p {
+  margin: 0.5em 0;
+}
+
+.ProseMirror p:first-child {
+  margin-top: 0;
+}
+
+.ProseMirror p:last-child {
+  margin-bottom: 0;
+}
+
+.ProseMirror strong {
+  font-weight: 600;
+}
+
+.ProseMirror em {
+  font-style: italic;
+}
+
+.ProseMirror ul,
+.ProseMirror ol {
+  padding-left: 1.5em;
+  margin: 0.5em 0;
+}
+
+/* Table styles for document preview (scoped to document content only) */
+.font-bangla table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+  table-layout: fixed;
+}
+
+.font-bangla table td,
+.font-bangla table th {
+  min-width: 1em;
+  border: 1px solid hsl(var(--color-light-gray));
+  padding: 0.5em 0.75em;
+  vertical-align: top;
+  box-sizing: border-box;
+}
+
+.font-bangla table th {
+  font-weight: 600;
+  text-align: left;
+  background-color: hsl(var(--color-ghost-white));
+}
+
+.font-bangla table p {
+  margin: 0.25em 0;
+}
+
+.font-bangla table p:first-child {
+  margin-top: 0;
+}
+
+.font-bangla table p:last-child {
+  margin-bottom: 0;
+}
+
+.ProseMirror ul {
+  list-style-type: disc;
+}
+
+.ProseMirror ol {
+  list-style-type: decimal;
+}
+
+.ProseMirror li {
+  margin: 0.25em 0;
+}
+
+.ProseMirror h1,
+.ProseMirror h2,
+.ProseMirror h3,
+.ProseMirror h4,
+.ProseMirror h5,
+.ProseMirror h6 {
+  font-weight: 600;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}
+
+.ProseMirror h1 {
+  font-size: 1.5em;
+}
+
+.ProseMirror h2 {
+  font-size: 1.25em;
+}
+
+.ProseMirror h3 {
+  font-size: 1.125em;
+}
+
+.ProseMirror code {
+  background-color: hsl(var(--color-ghost-white));
+  padding: 0.125em 0.25em;
+  border-radius: 0.25em;
+  font-size: 0.875em;
+}
+
+.ProseMirror blockquote {
+  border-left: 3px solid hsl(var(--color-light-gray));
+  padding-left: 1em;
+  margin: 1em 0;
+  color: hsl(var(--color-slate-gray));
+}
+
+/* TipTap Toolbar Button Active State */
+button[data-active="true"] {
+  background-color: hsl(var(--color-ghost-white));
+  color: hsl(var(--color-brand));
 }
 

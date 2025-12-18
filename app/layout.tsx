@@ -3,7 +3,7 @@ import "./globals.css"
 import { AuthProvider } from "@/lib/auth-context"
 import { FilesProvider } from "@/lib/files-context"
 import { Header } from "@/components/header"
-import { inter, tiroBangla, playfairDisplay, dancingScript, notoSerifBengali, mina } from "@/lib/fonts"
+import { inter, playfairDisplay, dancingScript, notoSerifBengali, mina } from "@/lib/fonts"
 
 export const metadata: Metadata = {
   title: "RNPL Note",
@@ -20,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${tiroBangla.variable} ${playfairDisplay.variable} ${dancingScript.variable} ${notoSerifBengali.variable} ${mina.variable}`}>
+    <html lang="en" className={`${inter.variable} ${playfairDisplay.variable} ${dancingScript.variable} ${notoSerifBengali.variable} ${mina.variable}`}>
       <body>
         <AuthProvider>
           <FilesProvider>
