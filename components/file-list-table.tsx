@@ -1,9 +1,12 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Search, ChevronRight, Paperclip } from 'lucide-react';
+import { Search, ChevronRight, Paperclip, Folder, Grid3x3, List, ChevronDown } from 'lucide-react';
 import { File } from '@/types/file';
 import { StatusBadge } from '@/components/ui/status-badge';
+import { DocumentPreview } from '@/components/document-preview';
+import { FileThumbnailItem } from '@/components/file-thumbnail-item';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
 interface FileListTableProps {
   files: File[];
@@ -14,6 +17,7 @@ interface FileListTableProps {
 export function FileListTable({ files, title, onOpenFile }: FileListTableProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   
   const filteredFiles = useMemo(() => {
     return files.filter(f => {
@@ -25,9 +29,10 @@ export function FileListTable({ files, title, onOpenFile }: FileListTableProps) 
   }, [files, searchTerm, statusFilter]);
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden animate-in fade-in duration-300">
-      <div className="p-6 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <h2 className="text-lg font-bold text-slate-800">{title}</h2>
+    <div className="space-y-8 animate-in fade-in duration-500">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <h1 className="text-2xl font-bold text-slate-900">{title}</h1>
         <div className="flex gap-3">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
@@ -36,74 +41,68 @@ export function FileListTable({ files, title, onOpenFile }: FileListTableProps) 
               placeholder="Search files..." 
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className="pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 w-full md:w-64 transition-all"
+              className="pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 w-full md:w-64 transition-all"
             />
           </div>
-          <select 
-            value={statusFilter}
-            onChange={e => setStatusFilter(e.target.value)}
-            className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-slate-600 cursor-pointer"
-          >
-            <option value="All">All Status</option>
-            {['Draft', 'Pending', 'In Review', 'Approved', 'Returned'].map(s => (
-              <option key={s} value={s}>{s}</option>
-            ))}
-          </select>
+          <div className="relative">
+            <select 
+              value={statusFilter}
+              onChange={e => setStatusFilter(e.target.value)}
+              className="appearance-none pl-3 pr-10 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-slate-600 cursor-pointer w-full md:w-48"
+            >
+              <option value="All">All Status</option>
+              {['Draft', 'Pending', 'In Review', 'Approved', 'Returned'].map(s => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
+            <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+          </div>
+          <ToggleGroup type="single" value={viewMode} onValueChange={(value) => value && setViewMode(value as 'grid' | 'list')}>
+            <ToggleGroupItem value="grid" aria-label="Grid view">
+              <Grid3x3 size={16} />
+            </ToggleGroupItem>
+            <ToggleGroupItem value="list" aria-label="List view">
+              <List size={16} />
+            </ToggleGroupItem>
+          </ToggleGroup>
         </div>
       </div>
       
-      <div className="overflow-x-auto">
-        <table className="w-full text-left">
-          <thead className="bg-slate-50 border-b border-slate-100">
-            <tr>
-              {['File', 'Status', 'Category', 'Last Updated', ''].map((h, i) => (
-                <th key={i} className="px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                  {h}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-50">
+      {/* Files List */}
+      {filteredFiles.length > 0 ? (
+        viewMode === 'grid' ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {filteredFiles.map(file => (
-              <tr 
-                key={file.id} 
-                onClick={() => onOpenFile(file)} 
-                className="hover:bg-slate-50/80 cursor-pointer transition-colors group"
-              >
-                <td className="px-6 py-4">
-                  <div className="font-medium text-slate-900 group-hover:text-[hsl(var(--color-brand-hover))] transition-colors font-bangla">
-                    {file.title}
-                  </div>
-                  <div className="text-xs text-slate-400 mt-1 font-mono">{file.id}</div>
-                </td>
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-2">
-                    <StatusBadge status={file.status} />
-                    {file.attachments && file.attachments.length > 0 && (
-                      <div className="flex items-center gap-1 text-slate-400 group-hover:text-[hsl(var(--color-brand))] transition-colors">
-                        <Paperclip size={14} />
-                        <span className="text-xs font-medium">{file.attachments.length}</span>
-                      </div>
-                    )}
-                  </div>
-                </td>
-                <td className="px-6 py-4 text-sm text-slate-600 font-bangla">{file.category}</td>
-                <td className="px-6 py-4 text-sm text-slate-500 font-mono">{file.lastUpdated}</td>
-                <td className="px-6 py-4 text-right">
-                  <ChevronRight size={18} className="text-slate-300 group-hover:text-[hsl(var(--color-brand))] ml-auto" />
-                </td>
-              </tr>
+              <FileThumbnailItem
+                key={file.id}
+                file={file}
+                onClick={onOpenFile}
+                variant="thumbnail"
+              />
             ))}
-            {filteredFiles.length === 0 && (
-              <tr>
-                <td colSpan={5} className="px-6 py-12 text-center text-slate-400 italic">
-                  No files found matching your criteria.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {filteredFiles.map(file => (
+              <FileThumbnailItem
+                key={file.id}
+                file={file}
+                onClick={onOpenFile}
+                variant="icon"
+              />
+            ))}
+          </div>
+        )
+      ) : (
+        <div className="p-10 border border-dashed border-slate-200 rounded-xl flex flex-col items-center justify-center text-center bg-slate-50/50">
+          <div className="bg-white p-3 rounded-full shadow-sm mb-3">
+            <Folder className="text-slate-300" size={24} />
+          </div>
+          <p className="text-slate-500 text-sm font-medium">
+            No files found matching your criteria.
+          </p>
+        </div>
+      )}
     </div>
   );
 }

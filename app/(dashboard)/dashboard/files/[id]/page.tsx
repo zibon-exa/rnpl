@@ -13,7 +13,8 @@ import { Modal } from '@/components/ui/modal';
 import { Button } from '@/components/ui/button';
 import { ButtonGroup } from '@/components/ui/button-group';
 import { Separator } from '@/components/ui/separator';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { getAvatarPath, getInitials } from '@/lib/avatar-utils';
 import { formatFileIdToBangla } from '@/lib/utils';
 import { DocumentHeader } from '@/components/document-header';
 import {
@@ -422,8 +423,9 @@ export default function FileViewPage() {
                     <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Author</div>
                     <div className="flex items-center gap-3">
                       <Avatar className="h-10 w-10">
+                        <AvatarImage src={getAvatarPath(file.sender)} alt={file.sender} />
                         <AvatarFallback className="bg-slate-200 text-slate-700 text-xs">
-                          {file.sender.split(' ').map(n => n[0]).join('').toUpperCase()}
+                          {getInitials(file.sender)}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex flex-col">

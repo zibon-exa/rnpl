@@ -9,6 +9,159 @@ This file tracks all AI-assisted changes made to the project.
 
 ---
 
+## 2025-12-18 22:00:00
+
+### Centralized Avatar Utilities and Avatar Integration
+- **Description**: Created centralized avatar utility functions for consistent avatar handling across the application. Updated all components to use avatar images from `/public/avatars` folder with automatic male/female detection.
+- **Files Created**:
+  - `lib/avatar-utils.ts` - Centralized avatar utilities:
+    - `isFemaleName()` - Detects female names based on common patterns (Fatima, Sultana, Begum, etc.)
+    - `getAvatarPath()` - Maps names to avatar images using hash-based consistent mapping
+    - `getInitials()` - Generates initials from names (first letter of each word, max 2)
+    - Automatically selects F-suffixed avatars (3-F.png, 4-F.png, 5-F.png, 10-F.png) for female names
+    - Uses regular avatars (1.png, 2.png, 6.png, 7.png, 8.png, 9.png) for male names
+- **Files Modified**:
+  - `components/blocker-list.tsx` - Updated to use centralized avatar utilities, removed local avatar logic
+  - `components/file-thumbnail-item.tsx` - Added `AvatarImage` to both thumbnail and icon variants:
+    - Thumbnail variant: Avatar with image next to sender name
+    - Icon variant: Small avatar (h-5 w-5) next to sender name in metadata row
+  - `app/(dashboard)/dashboard/files/[id]/page.tsx` - Updated author section to use avatar images
+- **Features**:
+  - Consistent avatar selection across all components
+  - Automatic gender detection based on name patterns
+  - Hash-based mapping ensures same name always gets same avatar
+  - Fallback to initials if avatar image fails to load
+  - All file lists (Dashboard, Pending, My Files) now show avatar images
+  - File detail page shows author avatar
+  - Blocker list shows employee avatars in table and modal
+- **Avatar Files Used**:
+  - Male: 1.png, 2.png, 6.png, 7.png, 8.png, 9.png
+  - Female: 3-F.png, 4-F.png, 5-F.png, 10-F.png
+
+---
+
+## 2025-12-18 21:00:00
+
+### Added Thumbnails to FileListTable Component
+- **Description**: Updated FileListTable component to include document preview thumbnails in the first column, maintaining the existing table layout. Thumbnails match the dashboard sidebar design with light gray background, padding, and bottom cropping.
+- **Files Modified**:
+  - `components/file-list-table.tsx` - Added thumbnail column:
+    - Added DocumentPreview import
+    - Added new first column for thumbnails (empty header)
+    - Thumbnail styling matches dashboard: 60px × 80px, padding top/left/right, cropped bottom
+    - Updated colspan from 5 to 6 for empty state row
+    - All existing table functionality preserved (search, filter, hover effects)
+- **Impact**:
+  - Pending Files page now shows thumbnails
+  - My Files page now shows thumbnails
+  - Table layout and functionality unchanged
+  - Consistent thumbnail design across all file lists
+
+---
+
+## 2025-12-18 20:45:00
+
+### Created Reusable FileThumbnailItem Component with Variants
+- **Description**: Created a new reusable file component with multiple variants for displaying files in different contexts. Replaced inline file list implementation in dashboard with the new component.
+- **Files Created**:
+  - `components/file-thumbnail-item.tsx` - Reusable file component with three variants:
+    - `thumbnail` - Document preview thumbnail on left, file info on right (for dashboard sidebar)
+    - `icon` - File icon on left, file info on right (for list views)
+    - `compact` - Smaller thumbnail with minimal info (for compact lists)
+- **Files Modified**:
+  - `app/(dashboard)/dashboard/page.tsx` - Replaced inline file list implementation with FileThumbnailItem component using `thumbnail` variant
+- **Component Features**:
+  - Three variants: thumbnail, icon, compact
+  - Configurable props: showAttachments, showStatus, className
+  - Consistent styling and hover effects across variants
+  - Document preview thumbnails with proper padding and cropping
+  - Click handler support
+- **Usage**:
+  ```tsx
+  <FileThumbnailItem 
+    file={file} 
+    onClick={handleOpenFile} 
+    variant="thumbnail" 
+  />
+  ```
+
+---
+
+## 2025-12-18 20:30:00
+
+### File Thumbnails with Document Previews - Wireframe Layout
+- **Description**: Updated file list items to match wireframe exactly: horizontal layout with document preview thumbnail on left (with padding top/left/right, cropped at bottom) and file info on right. Thumbnail shows actual document preview on light gray background.
+- **Files Modified**:
+  - `app/(dashboard)/dashboard/page.tsx` - Restructured file items to horizontal layout:
+    - Thumbnail on left: 60px × 80px container with light gray background (bg-slate-100)
+    - Added padding: 8px top, 8px left, 8px right (no bottom padding for cropping)
+    - Document preview scaled to 8% (scale(0.08)) to fit in thumbnail
+    - Bottom of preview is cropped (overflow-hidden)
+    - File info on right: title, ref • author, attachment count • status
+    - Horizontal flex layout with gap between thumbnail and text
+    - Hover effect on entire row
+- **Features**:
+  - Document preview thumbnail on left with proper spacing
+  - Light gray background with padding (top, left, right)
+  - Bottom cropped to show partial document preview
+  - Horizontal layout matching wireframe exactly
+  - All file metadata displayed to the right of thumbnail
+
+---
+
+## 2025-12-18 20:00:00
+
+### Dashboard Layout Restructure - Two-Pane Layout with Independent Scrolling
+- **Description**: Restructured dashboard to match wireframe design with left pane (Dashboard content) and right pane (Files sidebar), each independently scrollable. Left pane contains dashboard title, greeting, two rows of metric buttons (4 stat cards + 4 KPI cards), and two chart widgets side-by-side. Right pane contains Files title with "+ New" button, search bar, and Pending Files list.
+- **Files Modified**:
+  - `app/(dashboard)/dashboard/page.tsx` - Complete layout restructure:
+    - Changed from single-column layout to two-pane flex layout
+    - Left pane: Dashboard content (title, greeting, 8 metric buttons in 2 rows, 2 charts)
+    - Right pane: Files sidebar (title, +New button, search, pending files list)
+    - Both panes are independently scrollable with `overflow-y-auto`
+    - Removed search and "+ New" button from header section (moved to right pane)
+    - Removed "Recent Files" column (only showing "Pending Files" in right pane)
+    - Removed "Office Pulse" section title (KPI cards now in second row directly)
+    - Removed bottom row charts (Efficiency Scatter, Risk Escalation) - only showing Heatmap and Blockers
+    - Right pane has fixed width (w-96) with border-l separator
+- **Layout Structure**:
+  - **Left Pane**: Flex-1, scrollable, contains all dashboard metrics and charts
+  - **Right Pane**: Fixed width (384px), scrollable, contains files management UI
+  - Both panes scroll independently without affecting each other
+- **Features**:
+  - Independent scrolling for left and right panes
+  - Clean separation between dashboard metrics and file management
+  - Matches wireframe design exactly
+  - Maintains all existing functionality (only layout changed)
+
+---
+
+## 2025-12-18 17:32:26
+
+### Changed File Stats Numbers to English
+- **Description**: Updated StatCard component to display numbers in English numerals instead of Bangla numerals.
+- **Files Modified**:
+  - `components/ui/stat-card.tsx` - Removed `toBanglaNumerals()` function call and import, now displays numbers directly in English format.
+- **Changes**:
+  - Removed import of `toBanglaNumerals` from `@/lib/utils`
+  - Changed value display from `{toBanglaNumerals(value)}` to `{value}` to show English numbers
+
+---
+
+## 2025-12-18 17:29:33
+
+### Simplified Dashboard Stats
+- **Description**: Removed existing file stats above Office Pulse and replaced with only essential stats in specified order.
+- **Files Modified**:
+  - `app/(dashboard)/dashboard/page.tsx` - Removed 6-card stat grid (Total, Pending, Approved, My Files, Returned, This Month) and replaced with 4-card grid showing only: My Files, Pending Files (Linked), Approved, Returned. Removed unused calculations (totalFiles, filesThisMonth). Updated grid layout from 6 columns to 4 columns.
+- **Changes**:
+  - Removed "Total" and "This Month" stat cards
+  - Kept only essential stats: My Files, Pending Files (Linked), Approved, Returned
+  - Maintained click handlers for My Files and Pending Files
+  - Cleaned up unused variable calculations
+
+---
+
 ## 2025-12-18 19:00:00
 
 ### Chart Accessibility and UX Improvements

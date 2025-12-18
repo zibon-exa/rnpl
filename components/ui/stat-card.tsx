@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { LucideIcon } from 'lucide-react';
-import { toBanglaNumerals } from '@/lib/utils';
 
 interface StatCardProps {
   title: string;
@@ -24,7 +23,7 @@ export function StatCard({ title, value, icon: Icon, onClick, colorClass }: Stat
         <div className={`p-2 rounded-lg transition-transform duration-300 ${isClickable ? 'group-hover:scale-110' : ''}`} style={{ backgroundColor: 'hsl(var(--color-brand) / 0.1)' }}>
           <Icon className="text-[hsl(var(--color-brand))]" size={18} />
         </div>
-        {value !== undefined && <span className="text-2xl font-bold text-slate-800">{toBanglaNumerals(value)}</span>}
+        {value !== undefined && <span className="text-2xl font-bold text-slate-800">{value}</span>}
       </div>
       <h3 className={`text-xs font-medium text-slate-500 transition-colors ${isClickable ? 'group-hover:text-[hsl(var(--color-brand))]' : ''}`}>{title}</h3>
     </div>
