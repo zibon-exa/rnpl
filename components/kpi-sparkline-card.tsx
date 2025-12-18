@@ -1,7 +1,7 @@
 'use client';
 
 import { Card, CardContent } from '@/components/ui/card';
-import { AreaChart, Area, ResponsiveContainer, Defs, LinearGradient, Stop } from 'recharts';
+import { AreaChart, Area, ResponsiveContainer } from 'recharts';
 import { TrendingUp, TrendingDown, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { KpiData } from '@/lib/dashboard-data';
