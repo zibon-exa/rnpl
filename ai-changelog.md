@@ -9,6 +9,108 @@ This file tracks all AI-assisted changes made to the project.
 
 ---
 
+## 2025-12-18 19:00:00
+
+### Chart Accessibility and UX Improvements
+- **Description**: Fixed multiple chart issues including tooltip z-index, always-visible legends, accessibility, and layout problems.
+- **Files Modified**:
+  - `components/department-heatmap.tsx` - Fixed tooltip z-index, added always-visible legend below chart, improved accessibility without disabling hover
+  - `components/efficiency-scatter-chart.tsx` - Fixed chart being cut off by adjusting margins and font sizes, fixed tooltip z-index, improved accessibility
+  - `components/risk-escalation-trend.tsx` - Fixed tooltip z-index, improved accessibility
+- **Fixes**:
+  1. **Tooltip Z-Index**: Added `zIndex: 9999` and `pointerEvents: 'auto'` to all tooltip wrappers to ensure tooltips appear above chart elements
+  2. **Always-Visible Legends**: Replaced Recharts Legend component with custom always-visible legend below radial chart showing department names, percentages, and alert icons
+  3. **Accessibility**: Added `tabIndex={-1}`, `outline: 'none'`, `role="img"`, and `aria-label` to chart containers to prevent keyboard focus while maintaining hover functionality
+  4. **Efficiency Chart Layout**: Reduced margins (top: 10, right: 10, bottom: 40, left: 40), reduced font sizes (11px for labels), shortened Y-axis label text to prevent cutoff
+- **Features**:
+  - Tooltips now always appear on top of chart elements
+  - Hover functionality works correctly (tooltips display on hover)
+  - Charts are not keyboard focusable but remain interactive for mouse hover
+  - Radial chart legend is always visible below the chart (not just on hover)
+  - Efficiency scatter chart fits properly within card boundaries
+  - Proper ARIA labels for screen readers
+
+---
+
+## 2025-12-18 18:30:00
+
+### Chart Typography Consistency
+- **Description**: Updated all chart components to respect the application's typography system. All SVG text elements in charts now use the Inter font family to match the rest of the application.
+- **Files Modified**:
+  - `components/department-heatmap.tsx` - Added fontFamily to radial bar labels
+  - `components/risk-escalation-trend.tsx` - Added fontFamily to XAxis, YAxis ticks, and Legend
+  - `components/efficiency-scatter-chart.tsx` - Added fontFamily to XAxis, YAxis ticks, axis labels, and ReferenceLine labels
+- **Typography Applied**:
+  - Font family: `Inter, 'July Font', sans-serif` (matching body typography)
+  - Font sizes: 12px for axis ticks, 11px for reference line labels
+  - Font weights: 500 for axis labels, 600 for data labels
+  - Consistent color: #64748b (slate-500) for all chart text
+- **Features**:
+  - All chart text elements now use consistent typography
+  - SVG text elements properly inherit font family
+  - Maintains visual consistency across the dashboard
+
+---
+
+## 2025-12-18 18:00:00
+
+### Departmental Hotspot Heatmap - Radial Bar Chart Redesign
+- **Description**: Replaced grid-based heatmap with beautiful Simple Radial Bar Chart from Recharts. The new visualization shows overdue percentage for each department as radial bars with status-based colors (rose-500 for high, amber-500 for medium, emerald-500 for low). Includes custom tooltips, center summary, and interactive legend.
+- **Files Modified**:
+  - `components/department-heatmap.tsx` - Complete redesign from 3x2 grid to RadialBarChart with:
+    - Radial bars showing overdue percentage (overdueItems/totalItems * 100)
+    - Status-based color coding matching existing RAG system
+    - Custom tooltip showing department name, overdue items, total items, and percentage
+    - Center summary displaying total departments and high-risk count
+    - Interactive legend with department names, percentages, and alert icons for high-risk departments
+    - Smooth animations (1000ms duration with ease-out easing)
+    - Rounded corners (6px) and proper spacing for visual appeal
+    - **Visible percentage labels** on each radial bar (positioned outside bars) - no hover needed to see values
+- **Features**:
+  - **Visual Comparison**: Easy to compare overdue percentages across departments at a glance
+  - **Status Colors**: Maintains existing color scheme (rose/amber/emerald) for consistency
+  - **Interactive Tooltips**: Hover over any bar to see detailed information
+  - **Visible Labels**: Percentage values displayed directly on each bar for immediate readability
+  - **Center Summary**: Shows total departments and high-risk count in the center
+  - **Legend**: Clean legend below chart with department names, percentages, and alert indicators
+  - **Responsive**: Adapts to container size with ResponsiveContainer
+  - **Beautiful Design**: Matches existing UI styling with proper spacing, typography, and colors
+
+---
+
+## 2025-12-18 16:21:56
+
+### Executive Command Center Dashboard
+- **Description**: Built comprehensive "Executive Command Center" dashboard section above file boxes with 5 high-density data visualization components using Recharts, Shadcn UI, and Tailwind CSS. All components follow existing design system with RAG color logic (emerald-500/amber-500/rose-500) and CSS variable tokens.
+- **Files Created**:
+  - `lib/dashboard-data.ts` - Mock data for all 5 dashboard components (KPI sparklines, department heatmap, blockers, efficiency scatter, risk trends)
+  - `components/kpi-sparkline-card.tsx` - Reusable KPI card component with mini AreaChart sparkline, trend indicators, and RAG status colors
+  - `components/department-heatmap.tsx` - 3x2 grid heatmap showing departmental overdue items with dynamic background colors (red/amber/green based on overdue count)
+  - `components/blocker-list.tsx` - Table component with top 5 blockers, avatars, files pending count, and "Nudge" buttons that trigger toast notifications
+  - `components/efficiency-scatter-chart.tsx` - ScatterChart showing efficiency vs rework with quadrant labels, reference lines, and custom tooltips
+  - `components/risk-escalation-trend.tsx` - AreaChart showing risk and escalation trends over 12 months with dual series and gradients
+- **Files Modified**:
+  - `app/layout.tsx` - Added Toaster component for toast notifications
+  - `app/(dashboard)/dashboard/page.tsx` - Integrated Executive Command Center section with all 5 components in responsive grid layout (4 KPI cards, 2-column middle row, 2-column bottom row)
+  - `package.json` - Added recharts dependency (36 packages)
+- **Dependencies Added**:
+  - `recharts` - Charting library for React
+  - `@radix-ui/react-toast` - Toast component (via shadcn)
+- **Features**:
+  - **Office Pulse KPI Cards**: 4 cards showing Avg Approval Cycle (3.2 days, green down), Approval Ratio (94%, green up), SLA Compliance (88%, amber warning), Return Rate (12%, red critical) - each with mini sparkline AreaChart
+  - **Departmental Hotspot Heatmap**: 3x2 grid showing 6 departments (Finance, HR, Operations, IT, Legal, Admin) with dynamic background colors based on overdue items count (high >20: red, medium 10-20: amber, low <10: green)
+  - **Top 5 Blockers List**: Table with rank, employee (avatar + name + role), files pending (>72hrs), and "Nudge" action button that shows toast notification
+  - **Efficiency vs. Rework Quadrant**: ScatterChart with X-axis (Return Rate/Quality), Y-axis (Average Speed/Velocity), dotted reference lines dividing quadrants, custom tooltips, and quadrant labels (Problem Area, Benchmark)
+  - **Risk & Escalation Trend**: Dual-series AreaChart showing escalations and risks over 12 months with gradient fills and custom tooltips
+- **Design Consistency**:
+  - All components use existing CSS variables (--background, --card, --color-brand, etc.)
+  - Strict RAG color adherence: emerald-500 (success), amber-500 (warning), rose-500 (critical)
+  - Matches existing card styling: white background, slate-100 border, shadow-sm, rounded-lg
+  - Typography uses standard Shadcn styles with uppercase/muted widget titles
+  - Responsive grid layouts (1 column mobile, 2-4 columns desktop)
+
+---
+
 ## 2025-12-15 13:05:30
 
 ### Expanded RNPL-Scope Documentation

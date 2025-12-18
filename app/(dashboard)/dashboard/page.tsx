@@ -11,6 +11,18 @@ import { Button } from '@/components/ui/button';
 import { getCurrentDateBangla } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { StatusBadge } from '@/components/ui/status-badge';
+import { KpiSparklineCard } from '@/components/kpi-sparkline-card';
+import { DepartmentHeatmap } from '@/components/department-heatmap';
+import { BlockerList } from '@/components/blocker-list';
+import { EfficiencyScatterChart } from '@/components/efficiency-scatter-chart';
+import { RiskEscalationTrend } from '@/components/risk-escalation-trend';
+import {
+  kpiData,
+  departmentData,
+  blockerData,
+  efficiencyData,
+  riskTrendData,
+} from '@/lib/dashboard-data';
 
 export default function DashboardPage() {
   const { user } = useRequireAuth();
@@ -136,6 +148,33 @@ export default function DashboardPage() {
               icon={FileText}
               colorClass="bg-purple-500 text-purple-500"
             />
+          </div>
+
+          {/* Executive Command Center */}
+          <div className="space-y-6">
+            {/* Office Pulse KPI Cards */}
+            <div>
+              <h2 className="text-lg font-semibold text-slate-800 mb-4">
+                Office Pulse
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {kpiData.map((kpi, index) => (
+                  <KpiSparklineCard key={index} data={kpi} />
+                ))}
+              </div>
+            </div>
+
+            {/* Middle Row: Heatmap and Blockers */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <DepartmentHeatmap data={departmentData} />
+              <BlockerList data={blockerData} />
+            </div>
+
+            {/* Bottom Row: Charts */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <EfficiencyScatterChart data={efficiencyData} />
+              <RiskEscalationTrend data={riskTrendData} />
+            </div>
           </div>
 
           {/* Files Section - Two Columns */}

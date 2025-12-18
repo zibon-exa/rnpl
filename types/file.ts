@@ -1,4 +1,5 @@
 export type FileStatus = 'Draft' | 'Pending' | 'In Review' | 'Approved' | 'Returned';
+export type Priority = 'Low' | 'Medium' | 'High' | 'Urgent';
 
 export interface HistoryEntry {
   timestamp: string;
@@ -32,6 +33,8 @@ export interface File {
   returnComment?: string;
   forwardingNote?: string;
   attachments?: Attachment[];
+  priority?: Priority;
+  dueDate?: string;
 }
 
 export interface Notification {

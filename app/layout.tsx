@@ -3,6 +3,7 @@ import "./globals.css"
 import { AuthProvider } from "@/lib/auth-context"
 import { FilesProvider } from "@/lib/files-context"
 import { Header } from "@/components/header"
+import { Toaster } from "@/components/ui/toaster"
 import { inter, playfairDisplay, dancingScript, notoSerifBengali, mina } from "@/lib/fonts"
 
 export const metadata: Metadata = {
@@ -26,6 +27,7 @@ export default function RootLayout({
           <FilesProvider>
             <Header />
             {children}
+            <Toaster />
           </FilesProvider>
         </AuthProvider>
       </body>
