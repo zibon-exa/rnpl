@@ -75,21 +75,38 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel, initialFile }:
     return ref;
   };
 
-  // Auto-save functionality (like Google Docs)
+  // Keep track of latest initialFile to avoid dependency loop
+  const latestInitialFile = useRef(initialFile);
   useEffect(() => {
-    // Skip auto-save if required fields are empty
-    if (!formData.title || !formData.category) return;
+    latestInitialFile.current = initialFile;
+  }, [initialFile]);
+
+  // Track the last saved state to prevent redundant saves
+  const lastSavedDataRef = useRef({
+    formData,
+    reference
+  });
+
+  // Auto-save functionality (debounced)
+  useEffect(() => {
+    // Check if there are meaningful changes
+    const currentData = { formData, reference };
+    const hasChanges = JSON.stringify(currentData) !== JSON.stringify(lastSavedDataRef.current);
+
+    // Skip auto-save if required fields are empty or no changes detected
+    if (!formData.title || !formData.category || !hasChanges) return;
 
     // Clear existing timeout
     if (autoSaveTimeoutRef.current) {
       clearTimeout(autoSaveTimeoutRef.current);
     }
 
-    // Set new timeout for auto-save (2 seconds after last change)
+    // Set new timeout for auto-save (3 seconds after last change)
     autoSaveTimeoutRef.current = setTimeout(() => {
       setIsSaving(true);
 
-      const newHistory = initialFile ? initialFile.history : [
+      const fileToUpdate = latestInitialFile.current;
+      const newHistory = fileToUpdate ? fileToUpdate.history : [
         {
           timestamp: new Date().toISOString(),
           actor: user.name,
@@ -100,27 +117,28 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel, initialFile }:
       ];
 
       const updatedFile: File = {
-        ...(initialFile || {}),
+        ...(fileToUpdate || {}),
         ...formData,
         id: generateFileId(reference),
-        sender: initialFile?.sender || user.name,
-        status: initialFile?.status || 'Draft',
+        sender: fileToUpdate?.sender || user.name,
+        status: fileToUpdate?.status || 'Draft',
         lastUpdated: new Date().toISOString().slice(0, 10),
-        isApproverAction: initialFile?.isApproverAction || false,
+        isApproverAction: fileToUpdate?.isApproverAction || false,
         documentBody: formData.documentBody || 'No content provided.',
         history: newHistory,
       };
 
       // In-place update for existing files to keep context in sync
-      if (initialFile) {
-        onCreateSuccess(updatedFile, true);
-      }
+      onCreateSuccess(updatedFile, true);
+
+      // Update last saved state
+      lastSavedDataRef.current = currentData;
 
       setTimeout(() => {
         setIsSaving(false);
         setLastSaved(new Date());
       }, 500);
-    }, 2000);
+    }, 3000);
 
     // Cleanup on unmount
     return () => {
@@ -128,7 +146,7 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel, initialFile }:
         clearTimeout(autoSaveTimeoutRef.current);
       }
     };
-  }, [formData, reference, user.name, initialFile, onCreateSuccess]);
+  }, [formData, reference, user.name, onCreateSuccess]);
 
   const handleSubmit = () => {
     if (!formData.title || !formData.category || !formData.documentBody) return;
