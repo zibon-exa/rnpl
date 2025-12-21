@@ -46,10 +46,10 @@ export function DepartmentHeatmap({ data }: DepartmentHeatmapProps) {
 
   // Transform data for the chart
   const chartData: ChartDataItem[] = data.map((dept, index) => {
-    const percentage = dept.totalItems > 0 
-      ? Math.round((dept.overdueItems / dept.totalItems) * 100) 
+    const percentage = dept.totalItems > 0
+      ? Math.round((dept.overdueItems / dept.totalItems) * 100)
       : 0;
-    
+
     return {
       name: dept.name,
       value: percentage,
@@ -91,7 +91,7 @@ export function DepartmentHeatmap({ data }: DepartmentHeatmapProps) {
   const renderLabel = (props: any) => {
     const { cx, cy, innerRadius, outerRadius, value, payload } = props;
     if (!value || value === 0 || !cx || !cy) return null;
-    
+
     // Get index from payload if available, otherwise find it
     let currentIndex = -1;
     if (payload) {
@@ -105,28 +105,28 @@ export function DepartmentHeatmap({ data }: DepartmentHeatmapProps) {
         );
       }
     }
-    
+
     // Fallback: if still no index, return null
     if (currentIndex === -1 || currentIndex >= chartData.length) return null;
-    
+
     // Calculate the angle for this bar
     // RadialBarChart starts at 90 degrees (top) and goes clockwise to -270 degrees
     // Total span is 360 degrees divided equally among all bars
     const totalAngle = 360;
     const barAngle = totalAngle / chartData.length;
-    
+
     // Calculate the center angle of this bar
     // Start from 90 degrees (top), each bar takes barAngle degrees
     // Center of bar = startAngle - (index * barAngle) - (barAngle / 2)
     const startAngleDeg = 90;
     const centerAngleDeg = startAngleDeg - (currentIndex * barAngle) - (barAngle / 2);
     const centerAngle = centerAngleDeg * (Math.PI / 180);
-    
+
     // Position label at the outer edge of the bar, slightly outside
     const labelRadius = outerRadius + 20;
     const x = cx + labelRadius * Math.cos(centerAngle);
     const y = cy + labelRadius * Math.sin(centerAngle);
-    
+
     return (
       <text
         x={x}
@@ -145,7 +145,7 @@ export function DepartmentHeatmap({ data }: DepartmentHeatmapProps) {
   };
 
   return (
-    <Card className="bg-white border-slate-100 shadow-sm">
+    <Card className="bg-white border-slate-100 shadow">
       <CardHeader className="pb-3">
         <div className="flex items-center gap-1.5">
           <CardTitle className="text-lg font-semibold text-slate-800">
@@ -164,7 +164,7 @@ export function DepartmentHeatmap({ data }: DepartmentHeatmapProps) {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="h-80 relative" tabIndex={-1} style={{ outline: 'none' }} role="img" aria-label="Departmental Hotspot Heatmap Chart">
+        <div className="h-80 relative" role="img" aria-label="Departmental Hotspot Heatmap Chart">
           <ResponsiveContainer width="100%" height="100%">
             <RadialBarChart
               cx="50%"
@@ -176,7 +176,7 @@ export function DepartmentHeatmap({ data }: DepartmentHeatmapProps) {
               startAngle={90}
               endAngle={-270}
             >
-              <Tooltip 
+              <Tooltip
                 content={<CustomTooltip />}
                 wrapperStyle={{ zIndex: 9999, pointerEvents: 'auto' }}
               />
@@ -209,8 +209,8 @@ export function DepartmentHeatmap({ data }: DepartmentHeatmapProps) {
         {/* Always visible legend below chart */}
         <div className="flex flex-wrap items-center justify-center gap-3 mt-4 pt-4 border-t border-slate-100">
           {chartData.map((entry, index) => (
-            <div 
-              key={index} 
+            <div
+              key={index}
               className="flex items-center gap-2 px-2 py-1 rounded-md"
             >
               <div

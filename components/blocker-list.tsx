@@ -49,7 +49,7 @@ export function BlockerList({ data }: BlockerListProps) {
   };
 
   return (
-    <Card className="bg-white border-slate-100 shadow-sm">
+    <Card className="bg-white border-slate-100 shadow">
       <CardHeader className="pb-3">
         <CardTitle className="text-lg font-semibold text-slate-800">
           Top 5 Blockers
@@ -70,7 +70,7 @@ export function BlockerList({ data }: BlockerListProps) {
                 <TableCell>
                   <div className="flex items-center gap-3">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={getAvatarPath(blocker.name)} alt={blocker.name} />
+                      <AvatarImage src={getAvatarPath(blocker.name, blocker.avatarId)} alt={blocker.name} />
                       <AvatarFallback className="bg-slate-100 text-slate-700 text-xs">
                         {blocker.avatar}
                       </AvatarFallback>
@@ -125,7 +125,7 @@ export function BlockerList({ data }: BlockerListProps) {
             <div className="bg-slate-50 rounded-lg p-3">
               <div className="flex items-center gap-3">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src={getAvatarPath(selectedBlocker.name)} alt={selectedBlocker.name} />
+                  <AvatarImage src={getAvatarPath(selectedBlocker.name, selectedBlocker.avatarId)} alt={selectedBlocker.name} />
                   <AvatarFallback className="bg-slate-100 text-slate-700 text-xs">
                     {selectedBlocker.avatar}
                   </AvatarFallback>
@@ -156,7 +156,7 @@ export function BlockerList({ data }: BlockerListProps) {
               <Button
                 onClick={handleConfirmNudge}
                 className="text-white"
-                style={{ 
+                style={{
                   backgroundColor: 'hsl(var(--color-brand))',
                 }}
                 onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'hsl(196, 60%, 50%)'}

@@ -1,8 +1,10 @@
 'use client';
 
+import { matchesSearch } from '@/lib/search-utils';
+
 import { useState, useMemo } from 'react';
 import Image from 'next/image';
-import { Search, ChevronRight, Paperclip, Folder, Grid3x3, List, ChevronDown } from 'lucide-react';
+import { Search, ChevronRight, Paperclip, Folder, Grid3x3, List, ChevronDown, FileText } from 'lucide-react';
 import { File } from '@/types/file';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { FileThumbnailItem } from '@/components/file-thumbnail-item';
@@ -29,14 +31,13 @@ interface FileListTableProps {
 export function FileListTable({ files, title, onOpenFile }: FileListTableProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
-  
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+
   const filteredFiles = useMemo(() => {
     return files.filter(f => {
-      const matchesSearch = f.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                           f.id.toLowerCase().includes(searchTerm.toLowerCase());
+      const isMatch = matchesSearch(f.title, searchTerm) || matchesSearch(f.id, searchTerm);
       const matchesStatus = statusFilter === 'All' || f.status === statusFilter;
-      return matchesSearch && matchesStatus;
+      return isMatch && matchesStatus;
     });
   }, [files, searchTerm, statusFilter]);
 
@@ -48,16 +49,16 @@ export function FileListTable({ files, title, onOpenFile }: FileListTableProps) 
         <div className="flex gap-3">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-            <input 
-              type="text" 
-              placeholder="Search files..." 
+            <input
+              type="text"
+              placeholder="Search files..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className="pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 w-full md:w-64 transition-all"
+              className="pl-9 pr-4 py-2 bg-slate-100 border-transparent rounded-lg text-sm focus:outline-none focus:ring-0 focus:bg-white focus:shadow-md w-full md:w-64 transition-all"
             />
           </div>
           <div className="relative">
-            <select 
+            <select
               value={statusFilter}
               onChange={e => setStatusFilter(e.target.value)}
               className="appearance-none pl-3 pr-10 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-slate-600 cursor-pointer w-full md:w-48"
@@ -79,7 +80,7 @@ export function FileListTable({ files, title, onOpenFile }: FileListTableProps) 
           </ToggleGroup>
         </div>
       </div>
-      
+
       {/* Files List */}
       {filteredFiles.length > 0 ? (
         viewMode === 'grid' ? (
@@ -110,43 +111,14 @@ export function FileListTable({ files, title, onOpenFile }: FileListTableProps) 
               </TableHeader>
               <TableBody>
                 {filteredFiles.map((file) => (
-                  <TableRow 
-                    key={file.id} 
-                    className="cursor-pointer group"
+                  <TableRow
+                    key={file.id}
+                    className="cursor-pointer group hover:bg-slate-50/80 transition-colors border-b border-slate-50"
                     onClick={() => onOpenFile(file)}
                   >
                     <TableCell>
-                      <div className="relative overflow-hidden rounded-lg shrink-0" style={{ width: '40px', height: '44px' }}>
-                        <Image
-                          src="/imgs/thumb_bg.jpg"
-                          alt=""
-                          fill
-                          className="object-cover rounded-lg"
-                          priority={false}
-                        />
-                        <div className="absolute inset-0 flex items-start justify-center overflow-hidden" style={{ paddingTop: '8px', paddingLeft: '8px', paddingRight: '8px' }}>
-                          <div 
-                            className="relative"
-                            style={{ 
-                              transform: 'scale(0.035)',
-                              transformOrigin: 'top center',
-                              width: '794px',
-                              height: '1123px',
-                              pointerEvents: 'none'
-                            }}
-                          >
-                            <DocumentPreview
-                              title={file.title}
-                              category={file.category}
-                              documentBody={file.documentBody}
-                              sender={file.sender}
-                              fileId={file.id}
-                              date={file.lastUpdated}
-                              zoom={1}
-                              language="bn"
-                            />
-                          </div>
-                        </div>
+                      <div className="flex items-center justify-center w-10 h-11 bg-slate-100 rounded-lg shrink-0 text-slate-400">
+                        <FileText size={20} />
                       </div>
                     </TableCell>
                     <TableCell>
@@ -160,9 +132,9 @@ export function FileListTable({ files, title, onOpenFile }: FileListTableProps) 
                     <TableCell>
                       <div className="flex items-center gap-2">
                         <Avatar className="h-6 w-6">
-                          <AvatarImage 
-                            src={getAvatarPath(file.sender, mockUsers.find(u => u.nameEn === file.sender || u.nameBn === file.sender)?.avatarId)} 
-                            alt={file.sender} 
+                          <AvatarImage
+                            src={getAvatarPath(file.sender, mockUsers.find(u => u.nameEn === file.sender || u.nameBn === file.sender)?.avatarId)}
+                            alt={file.sender}
                           />
                           <AvatarFallback className="text-[10px]">
                             {getInitials(file.sender)}
@@ -191,9 +163,9 @@ export function FileListTable({ files, title, onOpenFile }: FileListTableProps) 
                       )}
                     </TableCell>
                     <TableCell>
-                      <ChevronRight 
-                        size={16} 
-                        className="text-slate-300 group-hover:text-[hsl(var(--color-brand))] group-hover:translate-x-0.5 transition-all" 
+                      <ChevronRight
+                        size={16}
+                        className="text-slate-300 group-hover:text-[hsl(var(--color-brand))] group-hover:translate-x-0.5 transition-all"
                       />
                     </TableCell>
                   </TableRow>

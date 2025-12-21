@@ -6,6 +6,11 @@ This file tracks all AI-assisted changes made to the project.
 - Date-Time: YYYY-MM-dd HH:mm:ss
 - Description: Brief description of changes
 
+## 2025-12-21 19:30:00
+- **Description**: Replaced the previous embedded animated SVG in `UnderConstruction` component with a new standardized empty state vector from `public/vectors/empty_state.svg`. Switched implementation to use Next.js `Image` component for better performance.
+- **Files Modified**: 
+  - `components/under-construction.tsx`
+
 ## 2025-12-21 19:20:00
 - **Description**: Redesigned document signature area to follow a cleaner format (Divider, Name, Designation, RNPL) and ensured full language awareness (Bangla/English) across document creation and viewing.
 - **Files Modified**: 

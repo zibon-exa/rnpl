@@ -41,23 +41,23 @@ export default function DashboardPage() {
 
   const myFiles = getMyFiles();
   const pendingFiles = getPendingFiles();
-  
+
   // Calculate statistics
   const pendingCount = pendingFiles.length;
   const approvedFiles = files.filter(f => f.status === 'Approved').length;
   const myFilesCount = myFiles.filter(f => f.sender === user.name).length;
   const returnedFiles = files.filter(f => f.status === 'Returned' && f.sender === user.name).length;
-  
+
   // Get files requiring attention (pending files)
   const filesRequiringAttention = pendingFiles.slice(0, 5);
-  
+
   // Get recent files (sorted by lastUpdated, descending)
   const recentFiles = [...files]
     .sort((a, b) => new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime())
     .slice(0, 5);
 
   const handleOpenFile = (file: File) => {
-    router.push(`/dashboard/files/${file.id}`);
+    router.push(`/files/${file.id}`);
   };
 
   const handleUpdateFile = (id: string, updates: Partial<File>) => {
@@ -86,14 +86,14 @@ export default function DashboardPage() {
                   value={myFilesCount}
                   icon={Folder}
                   colorClass="bg-blue-500 text-blue-500"
-                  onClick={() => router.push('/dashboard/files')}
+                  onClick={() => router.push('/files')}
                 />
                 <StatCard
                   title="Pending Files"
                   value={pendingCount}
                   icon={Clock}
                   colorClass="bg-amber-500 text-amber-500"
-                  onClick={() => router.push('/dashboard/pending')}
+                  onClick={() => router.push('/pending')}
                 />
                 <StatCard
                   title="Approved"
@@ -131,14 +131,9 @@ export default function DashboardPage() {
             {/* Files Header */}
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-bold text-slate-900">Files</h2>
-              <Button 
-                onClick={() => router.push('/dashboard/create')}
-                className="text-white"
-                style={{ 
-                  backgroundColor: 'hsl(var(--color-brand))',
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'hsl(196, 60%, 50%)'}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'hsl(var(--color-brand))'}
+              <Button
+                onClick={() => router.push('/create')}
+                className="text-white bg-[hsl(var(--color-brand))] hover:bg-[hsl(196,60%,50%)] transition-colors"
               >
                 <Plus size={18} />
                 New
@@ -148,9 +143,9 @@ export default function DashboardPage() {
             {/* Search Bar */}
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-              <input 
-                type="text" 
-                placeholder="Search Files" 
+              <input
+                type="text"
+                placeholder="Search Files"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
@@ -161,14 +156,14 @@ export default function DashboardPage() {
             <div>
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-slate-800">Pending Files</h3>
-                <button 
-                  onClick={() => router.push('/dashboard/pending')} 
+                <button
+                  onClick={() => router.push('/pending')}
                   className="text-sm font-medium text-[hsl(var(--color-brand))] hover:text-[hsl(var(--color-brand-hover))] flex items-center gap-1"
                 >
                   View All
                 </button>
               </div>
-              
+
               {filesRequiringAttention.length > 0 ? (
                 <div className="space-y-3">
                   {filesRequiringAttention.map((file) => (

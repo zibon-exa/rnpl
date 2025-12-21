@@ -129,6 +129,7 @@ export interface BlockerData {
   name: string;
   role: string;
   avatar: string;
+  avatarId?: number;
   filesPending: number;
   hoursPending: number;
 }
@@ -139,6 +140,7 @@ export const blockerData: BlockerData[] = [
     name: 'Toufique Joarder',
     role: 'Managing Director',
     avatar: 'TJ',
+    avatarId: 1,
     filesPending: 8,
     hoursPending: 96,
   },
@@ -147,6 +149,7 @@ export const blockerData: BlockerData[] = [
     name: 'Fatima Ahmed',
     role: 'Director',
     avatar: 'FA',
+    avatarId: 4,
     filesPending: 6,
     hoursPending: 84,
   },
@@ -155,6 +158,7 @@ export const blockerData: BlockerData[] = [
     name: 'Karim Uddin',
     role: 'Manager',
     avatar: 'KU',
+    avatarId: 2,
     filesPending: 5,
     hoursPending: 78,
   },
@@ -163,6 +167,7 @@ export const blockerData: BlockerData[] = [
     name: 'Abul Kashem',
     role: 'Chief Financial Officer',
     avatar: 'AK',
+    avatarId: 7,
     filesPending: 4,
     hoursPending: 75,
   },
@@ -171,6 +176,7 @@ export const blockerData: BlockerData[] = [
     name: 'Nusrat Jahan',
     role: 'Assistant Manager',
     avatar: 'NJ',
+    avatarId: 5,
     filesPending: 3,
     hoursPending: 73,
   },

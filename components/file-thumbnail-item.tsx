@@ -19,9 +19,9 @@ interface FileThumbnailItemProps {
   className?: string;
 }
 
-export function FileThumbnailItem({ 
-  file, 
-  onClick, 
+export function FileThumbnailItem({
+  file,
+  onClick,
   variant = 'thumbnail',
   showAttachments = true,
   showStatus = true,
@@ -53,9 +53,9 @@ export function FileThumbnailItem({
           />
           {/* Document Preview Overlay */}
           <div className="absolute inset-0 flex items-start justify-center overflow-hidden" style={{ paddingTop: '24px', paddingLeft: '16px', paddingRight: '16px' }}>
-            <div 
+            <div
               className="relative"
-              style={{ 
+              style={{
                 transform: 'scale(0.30)',
                 transformOrigin: 'top center',
                 width: '794px',
@@ -76,14 +76,14 @@ export function FileThumbnailItem({
             </div>
           </div>
         </div>
-        
+
         {/* File Info - Below preview */}
         <div className="flex flex-col gap-3 p-4 flex-1">
           {/* Title - Large, bold */}
           <h4 className="text-sm font-bold text-slate-900 line-clamp-2 group-hover:text-[hsl(var(--color-brand-hover))] transition-colors font-bangla">
             {file.title}
           </h4>
-          
+
           {/* ID and Attachments */}
           <div className="flex items-center gap-2 text-xs text-slate-500">
             <span className="font-mono">{file.id}</span>
@@ -100,20 +100,20 @@ export function FileThumbnailItem({
 
           {/* Spacer to push author and status to the bottom */}
           <div className="flex-1" />
-          
+
           {/* Author and Status */}
           <div className="flex items-center justify-between mt-auto">
-            <div className="flex items-center gap-2">
-              <Avatar className="h-8 w-8">
-                <AvatarImage 
-                  src={getAvatarPath(file.sender, mockUsers.find(u => u.nameEn === file.sender || u.nameBn === file.sender)?.avatarId)} 
-                  alt={file.sender} 
+            <div className="flex items-center gap-2 min-w-0">
+              <Avatar className="h-8 w-8 shrink-0">
+                <AvatarImage
+                  src={getAvatarPath(file.sender, mockUsers.find(u => u.nameEn === file.sender || u.nameBn === file.sender)?.avatarId)}
+                  alt={file.sender}
                 />
                 <AvatarFallback className="bg-slate-200 text-slate-600 text-xs">
                   {getInitials(file.sender)}
                 </AvatarFallback>
               </Avatar>
-              <span className="text-sm text-slate-500">{file.sender}</span>
+              <span className="text-sm text-slate-500 truncate min-w-0">{file.sender}</span>
             </div>
             {showStatus && <StatusBadge status={file.status} />}
           </div>
@@ -144,9 +144,9 @@ export function FileThumbnailItem({
           />
           {/* Document Preview Overlay */}
           <div className="absolute inset-0 flex items-start justify-center overflow-hidden" style={{ paddingTop: '8px', paddingLeft: '8px', paddingRight: '8px' }}>
-            <div 
+            <div
               className="relative"
-              style={{ 
+              style={{
                 transform: 'scale(0.06)',
                 transformOrigin: 'top center',
                 width: '794px',
@@ -173,21 +173,21 @@ export function FileThumbnailItem({
             </div>
           )}
         </div>
-        
+
         {/* File Info - Vertical Stack */}
         <div className="flex-1 min-w-0 flex flex-col gap-1">
           <h4 className="text-sm font-semibold text-slate-900 truncate group-hover:text-[hsl(var(--color-brand-hover))] transition-colors font-bangla">
             {file.title}
           </h4>
-          
+
           <div className="flex items-center gap-2 text-[10px] text-slate-500">
             <span className="font-mono">{file.id}</span>
             <span className="w-1 h-1 rounded-full bg-slate-300"></span>
             <div className="flex items-center gap-1.5">
               <Avatar className="h-4 w-4">
-                <AvatarImage 
-                  src={getAvatarPath(file.sender, mockUsers.find(u => u.nameEn === file.sender || u.nameBn === file.sender)?.avatarId)} 
-                  alt={file.sender} 
+                <AvatarImage
+                  src={getAvatarPath(file.sender, mockUsers.find(u => u.nameEn === file.sender || u.nameBn === file.sender)?.avatarId)}
+                  alt={file.sender}
                 />
                 <AvatarFallback className="text-[8px]">
                   {getInitials(file.sender)}
@@ -236,9 +236,9 @@ export function FileThumbnailItem({
             priority={false}
           />
           <div className="absolute inset-0 flex items-start justify-center overflow-hidden" style={{ paddingTop: '8px', paddingLeft: '8px', paddingRight: '8px' }}>
-            <div 
+            <div
               className="relative"
-              style={{ 
+              style={{
                 transform: 'scale(0.035)',
                 transformOrigin: 'top center',
                 width: '794px',
@@ -265,7 +265,7 @@ export function FileThumbnailItem({
             </div>
           )}
         </div>
-        
+
         {/* Compact Info */}
         <div className="flex-1 min-w-0">
           <h4 className="text-xs font-semibold text-slate-900 truncate group-hover:text-[hsl(var(--color-brand-hover))] transition-colors font-bangla">
@@ -301,9 +301,9 @@ export function FileThumbnailItem({
             priority={false}
           />
           <div className="absolute inset-0 flex items-start justify-center overflow-hidden" style={{ paddingTop: '8px', paddingLeft: '8px', paddingRight: '8px' }}>
-            <div 
+            <div
               className="relative"
-              style={{ 
+              style={{
                 transform: 'scale(0.035)',
                 transformOrigin: 'top center',
                 width: '794px',
@@ -342,9 +342,9 @@ export function FileThumbnailItem({
         {/* Sender */}
         <div className="w-40 shrink-0 flex items-center gap-2">
           <Avatar className="h-6 w-6">
-            <AvatarImage 
-              src={getAvatarPath(file.sender, mockUsers.find(u => u.nameEn === file.sender || u.nameBn === file.sender)?.avatarId)} 
-              alt={file.sender} 
+            <AvatarImage
+              src={getAvatarPath(file.sender, mockUsers.find(u => u.nameEn === file.sender || u.nameBn === file.sender)?.avatarId)}
+              alt={file.sender}
             />
             <AvatarFallback className="text-[10px]">
               {getInitials(file.sender)}

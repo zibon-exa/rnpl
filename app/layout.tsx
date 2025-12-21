@@ -3,6 +3,7 @@ import "./globals.css"
 import { AuthProvider } from "@/lib/auth-context"
 import { FilesProvider } from "@/lib/files-context"
 import { Header } from "@/components/header"
+import { GlobalCreateButton } from "@/components/global-create-button"
 import { Toaster } from "@/components/ui/toaster"
 import { inter, playfairDisplay, dancingScript, notoSerifBengali, mina } from "@/lib/fonts"
 
@@ -21,11 +22,12 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfairDisplay.variable} ${dancingScript.variable} ${notoSerifBengali.variable} ${mina.variable}`}>
-      <body>
+    <html lang="en" className={`${inter.variable} ${playfairDisplay.variable} ${dancingScript.variable} ${notoSerifBengali.variable} ${mina.variable}`} suppressHydrationWarning={true}>
+      <body suppressHydrationWarning={true}>
         <AuthProvider>
           <FilesProvider>
             <Header />
+            <GlobalCreateButton />
             {children}
             <Toaster />
           </FilesProvider>

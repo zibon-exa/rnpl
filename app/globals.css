@@ -68,9 +68,12 @@
     --color-ghost-white: 210 17% 98%;
     --color-light-gray: 210 14% 83%;
     --color-dark-orchid: 261 51% 51%;
-    --color-brand: 196 60% 56%; /* Brand color */
-    --color-brand-hover: 196 60% 50%; /* Brand color hover */
-    --color-brand-alt: 197 60% 56%; /* Brand color */
+    --color-brand: 196 60% 56%;
+    /* Brand color */
+    --color-brand-hover: 196 60% 50%;
+    /* Brand color hover */
+    --color-brand-alt: 197 60% 56%;
+    /* Brand color */
     --color-crimson: 354 70% 54%;
     --color-deep-pink: 332 79% 58%;
     --color-blue-violet: 263 90% 51%;
@@ -117,6 +120,7 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
     /* 
@@ -126,23 +130,25 @@
      */
     font-family: var(--font-inter), 'July Font', sans-serif;
   }
-  
+
   /* Serif font for official documents */
-  .font-serif { 
-    font-family: var(--font-playfair), serif; 
-  } 
-  
-  .font-cursive { 
-    font-family: var(--font-cursive), cursive; 
+  .font-serif {
+    font-family: var(--font-playfair), serif;
   }
-  
+
+  .font-cursive {
+    font-family: var(--font-cursive), cursive;
+  }
+
   /* Bangla fonts */
-  .font-bangla { 
-    font-family: 'July Font', sans-serif; 
+  .font-bangla {
+    font-family: 'July Font', sans-serif;
   }
+
   .font-bangla-serif {
     font-family: var(--font-noto-serif-bengali), serif;
   }
+
   .font-mina {
     font-family: var(--font-mina), sans-serif;
   }
@@ -229,7 +235,10 @@
   z-index: 2;
   position: absolute;
   content: "";
-  left: 0; right: 0; top: 0; bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
   background: rgba(200, 200, 255, 0.4);
   pointer-events: none;
 }
@@ -373,3 +382,37 @@ button[data-active="true"] {
   color: hsl(var(--color-brand));
 }
 
+/* Recharts Focus Fix - Remove unwanted focus outlines from charts */
+.recharts-wrapper,
+.recharts-surface,
+.recharts-layer,
+.recharts-sector,
+.recharts-curve,
+.recharts-dot,
+.recharts-active-dot,
+.recharts-default-tooltip {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* Aggressive reset for all elements within the chart wrapper */
+.recharts-wrapper * {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Ensure SVGs in general don't show focus outline when clicked */
+svg:focus,
+svg:focus-visible,
+svg:active {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Specific fix for Recharts surface which receives tabindex="0" */
+svg.recharts-surface:focus,
+svg.recharts-surface:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}

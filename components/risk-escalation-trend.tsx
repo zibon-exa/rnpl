@@ -44,7 +44,7 @@ export function RiskEscalationTrend({ data }: RiskEscalationTrendProps) {
   };
 
   return (
-    <Card className="bg-white border-slate-100 shadow-sm">
+    <Card className="bg-white border-slate-100 shadow">
       <CardHeader className="pb-3">
         <div className="flex items-center gap-1.5">
           <CardTitle className="text-lg font-semibold text-slate-800">
@@ -63,7 +63,7 @@ export function RiskEscalationTrend({ data }: RiskEscalationTrendProps) {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="h-80" tabIndex={-1} style={{ outline: 'none' }} role="img" aria-label="Risk and Escalation Trend Chart">
+        <div className="h-80" role="img" aria-label="Risk and Escalation Trend Chart">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart
               data={data}
@@ -83,8 +83,8 @@ export function RiskEscalationTrend({ data }: RiskEscalationTrendProps) {
               <XAxis
                 dataKey="month"
                 stroke="#64748b"
-                tick={{ 
-                  fill: '#64748b', 
+                tick={{
+                  fill: '#64748b',
                   fontSize: 12,
                   fontFamily: "Inter, 'July Font', sans-serif",
                   fontWeight: 500
@@ -92,19 +92,19 @@ export function RiskEscalationTrend({ data }: RiskEscalationTrendProps) {
               />
               <YAxis
                 stroke="#64748b"
-                tick={{ 
-                  fill: '#64748b', 
+                tick={{
+                  fill: '#64748b',
                   fontSize: 12,
                   fontFamily: "Inter, 'July Font', sans-serif",
                   fontWeight: 500
                 }}
               />
-              <Tooltip 
+              <Tooltip
                 content={<CustomTooltip />}
                 wrapperStyle={{ zIndex: 9999, pointerEvents: 'auto' }}
               />
               <Legend
-                wrapperStyle={{ 
+                wrapperStyle={{
                   paddingTop: '20px',
                   fontFamily: "Inter, 'July Font', sans-serif",
                   fontSize: '12px',

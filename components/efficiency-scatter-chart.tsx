@@ -56,7 +56,7 @@ export function EfficiencyScatterChart({ data }: EfficiencyScatterChartProps) {
   };
 
   return (
-    <Card className="bg-white border-slate-100 shadow-sm">
+    <Card className="bg-white border-slate-100 shadow">
       <CardHeader className="pb-3">
         <div className="flex items-center gap-1.5">
           <CardTitle className="text-lg font-semibold text-slate-800">
@@ -75,7 +75,7 @@ export function EfficiencyScatterChart({ data }: EfficiencyScatterChartProps) {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="h-80" tabIndex={-1} style={{ outline: 'none' }} role="img" aria-label="Efficiency vs Rework Quadrant Chart">
+        <div className="h-80" role="img" aria-label="Efficiency vs Rework Quadrant Chart">
           <ResponsiveContainer width="100%" height="100%">
             <ScatterChart
               margin={{ top: 40, right: 45, bottom: 30, left: 15 }}
@@ -85,9 +85,9 @@ export function EfficiencyScatterChart({ data }: EfficiencyScatterChartProps) {
                 type="number"
                 dataKey="x"
                 name="Return Rate"
-                label={{ 
-                  value: 'Return Rate (Quality)', 
-                  position: 'insideBottom', 
+                label={{
+                  value: 'Return Rate (Quality)',
+                  position: 'insideBottom',
                   offset: -5,
                   style: {
                     fontFamily: "Inter, 'July Font', sans-serif",
@@ -98,8 +98,8 @@ export function EfficiencyScatterChart({ data }: EfficiencyScatterChartProps) {
                 }}
                 domain={[0, 20]}
                 stroke="#64748b"
-                tick={{ 
-                  fill: '#64748b', 
+                tick={{
+                  fill: '#64748b',
                   fontSize: 11,
                   fontFamily: "Inter, 'July Font', sans-serif",
                   fontWeight: 500
@@ -109,9 +109,9 @@ export function EfficiencyScatterChart({ data }: EfficiencyScatterChartProps) {
                 type="number"
                 dataKey="y"
                 name="Average Speed"
-                label={{ 
-                  value: 'Avg Speed (Velocity)', 
-                  angle: -90, 
+                label={{
+                  value: 'Avg Speed (Velocity)',
+                  angle: -90,
                   position: 'left',
                   offset: 0,
                   style: {
@@ -124,14 +124,14 @@ export function EfficiencyScatterChart({ data }: EfficiencyScatterChartProps) {
                 }}
                 domain={[0, 8]}
                 stroke="#64748b"
-                tick={{ 
-                  fill: '#64748b', 
+                tick={{
+                  fill: '#64748b',
                   fontSize: 11,
                   fontFamily: "Inter, 'July Font', sans-serif",
                   fontWeight: 500
                 }}
               />
-              <Tooltip 
+              <Tooltip
                 content={<CustomTooltip />}
                 wrapperStyle={{ zIndex: 9999, pointerEvents: 'auto' }}
               />
@@ -140,8 +140,8 @@ export function EfficiencyScatterChart({ data }: EfficiencyScatterChartProps) {
                 x={medianReturnRate}
                 stroke="#94a3b8"
                 strokeDasharray="2 2"
-                label={{ 
-                  value: 'Median', 
+                label={{
+                  value: 'Median',
                   position: 'top',
                   offset: 5,
                   style: {
@@ -156,8 +156,8 @@ export function EfficiencyScatterChart({ data }: EfficiencyScatterChartProps) {
                 y={medianSpeed}
                 stroke="#94a3b8"
                 strokeDasharray="2 2"
-                label={{ 
-                  value: 'Median', 
+                label={{
+                  value: 'Median',
                   position: 'right',
                   offset: 5,
                   style: {

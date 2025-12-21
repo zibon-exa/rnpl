@@ -40,14 +40,14 @@ export function KpiSparklineCard({ data }: KpiSparklineCardProps) {
 
   const config = statusConfig[status];
   const TrendIcon = trend === 'up' ? TrendingUp : TrendingDown;
-  
+
   const trendColorClass = config.tailwindText;
 
   // Create a unique ID for the gradient to avoid conflicts between cards
   const gradientId = `gradient-${title.replace(/\s+/g, '-').toLowerCase()}`;
 
   return (
-    <Card className="bg-white border-slate-100 shadow-sm overflow-hidden">
+    <Card className="bg-white border-slate-100 shadow overflow-hidden">
       <CardContent className="p-0">
         <div className="p-4 pb-0">
           <div className="flex justify-between items-start mb-1">
