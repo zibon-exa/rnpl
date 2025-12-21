@@ -3,7 +3,6 @@ import "./globals.css"
 import { AuthProvider } from "@/lib/auth-context"
 import { FilesProvider } from "@/lib/files-context"
 import { Header } from "@/components/header"
-import { GlobalCreateButton } from "@/components/global-create-button"
 import { Toaster } from "@/components/ui/toaster"
 import { inter, playfairDisplay, dancingScript, notoSerifBengali, mina } from "@/lib/fonts"
 
@@ -27,7 +26,6 @@ export default function RootLayout({
         <AuthProvider>
           <FilesProvider>
             <Header />
-            <GlobalCreateButton />
             {children}
             <Toaster />
           </FilesProvider>
@@ -36,4 +34,3 @@ export default function RootLayout({
     </html>
   )
 }
-

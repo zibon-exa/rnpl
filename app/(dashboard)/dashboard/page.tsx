@@ -18,6 +18,12 @@ import { EfficiencyScatterChart } from '@/components/efficiency-scatter-chart';
 import { RiskEscalationTrend } from '@/components/risk-escalation-trend';
 import { FileThumbnailItem } from '@/components/file-thumbnail-item';
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import {
   kpiData,
   departmentData,
   blockerData,
@@ -131,13 +137,23 @@ export default function DashboardPage() {
             {/* Files Header */}
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-bold text-slate-900">Files</h2>
-              <Button
-                onClick={() => router.push('/create')}
-                className="text-white bg-[hsl(var(--color-brand))] hover:bg-[hsl(196,60%,50%)] transition-colors"
-              >
-                <Plus size={18} />
-                New
-              </Button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      size="icon"
+                      onClick={() => router.push('/create')}
+                      className="text-white bg-[hsl(var(--color-brand))] hover:bg-[hsl(var(--color-brand-hover))] shadow-sm transition-all active:scale-95 rounded-full h-10 w-10"
+                    >
+                      <Plus size={20} />
+                      <span className="sr-only">New File</span>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="left">
+                    <p>Create New File</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
 
             {/* Search Bar */}

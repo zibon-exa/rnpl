@@ -23,7 +23,13 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
-import { Search, Bell, Clock, CheckCircle, X, FileText, ArrowRight, AlertCircle, LayoutDashboard, Folder, Library, Archive, BarChart, HelpCircle, ChevronDown } from 'lucide-react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import { Search, Bell, Clock, CheckCircle, X, FileText, ArrowRight, AlertCircle, LayoutDashboard, Folder, Library, Archive, BarChart, HelpCircle, ChevronDown, Plus } from 'lucide-react';
 import { Notification } from '@/types/file';
 import { cn } from '@/lib/utils';
 import { matchesSearch } from '@/lib/search-utils';
@@ -355,8 +361,31 @@ export function Header() {
             )}
           </div>
 
-          {/* Notifications and User Profile */}
+          {/* Actions: New File, Notifications and User Profile */}
           <div className="flex items-center gap-2">
+            {/* New File Button */}
+            {pathname !== '/create' && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      asChild
+                      size="icon"
+                      className="h-10 w-10 mr-1 bg-[hsl(var(--color-brand))] hover:bg-[hsl(var(--color-brand-hover))] text-white shadow-sm transition-all active:scale-95 rounded-full"
+                    >
+                      <Link href="/create">
+                        <Plus size={20} />
+                        <span className="sr-only">New File</span>
+                      </Link>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">
+                    <p>Create New File</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
+
             {/* Notification Bell */}
             <div className="relative" ref={notificationRef}>
               <button
