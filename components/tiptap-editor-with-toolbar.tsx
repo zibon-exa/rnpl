@@ -17,20 +17,20 @@ import TaskItem from '@tiptap/extension-task-item';
 import Subscript from '@tiptap/extension-subscript';
 import Superscript from '@tiptap/extension-superscript';
 import { useEffect } from 'react';
-import { 
-  Bold, 
-  Italic, 
+import {
+  Bold,
+  Italic,
   Underline as UnderlineIcon,
   Strikethrough,
   AlignLeft,
   AlignCenter,
   AlignRight,
   AlignJustify,
-  List, 
-  ListOrdered, 
+  List,
+  ListOrdered,
   CheckSquare,
-  Heading1, 
-  Heading2, 
+  Heading1,
+  Heading2,
   Heading3,
   Quote,
   Highlighter,
@@ -54,6 +54,8 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import { Trash2 } from 'lucide-react';
+import { TextStyle } from '@tiptap/extension-text-style';
+import { Color } from '@tiptap/extension-color';
 
 interface TipTapEditorWithToolbarProps {
   content: string;
@@ -72,6 +74,8 @@ export function TipTapEditorWithToolbar({ content, onChange, placeholder, classN
         placeholder: currentPlaceholder,
       }),
       Underline,
+      TextStyle,
+      Color,
       TextAlign.configure({
         types: ['heading', 'paragraph'],
       }),
@@ -176,9 +180,9 @@ export function TipTapEditorWithToolbar({ content, onChange, placeholder, classN
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="sm" className="h-8 gap-1 font-normal px-2">
               {editor.isActive('heading', { level: 1 }) ? 'Heading 1' :
-               editor.isActive('heading', { level: 2 }) ? 'Heading 2' :
-               editor.isActive('heading', { level: 3 }) ? 'Heading 3' :
-               'Normal'}
+                editor.isActive('heading', { level: 2 }) ? 'Heading 2' :
+                  editor.isActive('heading', { level: 3 }) ? 'Heading 3' :
+                    'Normal'}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
@@ -267,9 +271,9 @@ export function TipTapEditorWithToolbar({ content, onChange, placeholder, classN
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="h-8 w-8">
               {editor.isActive({ textAlign: 'center' }) ? <AlignCenter size={16} /> :
-               editor.isActive({ textAlign: 'right' }) ? <AlignRight size={16} /> :
-               editor.isActive({ textAlign: 'justify' }) ? <AlignJustify size={16} /> :
-               <AlignLeft size={16} />}
+                editor.isActive({ textAlign: 'right' }) ? <AlignRight size={16} /> :
+                  editor.isActive({ textAlign: 'justify' }) ? <AlignJustify size={16} /> :
+                    <AlignLeft size={16} />}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
@@ -360,7 +364,7 @@ export function TipTapEditorWithToolbar({ content, onChange, placeholder, classN
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      
+
       {/* Editor Content */}
       <div className="focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:border-indigo-500 transition-all rounded-b-lg">
         <EditorContent editor={editor} />
