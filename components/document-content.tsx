@@ -5,6 +5,7 @@ interface DocumentContentProps {
   category?: string;
   documentBody?: string;
   sender?: string;
+  designation?: string;
   showPlaceholders?: boolean;
   language?: 'bn' | 'en';
 }
@@ -18,6 +19,7 @@ export function DocumentContent({
   category, 
   documentBody, 
   sender,
+  designation,
   showPlaceholders = true,
   language = 'bn'
 }: DocumentContentProps) {
@@ -45,16 +47,16 @@ export function DocumentContent({
       {/* Signature Area */}
       {sender && (
         <div className="mt-16 flex justify-end">
-          <div className="text-center space-y-1 font-bangla-serif">
-            <div className="h-12 w-48 mx-auto relative">
-              <span className={`absolute inset-0 flex items-center justify-center text-slate-800 text-sm select-none pointer-events-none ${language === 'bn' ? 'font-mina' : 'font-cursive'}`}>
-                {sender}
-              </span>
-              <div className="absolute bottom-0 left-0 right-0 border-b border-slate-300"></div>
-            </div>
-            <p className="text-[12px] text-slate-700">
-              {language === 'bn' ? 'কোম্পানি সচিব' : 'Company Secretary'}
+          <div className="text-center space-y-1 font-bangla-serif min-w-[200px]">
+            <div className="border-b border-slate-300 mb-2"></div>
+            <p className="text-sm font-semibold text-slate-900">
+              ({sender})
             </p>
+            {designation && (
+              <p className="text-[12px] text-slate-700">
+                {designation}
+              </p>
+            )}
             <p className="text-[12px] text-slate-700">
               {language === 'bn' ? 'আরএনপিএল' : 'RNPL'}
             </p>

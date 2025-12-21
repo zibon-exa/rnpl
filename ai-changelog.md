@@ -5,7 +5,117 @@ This file tracks all AI-assisted changes made to the project.
 ## Format
 - Date-Time: YYYY-MM-dd HH:mm:ss
 - Description: Brief description of changes
-- Files Modified: List of files changed
+
+## 2025-12-21 19:20:00
+- **Description**: Redesigned document signature area to follow a cleaner format (Divider, Name, Designation, RNPL) and ensured full language awareness (Bangla/English) across document creation and viewing.
+- **Files Modified**: 
+  - `components/document-content.tsx`
+  - `components/document-preview.tsx`
+  - `components/create-file-form.tsx`
+  - `app/(dashboard)/dashboard/files/[id]/page.tsx`
+
+## 2025-12-21 19:10:00
+- **Description**: Updated New File form to use real user database for recipients and show their actual designations (BN/EN) instead of just roles.
+- **Files Modified**: 
+  - `components/create-file-form.tsx`
+
+## 2025-12-21 19:00:00
+- **Description**: Increased top padding to 12px in list/compact thumbnails to ensure the paper is properly cropped at the bottom and has a better visual gap.
+- **Files Modified**: 
+  - `components/file-list-table.tsx`
+  - `components/file-thumbnail-item.tsx`
+
+## 2025-12-21 18:50:00
+- **Description**: Increased horizontal padding and reduced paper scale in list/compact thumbnails for a more spacious appearance.
+- **Files Modified**: 
+  - `components/file-list-table.tsx`
+  - `components/file-thumbnail-item.tsx`
+
+## 2025-12-21 18:40:00
+- **Description**: Reduced thumbnail height to 44px in list and compact views to better match the height of the name and reference container.
+- **Files Modified**: 
+  - `components/file-list-table.tsx`
+  - `components/file-thumbnail-item.tsx`
+
+## 2025-12-21 18:30:00
+- **Description**: Standardized thumbnail style in list and compact views to match the dashboard sidebar, including background image and consistent document preview positioning.
+- **Files Modified**: 
+  - `components/file-list-table.tsx`
+  - `components/file-thumbnail-item.tsx`
+
+## 2025-12-21 18:20:00
+- **Description**: Refined status display logic: removed status dots from grid view thumbnails and full-page table thumbnails; added full status badges to full-page file tables.
+- **Files Modified**: 
+  - `components/file-thumbnail-item.tsx`
+  - `components/file-list-table.tsx`
+
+## 2025-12-21 18:10:00
+- **Description**: Standardized grid card layout by pinning author and status to the bottom, ensuring consistency across varying title lengths.
+- **Files Modified**: 
+  - `components/file-thumbnail-item.tsx`
+
+## 2025-12-21 18:00:00
+- **Description**: Updated dashboard greeting to use the explicit Bangla name (`nameBn`) from the user database.
+- **Files Modified**: 
+  - `app/(dashboard)/dashboard/page.tsx`
+
+## 2025-12-21 17:50:00
+- **Description**: Implemented a comprehensive mock user database and updated the system to support multilingual user info.
+- **Files Modified**: 
+  - `types/user.ts` (Expanded User interface)
+  - `lib/mock-users.ts` (New user database)
+  - `lib/auth-context.tsx` (Updated login and migration logic)
+  - `lib/mock-data.ts` (Updated file sender/actor names)
+  - `lib/avatar-utils.ts` (Updated to support explicit avatar IDs)
+  - `components/header.tsx` (Updated user profile display)
+  - `components/file-thumbnail-item.tsx` (Updated avatar display)
+  - `components/file-list-table.tsx` (Updated avatar display)
+
+## 2025-12-21 17:40:00
+- **Description**: Replaced the custom list view with a formal `Table` component in `FileListTable` for better data density and organization in large spaces.
+- **Files Modified**: 
+  - `components/file-list-table.tsx`
+
+## 2025-12-21 17:30:00
+- **Description**: Implemented a new wide `list` variant for file items and updated FileListTable to use it for full-page views.
+- **Files Modified**: 
+  - `components/file-thumbnail-item.tsx`
+  - `components/file-list-table.tsx`
+
+## 2025-12-21 17:20:00
+- **Description**: Moved status dots to the exact bottom-right corner of file thumbnails, mimicking messenger-style online status indicators.
+- **Files Modified**: 
+  - `components/file-thumbnail-item.tsx`
+
+## 2025-12-21 17:15:00
+- **Description**: Adjusted list view (icon variant) thumbnail height to dynamically match the height of the content container using flexbox stretching.
+- **Files Modified**: 
+  - `components/file-thumbnail-item.tsx`
+
+## 2025-12-21 17:10:00
+- **Description**: Added a compact "dot" variant for status indicators and implemented it as an overlay on file thumbnails.
+- **Files Modified**: 
+  - `components/ui/status-badge.tsx`
+  - `components/file-thumbnail-item.tsx`
+
+## 2025-12-21 17:00:00
+- **Description**: Restructured list view (icon variant) to stack all info items vertically, including moving the status badge into the stack.
+- **Files Modified**: 
+  - `components/file-thumbnail-item.tsx`
+
+---
+## 2025-12-21 16:50:00
+- **Description**: Reduced thumbnail size in list view (icon variant) to 56x64px and adjusted preview scaling.
+- **Files Modified**: 
+  - `components/file-thumbnail-item.tsx`
+
+---
+
+## 2025-12-21 16:45:00
+- **Description**: Changed files sidebar to list view with thumbnails and updated default view in FileListTable to list.
+- **Files Modified**: 
+  - `app/(dashboard)/dashboard/page.tsx`
+  - `components/file-list-table.tsx`
 
 ---
 

@@ -36,8 +36,7 @@ export default function DashboardPage() {
   }
 
   const getGreeting = () => {
-    const banglaName = user.name.split('(')[0].trim();
-    return `স্বাগতম, ${banglaName}! আজ ${getCurrentDateBangla()}`;
+    return `স্বাগতম, ${user.nameBn}! আজ ${getCurrentDateBangla()}`;
   };
 
   const myFiles = getMyFiles();
@@ -177,7 +176,7 @@ export default function DashboardPage() {
                       key={file.id}
                       file={file}
                       onClick={handleOpenFile}
-                      variant="thumbnail"
+                      variant="icon"
                     />
                   ))}
                 </div>

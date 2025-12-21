@@ -9,6 +9,7 @@ interface DocumentPreviewProps {
   category?: string;
   documentBody?: string;
   sender?: string;
+  designation?: string;
   fileId?: string;
   date?: string;
   zoom?: number;
@@ -24,6 +25,7 @@ export function DocumentPreview({
   category, 
   documentBody, 
   sender,
+  designation,
   fileId,
   date,
   zoom = 1,
@@ -38,6 +40,7 @@ export function DocumentPreview({
           category={category}
           documentBody={documentBody}
           sender={sender}
+          designation={designation}
           showPlaceholders={true}
           language={language}
         />

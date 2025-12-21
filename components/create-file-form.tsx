@@ -8,7 +8,7 @@ import { DocumentPreview } from '@/components/document-preview';
 import { TipTapEditorWithToolbar } from '@/components/tiptap-editor-with-toolbar';
 import { Button } from '@/components/ui/button';
 import { Send, X, ArrowLeft, Calendar as CalendarIcon, Trash2, Plus, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,6 +17,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { mockUsers } from '@/lib/mock-users';
+import { getAvatarPath, getInitials } from '@/lib/avatar-utils';
 
 interface CreateFileFormProps {
   user: User;
@@ -32,12 +34,6 @@ const categoryOptions = [
   { key: 'ops', bn: 'কার্যক্রম', en: 'Operations' },
 ];
 
-const recipientOptions = [
-  { id: '1', nameBn: 'আরিফ হাসান', nameEn: 'Arif Hasan', designation: 'Reviewer', avatar: 'AH' },
-  { id: '2', nameBn: 'সাবরিনা রহমান', nameEn: 'Sabrina Rahman', designation: 'Approver', avatar: 'SR' },
-  { id: '3', nameBn: 'মাহির ইসলাম', nameEn: 'Maher Islam', designation: 'Approver', avatar: 'MI' },
-];
-
 export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFormProps) {
   const [formData, setFormData] = useState({ 
     title: '', 
@@ -47,9 +43,13 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFo
     documentBody: '',
     date: new Date().toISOString().slice(0,10),
     language: 'bn' as 'bn' | 'en',
-    sendTo: '2',
+    sendTo: 'user-004', // Default to Fatima Ahmed (Approver)
     sendCopies: [''],
   });
+
+  const recipientOptions = useMemo(() => {
+    return mockUsers.filter(u => u.role === 'Reviewer' || u.role === 'Approver');
+  }, []);
   const [reference, setReference] = useState('RNPL-0000');
   const [isEditingRef, setIsEditingRef] = useState(false);
   const [isEditingDate, setIsEditingDate] = useState(false);
@@ -181,27 +181,11 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFo
   
   // Get user name based on selected language
   const getUserName = (lang: 'bn' | 'en') => {
-    // Map current user's name to both languages
-    const nameMap: Record<string, { bn: string; en: string }> = {
-      'তৌফিক জোয়ার্দার': { bn: 'তৌফিক জোয়ার্দার', en: 'Toufique Joarder' },
-    };
-    const trimmedName = user.name.trim();
-    const userNames = nameMap[trimmedName];
-    
-    if (userNames) {
-      return lang === 'bn' ? userNames.bn : userNames.en;
-    }
-    
-    // Fallback: if name contains both languages in parentheses, extract the appropriate one
-    const match = trimmedName.match(/^(.+?)\s*\((.+?)\)$/);
-    if (match) {
-      const banglaName = match[1].trim();
-      const englishName = match[2].trim();
-      return lang === 'bn' ? banglaName : englishName;
-    }
-    
-    // Final fallback: return as-is (assume it's Bangla)
-    return trimmedName;
+    return lang === 'bn' ? user.nameBn : user.nameEn;
+  };
+
+  const getUserDesignation = (lang: 'bn' | 'en') => {
+    return lang === 'bn' ? user.designationBn : user.designationEn;
   };
   
   const getUserInitials = (lang: 'bn' | 'en') => {
@@ -353,15 +337,13 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFo
 
                 {/* Signature Area */}
                 <div className="mt-16 flex justify-end">
-                  <div className="text-center space-y-1 font-bangla-serif">
-                    <div className="h-12 w-48 mx-auto relative">
-                      <span className={`absolute inset-0 flex items-center justify-center text-slate-800 text-sm select-none pointer-events-none ${formData.language === 'bn' ? 'font-mina' : 'font-cursive'}`}>
-                        {getUserName(formData.language)}
-                      </span>
-                      <div className="absolute bottom-0 left-0 right-0 border-b border-slate-300"></div>
-                    </div>
+                  <div className="text-center space-y-1 font-bangla-serif min-w-[200px]">
+                    <div className="border-b border-slate-300 mb-2"></div>
+                    <p className="text-sm font-semibold text-slate-900">
+                      ({getUserName(formData.language)})
+                    </p>
                     <p className="text-[12px] text-slate-700">
-                      {formData.language === 'bn' ? 'কোম্পানি সচিব' : 'Company Secretary'}
+                      {getUserDesignation(formData.language)}
                     </p>
                     <p className="text-[12px] text-slate-700">
                       {formData.language === 'bn' ? 'আরএনপিএল' : 'RNPL'}
@@ -380,6 +362,7 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFo
                   category={displayCategory}
                   documentBody={formData.documentBody}
                   sender={getUserName(formData.language)}
+                  designation={getUserDesignation(formData.language)}
                   fileId={generateFileId(reference)}
                   date={formData.date}
                   zoom={previewZoom}
@@ -466,21 +449,23 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFo
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="w-full justify-between h-12 px-4">
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 overflow-hidden">
                     {(() => {
                       const sel = recipientOptions.find(r => r.id === formData.sendTo);
                       if (!sel) return <span className="text-slate-500">Select recipient...</span>;
                       const displayName = formData.language === 'bn' ? sel.nameBn : sel.nameEn;
+                      const displayDesignation = formData.language === 'bn' ? sel.designationBn : sel.designationEn;
                       return (
                         <>
-                          <Avatar className="h-8 w-8">
+                          <Avatar className="h-8 w-8 shrink-0">
+                            <AvatarImage src={getAvatarPath(sel.nameEn, sel.avatarId)} alt={sel.nameEn} />
                             <AvatarFallback className="bg-[hsl(var(--color-brand))] text-white text-xs font-semibold">
-                              {sel.avatar}
+                              {getInitials(sel.nameEn)}
                             </AvatarFallback>
                           </Avatar>
-                          <div className="flex flex-col items-start">
-                            <p className="text-sm font-semibold text-slate-900">{displayName}</p>
-                            <p className="text-xs text-slate-600">{sel.designation}</p>
+                          <div className="flex flex-col items-start min-w-0">
+                            <p className="text-sm font-semibold text-slate-900 truncate w-full text-left">{displayName}</p>
+                            <p className="text-xs text-slate-600 truncate w-full text-left">{displayDesignation}</p>
                           </div>
                         </>
                       );
@@ -496,16 +481,19 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFo
                     className="flex items-center gap-3 cursor-pointer py-2"
                     onClick={() => setFormData({ ...formData, sendTo: r.id })}
                   >
-                    <Avatar className="h-8 w-8">
+                    <Avatar className="h-8 w-8 shrink-0">
+                      <AvatarImage src={getAvatarPath(r.nameEn, r.avatarId)} alt={r.nameEn} />
                       <AvatarFallback className="bg-[hsl(var(--color-brand))] text-white text-xs font-semibold">
-                        {r.avatar}
+                        {getInitials(r.nameEn)}
                       </AvatarFallback>
                     </Avatar>
-                    <div className="flex flex-col items-start">
-                      <p className="text-sm font-semibold text-slate-900">
+                    <div className="flex flex-col items-start min-w-0">
+                      <p className="text-sm font-semibold text-slate-900 truncate w-full">
                         {formData.language === 'bn' ? r.nameBn : r.nameEn}
                       </p>
-                      <p className="text-xs text-slate-600">{r.designation}</p>
+                      <p className="text-xs text-slate-600 truncate w-full">
+                        {formData.language === 'bn' ? r.designationBn : r.designationEn}
+                      </p>
                     </div>
                   </DropdownMenuItem>
                 ))}

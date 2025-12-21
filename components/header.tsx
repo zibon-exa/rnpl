@@ -167,27 +167,6 @@ export function Header() {
       .slice(0, 2);
   };
 
-  const getEnglishName = () => {
-    // Map current user's name to English
-    const nameMap: Record<string, string> = {
-      'তৌফিক জোয়ার্দার': 'Toufique Joarder',
-    };
-    const trimmedName = user.name.trim();
-    
-    if (nameMap[trimmedName]) {
-      return nameMap[trimmedName];
-    }
-    
-    // Fallback: if name contains both languages in parentheses, extract English
-    const match = trimmedName.match(/^(.+?)\s*\((.+?)\)$/);
-    if (match) {
-      return match[2].trim();
-    }
-    
-    // Final fallback: return as-is (assume it's already English or use Bangla)
-    return trimmedName;
-  };
-
   const formatNotificationTime = (timestamp: Date) => {
     const now = new Date();
     const diff = now.getTime() - timestamp.getTime();
@@ -324,7 +303,7 @@ export function Header() {
                 <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                   <Avatar className="h-10 w-10">
                     <AvatarFallback className="bg-[hsl(196,60%,56%)] text-white">
-                      {getInitials(user.name)}
+                      {getInitials(user.nameEn)}
                     </AvatarFallback>
                   </Avatar>
                 </Button>
@@ -334,15 +313,15 @@ export function Header() {
                   <div className="flex items-center gap-3">
                     <Avatar className="h-10 w-10">
                       <AvatarFallback className="bg-[hsl(var(--color-brand))] text-white text-sm">
-                        {getInitials(user.name)}
+                        {getInitials(user.nameEn)}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col space-y-0.5">
-                      <p className="text-sm font-medium leading-none">{getEnglishName()}</p>
+                      <p className="text-sm font-medium leading-none">{user.nameEn}</p>
                       <p className="text-xs leading-none text-muted-foreground">
                         {user.email}
                       </p>
-                      <p className="text-xs leading-none text-muted-foreground">
+                      <p className="text-[10px] leading-none text-muted-foreground font-medium uppercase tracking-wider text-[hsl(var(--color-brand))]">
                         {user.role}
                       </p>
                     </div>

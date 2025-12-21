@@ -1,11 +1,20 @@
-export type UserRole = 'User' | 'Reviewer' | 'Approver' | 'Admin';
+export type UserRole = 'Author' | 'Reviewer' | 'Approver' | 'Admin';
+export type UserStatus = 'Active' | 'Inactive';
 
 export interface User {
   id: string;
-  name: string;
+  name: string; // Display name
+  nameEn: string;
+  nameBn: string;
   email: string;
   role: UserRole;
-  office?: string;
+  designationEn: string;
+  designationBn: string;
+  officeEn: string;
+  officeBn: string;
+  avatarId?: number; // 1 to 10
+  status: UserStatus;
+  dateJoined: string;
 }
 
 export interface AuthContextType {

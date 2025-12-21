@@ -1,12 +1,24 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import Image from 'next/image';
 import { Search, ChevronRight, Paperclip, Folder, Grid3x3, List, ChevronDown } from 'lucide-react';
 import { File } from '@/types/file';
 import { StatusBadge } from '@/components/ui/status-badge';
-import { DocumentPreview } from '@/components/document-preview';
 import { FileThumbnailItem } from '@/components/file-thumbnail-item';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { getAvatarPath, getInitials } from '@/lib/avatar-utils';
+import { DocumentPreview } from '@/components/document-preview';
+import { mockUsers } from '@/lib/mock-users';
 
 interface FileListTableProps {
   files: File[];
@@ -17,7 +29,7 @@ interface FileListTableProps {
 export function FileListTable({ files, title, onOpenFile }: FileListTableProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
   
   const filteredFiles = useMemo(() => {
     return files.filter(f => {
@@ -82,15 +94,112 @@ export function FileListTable({ files, title, onOpenFile }: FileListTableProps) 
             ))}
           </div>
         ) : (
-          <div className="space-y-3">
-            {filteredFiles.map(file => (
-              <FileThumbnailItem
-                key={file.id}
-                file={file}
-                onClick={onOpenFile}
-                variant="icon"
-              />
-            ))}
+          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+            <Table>
+              <TableHeader className="bg-slate-50/50">
+                <TableRow>
+                  <TableHead className="w-[80px]">File</TableHead>
+                  <TableHead>Title & ID</TableHead>
+                  <TableHead>Sender</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Attachments</TableHead>
+                  <TableHead className="w-[50px]"></TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredFiles.map((file) => (
+                  <TableRow 
+                    key={file.id} 
+                    className="cursor-pointer group"
+                    onClick={() => onOpenFile(file)}
+                  >
+                    <TableCell>
+                      <div className="relative overflow-hidden rounded-lg shrink-0" style={{ width: '40px', height: '44px' }}>
+                        <Image
+                          src="/imgs/thumb_bg.jpg"
+                          alt=""
+                          fill
+                          className="object-cover rounded-lg"
+                          priority={false}
+                        />
+                        <div className="absolute inset-0 flex items-start justify-center overflow-hidden" style={{ paddingTop: '8px', paddingLeft: '8px', paddingRight: '8px' }}>
+                          <div 
+                            className="relative"
+                            style={{ 
+                              transform: 'scale(0.035)',
+                              transformOrigin: 'top center',
+                              width: '794px',
+                              height: '1123px',
+                              pointerEvents: 'none'
+                            }}
+                          >
+                            <DocumentPreview
+                              title={file.title}
+                              category={file.category}
+                              documentBody={file.documentBody}
+                              sender={file.sender}
+                              fileId={file.id}
+                              date={file.lastUpdated}
+                              zoom={1}
+                              language="bn"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-slate-900 group-hover:text-[hsl(var(--color-brand-hover))] transition-colors font-bangla">
+                          {file.title}
+                        </span>
+                        <span className="text-[10px] text-slate-500 font-mono">{file.id}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <Avatar className="h-6 w-6">
+                          <AvatarImage 
+                            src={getAvatarPath(file.sender, mockUsers.find(u => u.nameEn === file.sender || u.nameBn === file.sender)?.avatarId)} 
+                            alt={file.sender} 
+                          />
+                          <AvatarFallback className="text-[10px]">
+                            {getInitials(file.sender)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="text-xs text-slate-600">{file.sender}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-[10px] text-slate-500 font-bangla px-2 py-0.5 bg-slate-50 rounded-md border border-slate-100">
+                        {file.category}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-xs text-slate-400 font-mono">{file.lastUpdated}</span>
+                    </TableCell>
+                    <TableCell>
+                      <StatusBadge status={file.status} />
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {file.attachments && file.attachments.length > 0 && (
+                        <div className="flex items-center justify-end gap-1 text-slate-400">
+                          <Paperclip size={14} />
+                          <span className="text-xs font-medium">{file.attachments.length}</span>
+                        </div>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <ChevronRight 
+                        size={16} 
+                        className="text-slate-300 group-hover:text-[hsl(var(--color-brand))] group-hover:translate-x-0.5 transition-all" 
+                      />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
         )
       ) : (

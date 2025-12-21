@@ -17,6 +17,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { getAvatarPath, getInitials } from '@/lib/avatar-utils';
 import { formatFileIdToBangla } from '@/lib/utils';
 import { DocumentHeader } from '@/components/document-header';
+import { mockUsers } from '@/lib/mock-users';
 import {
   Tooltip,
   TooltipContent,
@@ -303,17 +304,23 @@ export default function FileViewPage() {
 
                   {/* Signature Area */}
                   <div className="mt-16 flex justify-end">
-                    <div className="text-center space-y-1 font-bangla-serif">
-                      <div className="h-12 w-32 mx-auto relative">
-                        <span className="absolute inset-0 flex items-center justify-center text-slate-800 font-cursive text-sm select-none pointer-events-none">
-                          K. M. Tanvir
-                        </span>
-                        <div className="absolute bottom-0 left-0 right-0 border-b border-slate-300"></div>
-                      </div>
-                      <p className="text-[13px] font-semibold text-slate-900">(কাজী মোহাম্মদ তানভীর)</p>
-                      <p className="text-[12px] text-slate-700">কোম্পানি সচিব</p>
-                      <p className="text-[12px] text-slate-700">আরএনপিএল</p>
-                    </div>
+                    {(() => {
+                      const sender = mockUsers.find(u => u.nameEn === file.sender || u.nameBn === file.sender);
+                      return (
+                        <div className="text-center space-y-1 font-bangla-serif min-w-[200px]">
+                          <div className="border-b border-slate-300 mb-2"></div>
+                          <p className="text-sm font-semibold text-slate-900">
+                            ({sender?.nameBn || file.sender})
+                          </p>
+                          <p className="text-[12px] text-slate-700">
+                            {sender?.designationBn || 'কোম্পানি সচিব'}
+                          </p>
+                          <p className="text-[12px] text-slate-700">
+                            আরএনপিএল
+                          </p>
+                        </div>
+                      );
+                    })()}
                   </div>
 
                   {/* Distribution List */}

@@ -21,11 +21,19 @@ export function isFemaleName(name: string): boolean {
 }
 
 /**
- * Get avatar image path based on name
- * Uses a hash of the name to consistently map to avatar files
+ * Get avatar image path based on name or explicit avatar ID
+ * Uses a hash of the name to consistently map to avatar files if ID not provided
  * Female names use F-suffixed avatars
  */
-export function getAvatarPath(name: string): string {
+export function getAvatarPath(name: string, avatarId?: number): string {
+  // Available avatars map
+  const femaleAvatars = [3, 4, 5, 10];
+  
+  if (avatarId) {
+    const isFemale = femaleAvatars.includes(avatarId);
+    return `/avatars/${avatarId}${isFemale ? '-F' : ''}.png`;
+  }
+
   const isFemale = isFemaleName(name);
   
   // Create a simple hash from the name to consistently map to an avatar
@@ -36,12 +44,9 @@ export function getAvatarPath(name: string): string {
   }
   
   // Map hash to avatar number (1-10)
-  const avatarNumber = (Math.abs(hash) % 10) + 1;
-  
   // Available avatars: 1.png, 2.png, 6.png, 7.png, 8.png, 9.png (male)
   //                    3-F.png, 4-F.png, 5-F.png, 10-F.png (female)
   const maleAvatars = [1, 2, 6, 7, 8, 9];
-  const femaleAvatars = [3, 4, 5, 10];
   
   if (isFemale) {
     const femaleIndex = Math.abs(hash) % femaleAvatars.length;

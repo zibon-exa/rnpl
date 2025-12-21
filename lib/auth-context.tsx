@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import type { User, UserRole, AuthContextType } from '@/types/user';
+import { mockUsers } from './mock-users';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -18,13 +19,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (storedUser) {
         try {
           const parsedUser = JSON.parse(storedUser);
-          // Migrate old user data if needed
-          if (parsedUser.name === 'Abdul Karim' || parsedUser.name === 'Toufique Joarder') {
-            parsedUser.name = 'তৌফিক জোয়ার্দার';
-            parsedUser.email = 'toufique.joarder@rnpl.com';
-            localStorage.setItem('rnpl_user', JSON.stringify(parsedUser));
+          
+          // Migrate old user data to new mock database if needed
+          const matchedUser = mockUsers.find(u => 
+            u.id === parsedUser.id || 
+            u.nameEn === parsedUser.name || 
+            u.nameBn === parsedUser.name
+          );
+
+          if (matchedUser) {
+            setUser(matchedUser);
+            localStorage.setItem('rnpl_user', JSON.stringify(matchedUser));
+          } else {
+            setUser(parsedUser);
           }
-          setUser(parsedUser);
         } catch (error) {
           // Invalid stored data, clear it
           localStorage.removeItem('rnpl_user');
@@ -45,13 +53,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return false;
     }
 
-    const adminUser: User = {
-      id: 'admin-001',
-      name: 'তৌফিক জোয়ার্দার',
-      email: 'toufique.joarder@rnpl.com',
-      role: 'Admin',
-      office: 'Administration',
-    };
+    const adminUser = mockUsers.find(u => u.role === 'Admin') || mockUsers[0];
 
     setUser(adminUser);
     
