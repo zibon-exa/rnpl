@@ -120,9 +120,11 @@ export default function FileViewPage() {
     });
   };
 
-  const handleEditSuccess = (updatedFile: File) => {
+  const handleEditSuccess = (updatedFile: File, isDraft: boolean) => {
     updateFile(file.id, updatedFile);
-    setIsEditing(false);
+    if (!isDraft) {
+      setIsEditing(false);
+    }
   };
 
   if (isEditing) {
@@ -131,7 +133,7 @@ export default function FileViewPage() {
         <CreateFileForm
           user={user}
           initialFile={file}
-          onCreateSuccess={(f) => handleEditSuccess(f)}
+          onCreateSuccess={(f, isDraft) => handleEditSuccess(f, isDraft)}
           onCancel={() => setIsEditing(false)}
         />
       </div>
