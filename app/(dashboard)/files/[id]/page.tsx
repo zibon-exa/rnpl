@@ -333,21 +333,21 @@ export default function FileViewPage() {
 
       {/* Document Page */}
       <main className="bg-slate-50 flex-1 overflow-hidden">
-        <div className="flex h-full">
+        <div className="flex flex-col lg:flex-row h-full overflow-y-auto lg:overflow-hidden">
           {/* Main Content */}
-          <div className="flex-1 overflow-y-auto px-4 sm:px-14 pt-8 sm:pt-14 pb-32 custom-scrollbar">
+          <div className="flex-1 overflow-visible lg:overflow-y-auto px-4 sm:px-14 pt-8 sm:pt-14 pb-12 lg:pb-32 custom-scrollbar">
             <div className="max-w-4xl mx-auto">
               {/* White Paper Container */}
               <div className="bg-white rounded-lg shadow-lg border border-slate-200/50 min-h-full">
 
                 {/* Blog Post Style Content */}
-                <article className="prose prose-slate max-w-none relative z-10 p-8 sm:p-16">
+                <article className="prose prose-slate max-w-none relative z-10 p-6 sm:p-16">
                   {/* Document Header */}
                   <DocumentHeader fileId={file.id} date={file.lastUpdated} />
 
                   {/* Title */}
                   <header className="mb-8 text-center">
-                    <h1 className="text-2xl font-semibold text-slate-900 mb-4 leading-tight font-bangla-serif">
+                    <h1 className="text-xl sm:text-2xl font-semibold text-slate-900 mb-4 leading-tight font-bangla-serif">
                       {file.title}
                     </h1>
                   </header>
@@ -408,8 +408,8 @@ export default function FileViewPage() {
           </div>
 
           {/* Right Sidebar - Sticky Tabs */}
-          <aside className="w-[396px] min-w-[396px] shrink-0 hidden lg:block bg-white border-l border-slate-200">
-            <div className="h-full flex flex-col">
+          <aside className="w-full lg:w-[396px] lg:min-w-[396px] shrink-0 block bg-white border-t lg:border-t-0 lg:border-l border-slate-200">
+            <div className="h-[600px] lg:h-full flex flex-col">
               <Tabs defaultValue="comments" className="flex-1 flex flex-col h-full">
                 <TabsList className="grid grid-cols-2 w-full rounded-none border-b h-12 bg-white p-0">
                   <TabsTrigger

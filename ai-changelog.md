@@ -6,6 +6,29 @@ This file tracks all AI-assisted changes made to the project.
 - Date-Time: YYYY-MM-dd HH:mm:ss
 - Description: Brief description of changes
 
+## 2025-12-21 18:56:02
+- **Description**: Removed tooltip from the rainbow "New File" button and made the label text slightly smaller for a cleaner appearance.
+- **Files Modified**:
+  - `components/header.tsx` - Removed Tooltip wrapper from rainbow button, reduced label text size from `text-sm md:text-base` to `text-xs md:text-sm`, removed unused Tooltip imports
+
+## 2025-12-21 18:52:36
+- **Description**: Added visible "New File" label text to the rainbow button in the navbar. Changed button from icon-only to icon + text layout.
+- **Files Modified**:
+  - `components/header.tsx` - Updated RainbowButton to include "New File" text label alongside the Plus icon, changed size from "icon" to "default" to accommodate text
+
+## 2025-12-21 18:51:54
+- **Description**: Added Magic UI rainbow button effect to the "Create New File" button in the navbar. Implemented rainbow button component with animated rainbow gradient border effect.
+- **Files Created**:
+  - `components/ui/rainbow-button.tsx` - Rainbow button component from Magic UI with animated rainbow gradient effect
+- **Files Modified**:
+  - `components/header.tsx` - Replaced standard Button with RainbowButton for the Create New File button
+  - `app/globals.css` - Added rainbow color CSS variables (--color-1 through --color-5) for the rainbow gradient effect
+  - `tailwind.config.ts` - Added `rainbow` keyframe animation and `animate-rainbow` utility class for the animated gradient effect
+- **Features**:
+  - Animated rainbow gradient border effect on the Create New File button
+  - Smooth rainbow animation that cycles through colors continuously
+  - Maintains existing button functionality (tooltip, link, icon)
+
 ## 2025-12-21 19:30:00
 - **Description**: Replaced the previous embedded animated SVG in `UnderConstruction` component with a new standardized empty state vector from `public/vectors/empty_state.svg`. Switched implementation to use Next.js `Image` component for better performance.
 - **Files Modified**: 

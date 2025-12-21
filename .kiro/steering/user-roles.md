@@ -1,0 +1,95 @@
+---
+inclusion: manual
+---
+### 3. Approver
+**Permissions:**
+- All User permissions
+- Approve files (with optional comments)
+- Return files for correction (with required comments)
+- Forward files to other users
+- View all files pending their approval
+- Access approval workflow features
+
+**Restrictions:**
+- Cannot access admin panel
+- Cannot manage users
+- Cannot configure system settings
+
+**Visible Features:**
+- Dashboard
+- My Files
+- Create File
+- Pending Approvals (with approve/return actions)
+- Approve button
+- Return button
+- Forward button
+- Profile Settings
+
+**Hidden Features:**
+- Admin panel access
+- User management
+- System settings
+- Office management
+
+---
+
+### 4. Admin
+**Permissions:**
+- All Approver permissions
+- Full access to admin panel
+- User management (create, edit, activate/deactivate users)
+- Office/Unit management
+- File category management
+- System settings configuration
+- View system-wide dashboard with statistics
+- Reset user passwords
+- Role assignment
+
+**Visible Features:**
+- All user features
+- Admin Dashboard
+- User Management
+- Office Management
+- File Categories
+- System Settings
+- All approval workflow features
+
+**No Hidden Features:**
+- Admins have access to all features
+
+---
+
+## Role-Based UI Rules
+
+### Navigation Bar
+- **User/Reviewer**: Dashboard, My Files, Create File, Pending Approvals
+- **Approver**: Dashboard, My Files, Create File, Pending Approvals (with approve/return actions)
+- **Admin**: All above + Admin Panel link
+
+### File Actions
+- **User**: View, Edit (if Draft/Returned), Forward
+- **Reviewer**: View, Review, Forward
+- **Approver**: View, Edit, Forward, Approve, Return
+- **Admin**: All actions + Admin features
+
+### Dashboard Cards
+- **User/Reviewer**: Create New File, View My Files
+- **Approver**: Create New File, View My Files, Files Pending My Approval
+- **Admin**: All above + Admin Dashboard access
+
+### Workflow Rules
+- Only Approvers and Admins can approve files
+- Only Approvers and Admins can return files
+- Users cannot edit files once forwarded (until returned)
+- Notes are required when forwarding files
+- Return comments are required when returning files
+
+---
+
+## Implementation Notes
+
+- Role is stored in user session/context
+- UI components should check user role before rendering features
+- API endpoints should validate role permissions server-side
+- Role-based routing should redirect unauthorized access attempts
+- Admin panel requires separate authentication check

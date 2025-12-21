@@ -54,10 +54,8 @@ export function FileThumbnailItem({
           {/* Document Preview Overlay */}
           <div className="absolute inset-0 flex items-start justify-center overflow-hidden" style={{ paddingTop: '24px', paddingLeft: '16px', paddingRight: '16px' }}>
             <div
-              className="relative"
+              className="relative origin-top scale-[0.2] sm:scale-[0.25] md:scale-[0.30]"
               style={{
-                transform: 'scale(0.30)',
-                transformOrigin: 'top center',
                 width: '794px',
                 height: '1123px',
                 pointerEvents: 'none'
@@ -108,8 +106,8 @@ export function FileThumbnailItem({
           <div className="flex-1" />
 
           {/* Author and Status */}
-          <div className="flex items-center justify-between mt-auto">
-            <div className="flex items-center gap-2 min-w-0">
+          <div className="flex flex-col gap-2 mt-auto sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-2 w-full sm:w-auto min-w-0">
               <Avatar className="h-8 w-8 shrink-0">
                 <AvatarImage
                   src={getAvatarPath(file.sender, mockUsers.find(u => u.nameEn === file.sender || u.nameBn === file.sender)?.avatarId)}
@@ -121,7 +119,7 @@ export function FileThumbnailItem({
               </Avatar>
               <span className="text-sm text-slate-500 truncate min-w-0">{file.sender}</span>
             </div>
-            {showStatus && <StatusBadge status={file.status} />}
+            {showStatus && <StatusBadge status={file.status} className="self-start sm:self-auto" />}
           </div>
         </div>
       </div>
@@ -186,7 +184,7 @@ export function FileThumbnailItem({
             {file.title}
           </h4>
 
-          <div className="flex items-center gap-2 text-[10px] text-slate-500">
+          <div className="flex items-center gap-2 text-xs text-slate-500">
             <span className="font-mono">{file.id}</span>
             <span className="w-1 h-1 rounded-full bg-slate-300"></span>
             <div className="flex items-center gap-1.5">
@@ -195,7 +193,7 @@ export function FileThumbnailItem({
                   src={getAvatarPath(file.sender, mockUsers.find(u => u.nameEn === file.sender || u.nameBn === file.sender)?.avatarId)}
                   alt={file.sender}
                 />
-                <AvatarFallback className="text-[8px]">
+                <AvatarFallback className="text-[9px]">
                   {getInitials(file.sender)}
                 </AvatarFallback>
               </Avatar>
@@ -203,7 +201,7 @@ export function FileThumbnailItem({
             </div>
           </div>
 
-          <div className="flex items-center gap-2 text-[10px] text-slate-500">
+          <div className="flex items-center gap-2 text-xs text-slate-500">
             <span>{file.category}</span>
             <span className="w-1 h-1 rounded-full bg-slate-300"></span>
             <span className="font-mono">{file.lastUpdated}</span>
@@ -211,7 +209,7 @@ export function FileThumbnailItem({
               <>
                 <span className="w-1 h-1 rounded-full bg-slate-300"></span>
                 <div className="flex items-center gap-1">
-                  <Paperclip size={10} />
+                  <Paperclip size={12} />
                   <span>{file.attachments.length}</span>
                 </div>
               </>
@@ -220,7 +218,7 @@ export function FileThumbnailItem({
               <>
                 <span className="w-1 h-1 rounded-full bg-slate-300"></span>
                 <div className="flex items-center gap-1">
-                  <MessageSquare size={10} />
+                  <MessageSquare size={12} />
                   <span>{file.comments.length}</span>
                 </div>
               </>

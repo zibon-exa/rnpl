@@ -5,7 +5,7 @@ import { useFiles } from '@/lib/files-context';
 import { StatCard } from '@/components/ui/stat-card';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Plus, Folder, CheckCircle, ArrowRight, FileText, Clock, RotateCcw, ChevronRight, Paperclip, Search } from 'lucide-react';
+import { Folder, CheckCircle, ArrowRight, FileText, Clock, RotateCcw, ChevronRight, Paperclip, Search } from 'lucide-react';
 import { File } from '@/types/file';
 import { Button } from '@/components/ui/button';
 import { getCurrentDateBangla } from '@/lib/utils';
@@ -14,19 +14,15 @@ import { StatusBadge } from '@/components/ui/status-badge';
 import { KpiSparklineCard } from '@/components/kpi-sparkline-card';
 import { DepartmentHeatmap } from '@/components/department-heatmap';
 import { BlockerList } from '@/components/blocker-list';
+import { DelayedFilesList } from '@/components/delayed-files-list';
 import { EfficiencyScatterChart } from '@/components/efficiency-scatter-chart';
 import { RiskEscalationTrend } from '@/components/risk-escalation-trend';
 import { FileThumbnailItem } from '@/components/file-thumbnail-item';
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
-import {
   kpiData,
   departmentData,
   blockerData,
+  delayedFilesData,
   efficiencyData,
   riskTrendData,
 } from '@/lib/dashboard-data';
@@ -72,21 +68,21 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-slate-50/50 flex flex-col">
-      <main className="flex-1 flex overflow-hidden">
+      <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
         {/* Left Pane - Dashboard */}
-        <div className="flex-1 overflow-y-auto">
-          <div className="max-w-7xl mx-auto py-8 px-6">
-            <div className="space-y-8 animate-in fade-in duration-500">
+        <div className="flex-1 overflow-y-auto w-full">
+          <div className="max-w-7xl mx-auto py-6 md:py-8 px-4 md:px-6">
+            <div className="space-y-6 md:space-y-8 animate-in fade-in duration-500">
               {/* Header Section */}
               <div>
-                <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
-                <p className="text-slate-500 mt-1 font-bangla">
+                <h1 className="text-xl md:text-2xl font-bold text-slate-900">Dashboard</h1>
+                <p className="text-slate-500 mt-1 font-bangla text-sm md:text-base">
                   {getGreeting()}
                 </p>
               </div>
 
               {/* First Row: Essential Stats */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                 <StatCard
                   title="My Files"
                   value={myFilesCount}
@@ -116,46 +112,24 @@ export default function DashboardPage() {
               </div>
 
               {/* Second Row: KPI Cards */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                 {kpiData.map((kpi, index) => (
                   <KpiSparklineCard key={index} data={kpi} />
                 ))}
               </div>
 
-              {/* Charts Row: Heatmap and Blockers */}
+              {/* Charts Row: Heatmap and Delayed Files */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <DepartmentHeatmap data={departmentData} />
-                <BlockerList data={blockerData} />
+                <DelayedFilesList data={delayedFilesData} />
               </div>
             </div>
           </div>
         </div>
 
         {/* Right Pane - Files Sidebar */}
-        <div className="w-[396px] min-w-[396px] border-l border-slate-200 bg-white overflow-y-auto">
+        <div className="w-full lg:w-[396px] lg:min-w-[396px] border-t lg:border-t-0 lg:border-l border-slate-200 bg-white overflow-y-auto">
           <div className="p-6 space-y-6">
-            {/* Files Header */}
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-bold text-slate-900">Files</h2>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      size="icon"
-                      onClick={() => router.push('/create')}
-                      className="text-white bg-[hsl(var(--color-brand))] hover:bg-[hsl(var(--color-brand-hover))] shadow-sm transition-all active:scale-95 rounded-full h-10 w-10"
-                    >
-                      <Plus size={20} />
-                      <span className="sr-only">New File</span>
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent side="left">
-                    <p>Create New File</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-
             {/* Search Bar */}
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
@@ -164,7 +138,7 @@ export default function DashboardPage() {
                 placeholder="Search Files"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                className="flex h-10 w-full rounded-full border border-slate-200 bg-white px-3 py-2 pl-10 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/20 focus-visible:border-indigo-500 focus:bg-white transition-all"
               />
             </div>
 

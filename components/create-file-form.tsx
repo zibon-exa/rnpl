@@ -257,11 +257,11 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel, initialFile }:
   }, [viewMode, previewZoom]);
 
   return (
-    <div className="flex h-full">
+    <div className="flex flex-col lg:flex-row h-full overflow-y-auto lg:overflow-hidden">
       {/* Main Document Editor */}
-      <div className="flex-1 flex flex-col bg-slate-50 overflow-hidden">
+      <div className="flex-1 flex flex-col bg-slate-50 overflow-hidden min-h-[500px] lg:min-h-0">
         {/* Top Bar */}
-        <div className="px-6 py-3 border-b border-slate-200 bg-white flex items-center justify-between">
+        <div className="px-4 lg:px-6 py-3 border-b border-slate-200 bg-white flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <Button variant="ghost" size="icon" onClick={onCancel} aria-label="Back">
               <ArrowLeft size={18} />
@@ -275,41 +275,36 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel, initialFile }:
               )}
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 overflow-x-auto max-w-full pb-1 lg:pb-0 hide-scrollbar">
             {viewMode === 'edit' && (
-              <Tabs value={formData.language} onValueChange={(val) => setFormData({ ...formData, language: val as 'bn' | 'en' })} className="w-auto">
+              <Tabs value={formData.language} onValueChange={(val) => setFormData({ ...formData, language: val as 'bn' | 'en' })} className="w-auto shrink-0">
                 <TabsList className="grid grid-cols-2 w-[160px]">
                   <TabsTrigger value="bn">বাংলা</TabsTrigger>
                   <TabsTrigger value="en">English</TabsTrigger>
                 </TabsList>
               </Tabs>
             )}
-            <Tabs value={viewMode} onValueChange={(val) => setViewMode(val as 'edit' | 'preview')} className="w-auto">
+            <Tabs value={viewMode} onValueChange={(val) => setViewMode(val as 'edit' | 'preview')} className="w-auto shrink-0">
               <TabsList className="grid grid-cols-2 w-[160px]">
                 <TabsTrigger value="edit">Edit</TabsTrigger>
                 <TabsTrigger value="preview">Preview</TabsTrigger>
               </TabsList>
             </Tabs>
-            {isSaving && (
-              <span className="text-xs text-slate-500">Saving...</span>
-            )}
-            {isSaving && (
-              <span className="text-xs text-slate-500">Saving...</span>
-            )}
-            {!isSaving && lastSaved && (
-              <span className="text-xs text-slate-500">
-                Saved {lastSaved.toLocaleTimeString()}
-              </span>
-            )}
+            <div className="hidden sm:flex items-center gap-2 text-xs text-slate-500 whitespace-nowrap">
+              {isSaving && <span>Saving...</span>}
+              {!isSaving && lastSaved && (
+                <span>Saved {lastSaved.toLocaleTimeString()}</span>
+              )}
+            </div>
           </div>
         </div>
 
         {/* Document Editor Content */}
         {viewMode === 'edit' ? (
-          <div className="flex-1 overflow-y-auto custom-scrollbar flex items-start justify-center pt-8 pb-32 px-8">
+          <div className="flex-1 overflow-y-auto custom-scrollbar flex items-start justify-center pt-4 lg:pt-8 pb-32 px-4 lg:px-8">
             <div className="max-w-4xl w-full">
               {/* White Paper Container */}
-              <div className="bg-white rounded-lg shadow-lg border border-slate-200/50 p-12">
+              <div className="bg-white rounded-lg shadow-lg border border-slate-200/50 p-6 md:p-12">
                 {/* Document Header */}
                 <DocumentHeader
                   fileId={generateFileId(reference)}
@@ -333,7 +328,7 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel, initialFile }:
                     value={formData.title}
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                     placeholder={formData.language === 'bn' ? 'বিষয়: এখানে বিষয় লিখুন...' : 'Subject: Enter subject here...'}
-                    className="w-full text-2xl font-semibold text-slate-900 mb-4 leading-tight font-bangla-serif border-none outline-none bg-transparent focus:ring-0 placeholder:text-slate-400 text-center resize-none overflow-hidden"
+                    className="w-full text-xl md:text-2xl font-semibold text-slate-900 mb-4 leading-tight font-bangla-serif border-none outline-none bg-transparent focus:ring-0 placeholder:text-slate-400 text-center resize-none overflow-hidden"
                     rows={1}
                   />
                 </div>
@@ -366,9 +361,9 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel, initialFile }:
             </div>
           </div>
         ) : (
-          <div className="flex-1 overflow-y-auto custom-scrollbar relative">
-            <div ref={previewContainerRef} className="flex items-start justify-center pt-8 pb-32 px-8 min-h-full relative">
-              <div className="relative">
+          <div className="flex-1 overflow-auto custom-scrollbar relative">
+            <div ref={previewContainerRef} className="flex items-start justify-center pt-4 lg:pt-8 pb-32 px-4 lg:px-8 min-h-full relative">
+              <div className="relative w-full flex justify-center">
                 <DocumentPreview
                   title={formData.title}
                   category={displayCategory}
@@ -426,14 +421,14 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel, initialFile }:
       </div>
 
       {/* Right Sidebar - Metadata */}
-      <div className="w-80 border-l border-slate-200 bg-white flex flex-col">
+      <div className="w-full lg:w-80 border-t lg:border-t-0 lg:border-l border-slate-200 bg-white flex flex-col h-auto lg:h-full">
         {/* Sidebar Header */}
         <div className="px-6 py-4 border-b border-slate-100">
           <h3 className="text-sm font-semibold text-slate-900">Document Settings</h3>
         </div>
 
         {/* Sidebar Content - Scrollable */}
-        <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5 custom-scrollbar">
+        <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5 custom-scrollbar min-h-[300px] lg:min-h-0">
           {/* Category */}
           <div>
             <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">

@@ -123,7 +123,7 @@ export const departmentData: DepartmentData[] = [
   },
 ];
 
-// Blocker List Data
+// Blocker List Data (Legacy - keeping for backward compatibility)
 export interface BlockerData {
   rank: number;
   name: string;
@@ -179,6 +179,71 @@ export const blockerData: BlockerData[] = [
     avatarId: 5,
     filesPending: 3,
     hoursPending: 73,
+  },
+];
+
+// Delayed Files Data - Using existing files with calculated delay
+export interface DelayedFileData {
+  id: string;
+  title: string;
+  category: string;
+  sender: string;
+  status: 'Draft' | 'Pending' | 'In Review' | 'Approved' | 'Returned';
+  delayedDays: number;
+  lastUpdated: string;
+  documentBody?: string;
+}
+
+export const delayedFilesData: DelayedFileData[] = [
+  {
+    id: 'RNPL-1001',
+    title: 'চতুর্থ প্রান্তিক বাজেট বৈচিত্র্য প্রতিবেদন',
+    category: 'অর্থ',
+    sender: 'Rashida Begum',
+    status: 'Pending',
+    delayedDays: 14,
+    lastUpdated: '2025-12-07',
+    documentBody: 'বিষয়: চতুর্থ প্রান্তিক (অক্টোবর-ডিসেম্বর ২০২৫) আর্থিক কার্যকারিতা পর্যালোচনা',
+  },
+  {
+    id: 'RNPL-1003',
+    title: 'অফিস স্পেস সংস্কার প্রস্তাব',
+    category: 'প্রশাসন',
+    sender: 'Fatima Ahmed',
+    status: 'Returned',
+    delayedDays: 19,
+    lastUpdated: '2025-12-02',
+    documentBody: 'প্রস্তাবিত প্রকল্প: তৃতীয় তলার অফিস স্পেস সংস্কার',
+  },
+  {
+    id: 'RNPL-1005',
+    title: 'মার্কেটিং ক্যাম্পেইন লঞ্চ পরিকল্পনা',
+    category: 'প্রশাসন',
+    sender: 'Nusrat Jahan',
+    status: 'Pending',
+    delayedDays: 17,
+    lastUpdated: '2025-12-04',
+    documentBody: 'ক্যাম্পেইন: Q1 2026 Enterprise Feature Launch Campaign',
+  },
+  {
+    id: 'RNPL-1007',
+    title: 'Employee Training Program Proposal',
+    category: 'মানবসম্পদ',
+    sender: 'Sharmin Akter',
+    status: 'Pending',
+    delayedDays: 15,
+    lastUpdated: '2025-12-06',
+    documentBody: 'Proposal: Technical Skills Enhancement Program - Q1 2026',
+  },
+  {
+    id: 'RNPL-1004',
+    title: 'সার্ভার আপগ্রেড অনুরোধ',
+    category: 'আইটি',
+    sender: 'Toufique Joarder',
+    status: 'Draft',
+    delayedDays: 18,
+    lastUpdated: '2025-12-03',
+    documentBody: 'বিষয়: প্রাথমিক কম্পিউট ক্লাস্টার সম্প্রসারণ',
   },
 ];
 

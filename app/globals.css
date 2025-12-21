@@ -91,6 +91,13 @@
     --color-dark-gray-1: 30 3% 15%;
     --color-black: 0 0% 0%;
     --color-black-1: 0 0% 1%;
+
+    /* Rainbow colors for Magic UI rainbow button */
+    --color-1: #ff0080;
+    --color-2: #ff8c00;
+    --color-3: #40e0d0;
+    --color-4: #ff0080;
+    --color-5: #ff8c00;
   }
 
   .dark {

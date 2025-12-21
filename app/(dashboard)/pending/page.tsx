@@ -24,7 +24,7 @@ export default function PendingApprovalsPage() {
 
   return (
     <div className="min-h-screen bg-slate-50/50">
-      <main className="max-w-7xl mx-auto py-8 px-6">
+      <main className="max-w-7xl mx-auto py-8 px-4 md:px-6">
         {/* Summary Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="bg-white p-4 rounded-xl shadow border border-slate-100 flex items-center gap-4">
