@@ -4,7 +4,7 @@ import { matchesSearch } from '@/lib/search-utils';
 
 import { useState, useMemo } from 'react';
 import Image from 'next/image';
-import { Search, ChevronRight, Paperclip, Folder, Grid3x3, List, ChevronDown, FileText } from 'lucide-react';
+import { Search, ChevronRight, Paperclip, Folder, Grid3x3, List, ChevronDown, FileText, MessageSquare } from 'lucide-react';
 import { File } from '@/types/file';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { FileThumbnailItem } from '@/components/file-thumbnail-item';
@@ -106,6 +106,7 @@ export function FileListTable({ files, title, onOpenFile }: FileListTableProps) 
                   <TableHead>Date</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="text-right">Attachments</TableHead>
+                  <TableHead className="text-right">Comments</TableHead>
                   <TableHead className="w-[50px]"></TableHead>
                 </TableRow>
               </TableHeader>
@@ -123,7 +124,7 @@ export function FileListTable({ files, title, onOpenFile }: FileListTableProps) 
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-col">
-                        <span className="font-semibold text-slate-900 group-hover:text-[hsl(var(--color-brand-hover))] transition-colors font-bangla">
+                        <span className="font-semibold text-slate-900 group-hover:text-[hsl(var(--color-brand-hover))] transition-colors">
                           {file.title}
                         </span>
                         <span className="text-[10px] text-slate-500 font-mono">{file.id}</span>
@@ -144,7 +145,7 @@ export function FileListTable({ files, title, onOpenFile }: FileListTableProps) 
                       </div>
                     </TableCell>
                     <TableCell>
-                      <span className="text-[10px] text-slate-500 font-bangla px-2 py-0.5 bg-slate-50 rounded-md border border-slate-100">
+                      <span className="text-[10px] text-slate-500 px-2 py-0.5 bg-slate-50 rounded-md border border-slate-100">
                         {file.category}
                       </span>
                     </TableCell>
@@ -159,6 +160,14 @@ export function FileListTable({ files, title, onOpenFile }: FileListTableProps) 
                         <div className="flex items-center justify-end gap-1 text-slate-400">
                           <Paperclip size={14} />
                           <span className="text-xs font-medium">{file.attachments.length}</span>
+                        </div>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {file.comments && file.comments.length > 0 && (
+                        <div className="flex items-center justify-end gap-1 text-slate-400">
+                          <MessageSquare size={14} />
+                          <span className="text-xs font-medium">{file.comments.length}</span>
                         </div>
                       )}
                     </TableCell>

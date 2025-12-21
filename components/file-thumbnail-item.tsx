@@ -1,6 +1,6 @@
 'use client';
 
-import { Paperclip } from 'lucide-react';
+import { Paperclip, MessageSquare } from 'lucide-react';
 import Image from 'next/image';
 import { File } from '@/types/file';
 import { StatusBadge } from '@/components/ui/status-badge';
@@ -80,21 +80,27 @@ export function FileThumbnailItem({
         {/* File Info - Below preview */}
         <div className="flex flex-col gap-3 p-4 flex-1">
           {/* Title - Large, bold */}
-          <h4 className="text-sm font-bold text-slate-900 line-clamp-2 group-hover:text-[hsl(var(--color-brand-hover))] transition-colors font-bangla">
+          <h4 className="text-sm font-bold text-slate-900 line-clamp-2 group-hover:text-[hsl(var(--color-brand-hover))] transition-colors">
             {file.title}
           </h4>
 
           {/* ID and Attachments */}
           <div className="flex items-center gap-2 text-xs text-slate-500">
             <span className="font-mono">{file.id}</span>
+            {(file.attachments && file.attachments.length > 0 || file.comments && file.comments.length > 0) && (
+              <span className="w-1 h-1 rounded-full bg-slate-300"></span>
+            )}
             {file.attachments && file.attachments.length > 0 && (
-              <>
-                <span className="w-1 h-1 rounded-full bg-slate-300"></span>
-                <div className="flex items-center gap-1">
-                  <Paperclip size={14} />
-                  <span className="font-medium">{file.attachments.length}</span>
-                </div>
-              </>
+              <div className="flex items-center gap-1">
+                <Paperclip size={14} />
+                <span className="font-medium">{file.attachments.length}</span>
+              </div>
+            )}
+            {file.comments && file.comments.length > 0 && (
+              <div className="flex items-center gap-1 ml-1">
+                <MessageSquare size={14} />
+                <span className="font-medium">{file.comments.length}</span>
+              </div>
             )}
           </div>
 
@@ -176,7 +182,7 @@ export function FileThumbnailItem({
 
         {/* File Info - Vertical Stack */}
         <div className="flex-1 min-w-0 flex flex-col gap-1">
-          <h4 className="text-sm font-semibold text-slate-900 truncate group-hover:text-[hsl(var(--color-brand-hover))] transition-colors font-bangla">
+          <h4 className="text-sm font-semibold text-slate-900 truncate group-hover:text-[hsl(var(--color-brand-hover))] transition-colors">
             {file.title}
           </h4>
 
@@ -198,7 +204,7 @@ export function FileThumbnailItem({
           </div>
 
           <div className="flex items-center gap-2 text-[10px] text-slate-500">
-            <span className="font-bangla">{file.category}</span>
+            <span>{file.category}</span>
             <span className="w-1 h-1 rounded-full bg-slate-300"></span>
             <span className="font-mono">{file.lastUpdated}</span>
             {file.attachments && file.attachments.length > 0 && (
@@ -207,6 +213,15 @@ export function FileThumbnailItem({
                 <div className="flex items-center gap-1">
                   <Paperclip size={10} />
                   <span>{file.attachments.length}</span>
+                </div>
+              </>
+            )}
+            {file.comments && file.comments.length > 0 && (
+              <>
+                <span className="w-1 h-1 rounded-full bg-slate-300"></span>
+                <div className="flex items-center gap-1">
+                  <MessageSquare size={10} />
+                  <span>{file.comments.length}</span>
                 </div>
               </>
             )}
@@ -268,7 +283,7 @@ export function FileThumbnailItem({
 
         {/* Compact Info */}
         <div className="flex-1 min-w-0">
-          <h4 className="text-xs font-semibold text-slate-900 truncate group-hover:text-[hsl(var(--color-brand-hover))] transition-colors font-bangla">
+          <h4 className="text-xs font-semibold text-slate-900 truncate group-hover:text-[hsl(var(--color-brand-hover))] transition-colors">
             {file.title}
           </h4>
           <p className="text-[10px] text-slate-500 truncate flex items-center gap-1.5 mt-0.5">
@@ -333,7 +348,7 @@ export function FileThumbnailItem({
 
         {/* Title and ID */}
         <div className="flex-1 min-w-0">
-          <h4 className="text-sm font-semibold text-slate-900 truncate group-hover:text-[hsl(var(--color-brand-hover))] transition-colors font-bangla">
+          <h4 className="text-sm font-semibold text-slate-900 truncate group-hover:text-[hsl(var(--color-brand-hover))] transition-colors">
             {file.title}
           </h4>
           <span className="text-[10px] text-slate-500 font-mono">{file.id}</span>
@@ -355,7 +370,7 @@ export function FileThumbnailItem({
 
         {/* Category */}
         <div className="w-32 shrink-0">
-          <span className="text-[10px] text-slate-500 font-bangla px-2 py-0.5 bg-slate-50 rounded-md border border-slate-100">
+          <span className="text-[10px] text-slate-500 px-2 py-0.5 bg-slate-50 rounded-md border border-slate-100">
             {file.category}
           </span>
         </div>
@@ -365,12 +380,18 @@ export function FileThumbnailItem({
           <span className="text-xs text-slate-400 font-mono">{file.lastUpdated}</span>
         </div>
 
-        {/* Attachments */}
-        <div className="w-12 shrink-0 flex justify-end">
+        {/* Attachments & Comments */}
+        <div className="w-24 shrink-0 flex justify-end gap-3 text-slate-400">
           {file.attachments && file.attachments.length > 0 && (
-            <div className="flex items-center gap-1 text-slate-400">
+            <div className="flex items-center gap-1">
               <Paperclip size={14} />
               <span className="text-xs font-medium">{file.attachments.length}</span>
+            </div>
+          )}
+          {file.comments && file.comments.length > 0 && (
+            <div className="flex items-center gap-1">
+              <MessageSquare size={14} />
+              <span className="text-xs font-medium">{file.comments.length}</span>
             </div>
           )}
         </div>

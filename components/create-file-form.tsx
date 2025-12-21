@@ -7,7 +7,7 @@ import { DocumentHeader } from '@/components/document-header';
 import { DocumentPreview } from '@/components/document-preview';
 import { TipTapEditorWithToolbar } from '@/components/tiptap-editor-with-toolbar';
 import { Button } from '@/components/ui/button';
-import { Send, X, ArrowLeft, Calendar as CalendarIcon, Trash2, Plus, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
+import { Send, X, ArrowLeft, Calendar as CalendarIcon, Trash2, Plus, ZoomIn, ZoomOut, RotateCcw, File as FileIcon } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -24,6 +24,7 @@ interface CreateFileFormProps {
   user: User;
   onCreateSuccess: (file: File, isDraft: boolean) => void;
   onCancel?: () => void;
+  initialFile?: File;
 }
 
 const categoryOptions = [
@@ -34,23 +35,23 @@ const categoryOptions = [
   { key: 'ops', bn: 'কার্যক্রম', en: 'Operations' },
 ];
 
-export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFormProps) {
-  const [formData, setFormData] = useState({ 
-    title: '', 
-    summary: '', 
-    category: '', 
-    tags: '', 
-    documentBody: '',
-    date: new Date().toISOString().slice(0,10),
-    language: 'bn' as 'bn' | 'en',
-    sendTo: 'user-004', // Default to Fatima Ahmed (Approver)
-    sendCopies: [''],
+export function CreateFileForm({ user, onCreateSuccess, onCancel, initialFile }: CreateFileFormProps) {
+  const [formData, setFormData] = useState({
+    title: initialFile?.title || '',
+    summary: initialFile?.summary || '',
+    category: initialFile?.category || '',
+    tags: initialFile?.tags || '',
+    documentBody: initialFile?.documentBody || '',
+    date: initialFile?.lastUpdated || new Date().toISOString().slice(0, 10),
+    language: (initialFile?.language as 'bn' | 'en') || 'bn',
+    sendTo: initialFile?.sendTo || 'user-004',
+    sendCopies: initialFile?.sendCopies || [''],
   });
 
   const recipientOptions = useMemo(() => {
     return mockUsers.filter(u => u.role === 'Reviewer' || u.role === 'Approver');
   }, []);
-  const [reference, setReference] = useState('RNPL-0000');
+  const [reference, setReference] = useState(initialFile?.id || 'RNPL-0000');
   const [isEditingRef, setIsEditingRef] = useState(false);
   const [isEditingDate, setIsEditingDate] = useState(false);
   const [dragIndex, setDragIndex] = useState<number | null>(null);
@@ -63,16 +64,17 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFo
   const sendCopiesTextareaRefs = useRef<(HTMLTextAreaElement | null)[]>([]);
   const previewContainerRef = useRef<HTMLDivElement>(null);
   const autoSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  
+
   // Generate file ID based on reference
   const generateFileId = (ref: string) => {
+    if (initialFile) return initialFile.id;
     const match = ref.match(/(\d+)/);
     if (match) {
       return `RNPL-${match[1]}`;
     }
     return ref;
   };
-  
+
   // Auto-save functionality (like Google Docs)
   useEffect(() => {
     // Skip auto-save if required fields are empty
@@ -86,30 +88,34 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFo
     // Set new timeout for auto-save (2 seconds after last change)
     autoSaveTimeoutRef.current = setTimeout(() => {
       setIsSaving(true);
-      
-      const newHistory = [
-        { 
-          timestamp: new Date().toISOString(), 
-          actor: user.name, 
-          event: 'Draft Saved', 
-          stateChange: 'Draft' as FileStatus, 
+
+      const newHistory = initialFile ? initialFile.history : [
+        {
+          timestamp: new Date().toISOString(),
+          actor: user.name,
+          event: 'Draft Saved',
+          stateChange: 'Draft' as FileStatus,
           note: 'Auto-saved draft.'
         }
       ];
 
-      const newFile: File = {
+      const updatedFile: File = {
+        ...(initialFile || {}),
         ...formData,
         id: generateFileId(reference),
-        sender: user.name,
-        status: 'Draft',
-        lastUpdated: formData.date,
-        isApproverAction: false,
+        sender: initialFile?.sender || user.name,
+        status: initialFile?.status || 'Draft',
+        lastUpdated: new Date().toISOString().slice(0, 10),
+        isApproverAction: initialFile?.isApproverAction || false,
         documentBody: formData.documentBody || 'No content provided.',
         history: newHistory,
       };
-      
-      // In a real app, this would be an API call
-      // For now, we'll just update the lastSaved time
+
+      // In-place update for existing files to keep context in sync
+      if (initialFile) {
+        onCreateSuccess(updatedFile, true);
+      }
+
       setTimeout(() => {
         setIsSaving(false);
         setLastSaved(new Date());
@@ -122,30 +128,29 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFo
         clearTimeout(autoSaveTimeoutRef.current);
       }
     };
-  }, [formData.title, formData.category, formData.documentBody, formData.date, reference, user.name]);
+  }, [formData, reference, user.name, initialFile, onCreateSuccess]);
 
   const handleSubmit = () => {
     if (!formData.title || !formData.category || !formData.documentBody) return;
-    
-    const newHistory = [
-      { 
-        timestamp: new Date().toISOString(), 
-        actor: user.name, 
-        event: 'Sent for Approval', 
-        stateChange: 'Pending' as FileStatus, 
-        note: 'Initiated new approval request.'
-      }
-    ];
+
+    const newHistoryEntry = {
+      timestamp: new Date().toISOString(),
+      actor: user.name,
+      event: initialFile ? 'Resubmitted for Approval' : 'Sent for Approval',
+      stateChange: 'Pending' as FileStatus,
+      note: initialFile ? 'File updated and resubmitted.' : 'Initiated new approval request.'
+    };
 
     const newFile: File = {
+      ...(initialFile || {}),
       ...formData,
       id: generateFileId(reference),
-      sender: user.name,
+      sender: initialFile?.sender || user.name,
       status: 'Pending',
-      lastUpdated: formData.date,
+      lastUpdated: new Date().toISOString().slice(0, 10),
       isApproverAction: true,
       documentBody: formData.documentBody || 'No content provided.',
-      history: newHistory,
+      history: [newHistoryEntry, ...(initialFile?.history || [])],
     };
     onCreateSuccess(newFile, false);
   };
@@ -167,7 +172,7 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFo
   };
 
   const handleRemoveCopy = (index: number) => {
-    const updated = formData.sendCopies.filter((_, i) => i !== index);
+    const updated = formData.sendCopies.filter((_: string, i: number) => i !== index);
     setFormData({ ...formData, sendCopies: updated.length ? updated : [''] });
   };
 
@@ -178,7 +183,7 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFo
     [updated[index], updated[newIndex]] = [updated[newIndex], updated[index]];
     setFormData({ ...formData, sendCopies: updated });
   };
-  
+
   // Get user name based on selected language
   const getUserName = (lang: 'bn' | 'en') => {
     return lang === 'bn' ? user.nameBn : user.nameEn;
@@ -187,10 +192,10 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFo
   const getUserDesignation = (lang: 'bn' | 'en') => {
     return lang === 'bn' ? user.designationBn : user.designationEn;
   };
-  
+
   const getUserInitials = (lang: 'bn' | 'en') => {
     const name = getUserName(lang);
-    return name.split(' ').map(n => n[0]).join('. ').toUpperCase();
+    return name.split(' ').map((n: string) => n[0]).join('. ').toUpperCase();
   };
 
   // Auto-resize subject textarea
@@ -203,7 +208,7 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFo
 
   // Auto-resize send copies textareas
   useEffect(() => {
-    sendCopiesTextareaRefs.current.forEach((textarea) => {
+    sendCopiesTextareaRefs.current.forEach((textarea: HTMLTextAreaElement | null) => {
       if (textarea) {
         textarea.style.height = 'auto';
         textarea.style.height = `${textarea.scrollHeight + 2}px`; // +2 for borders
@@ -220,7 +225,7 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFo
 
     const updateZoomControlPosition = () => {
       if (!previewContainerRef.current) return;
-      
+
       const container = previewContainerRef.current;
       const rect = container.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
@@ -231,7 +236,7 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFo
 
     // Find the scrollable parent container
     const scrollContainer = previewContainerRef.current.closest('.overflow-y-auto');
-    
+
     // Update on scroll and resize
     const handleScroll = () => updateZoomControlPosition();
     const handleResize = () => updateZoomControlPosition();
@@ -261,7 +266,14 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFo
             <Button variant="ghost" size="icon" onClick={onCancel} aria-label="Back">
               <ArrowLeft size={18} />
             </Button>
-            <h2 className="text-lg font-bold text-slate-900">New File</h2>
+            <div className="flex flex-col">
+              <h2 className="text-lg font-bold text-slate-900 leading-tight">
+                {initialFile ? 'Edit File' : 'New File'}
+              </h2>
+              {initialFile && (
+                <span className="text-xs text-slate-500 font-medium">Ref: {initialFile.id}</span>
+              )}
+            </div>
           </div>
           <div className="flex items-center gap-3">
             {viewMode === 'edit' && (
@@ -299,9 +311,9 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFo
               {/* White Paper Container */}
               <div className="bg-white rounded-lg shadow-lg border border-slate-200/50 p-12">
                 {/* Document Header */}
-                <DocumentHeader 
-                  fileId={generateFileId(reference)} 
-                  date={formData.date} 
+                <DocumentHeader
+                  fileId={generateFileId(reference)}
+                  date={formData.date}
                   language={formData.language}
                   onFileIdChange={(value) => setReference(value)}
                   onDateChange={(value) => setFormData({ ...formData, date: value })}
@@ -319,7 +331,7 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFo
                   <textarea
                     ref={subjectTextareaRef}
                     value={formData.title}
-                    onChange={(e) => setFormData({...formData, title: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                     placeholder={formData.language === 'bn' ? 'বিষয়: এখানে বিষয় লিখুন...' : 'Subject: Enter subject here...'}
                     className="w-full text-2xl font-semibold text-slate-900 mb-4 leading-tight font-bangla-serif border-none outline-none bg-transparent focus:ring-0 placeholder:text-slate-400 text-center resize-none overflow-hidden"
                     rows={1}
@@ -330,7 +342,7 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFo
                 <div className="mb-12">
                   <TipTapEditorWithToolbar
                     content={formData.documentBody}
-                    onChange={(content) => setFormData({...formData, documentBody: content})}
+                    onChange={(content) => setFormData({ ...formData, documentBody: content })}
                     placeholder={formData.language === 'bn' ? 'এখানে আপনার নথির মূল বিষয়বস্তু লিখুন...' : 'Start typing your document content here...'}
                   />
                 </div>
@@ -371,41 +383,41 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFo
               </div>
               {/* Zoom Controls - Fixed at bottom, centered relative to preview container */}
               {zoomControlLeft !== null && (
-                <div 
+                <div
                   className="fixed bottom-8 bg-white border border-slate-200 rounded-lg shadow-lg px-3 py-2 flex items-center gap-2 z-50"
                   style={{ left: `${zoomControlLeft}px`, transform: 'translateX(-50%)' }}
                 >
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={() => setPreviewZoom(Math.max(0.5, previewZoom - 0.1))}
-                  disabled={previewZoom <= 0.5}
-                >
-                  <ZoomOut size={16} />
-                </Button>
-                <span className="text-sm font-medium text-slate-700 min-w-[60px] text-center">
-                  {Math.round(previewZoom * 100)}%
-                </span>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={() => setPreviewZoom(Math.min(2, previewZoom + 0.1))}
-                  disabled={previewZoom >= 2}
-                >
-                  <ZoomIn size={16} />
-                </Button>
-                <div className="w-px h-6 bg-slate-300 mx-1" />
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={() => setPreviewZoom(1)}
-                  disabled={previewZoom === 1}
-                >
-                  <RotateCcw size={16} />
-                </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() => setPreviewZoom(Math.max(0.5, previewZoom - 0.1))}
+                    disabled={previewZoom <= 0.5}
+                  >
+                    <ZoomOut size={16} />
+                  </Button>
+                  <span className="text-sm font-medium text-slate-700 min-w-[60px] text-center">
+                    {Math.round(previewZoom * 100)}%
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() => setPreviewZoom(Math.min(2, previewZoom + 0.1))}
+                    disabled={previewZoom >= 2}
+                  >
+                    <ZoomIn size={16} />
+                  </Button>
+                  <div className="w-px h-6 bg-slate-300 mx-1" />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() => setPreviewZoom(1)}
+                    disabled={previewZoom === 1}
+                  >
+                    <RotateCcw size={16} />
+                  </Button>
                 </div>
               )}
             </div>
@@ -427,10 +439,10 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFo
             <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
               Category <span className="text-rose-500">*</span>
             </label>
-            <select 
+            <select
               className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none appearance-none"
               value={formData.category}
-              onChange={e => setFormData({...formData, category: e.target.value})}
+              onChange={e => setFormData({ ...formData, category: e.target.value })}
             >
               <option value="">Select category...</option>
               {categoryOptions.map(c => (
@@ -546,15 +558,45 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel }: CreateFileFo
             </Button>
           </div>
 
-          {/* Submit Button */}
-          <div className="pt-4 border-t border-slate-200">
+          {/* Action Buttons */}
+          <div className="pt-4 border-t border-slate-200 space-y-2">
+            <Button
+              variant="outline"
+              onClick={() => {
+                const newHistoryEntry = {
+                  timestamp: new Date().toISOString(),
+                  actor: user.name,
+                  event: initialFile ? 'Updated Draft' : 'Saved as Draft',
+                  stateChange: initialFile?.status || 'Draft' as FileStatus,
+                  note: initialFile ? 'Manual draft update.' : 'Saved new draft manually.'
+                };
+                const newFile: File = {
+                  ...(initialFile || {}),
+                  ...formData,
+                  id: generateFileId(reference),
+                  sender: initialFile?.sender || user.name,
+                  status: initialFile?.status || 'Draft',
+                  lastUpdated: new Date().toISOString().slice(0, 10),
+                  isApproverAction: initialFile?.isApproverAction || false,
+                  documentBody: formData.documentBody || 'No content provided.',
+                  history: [newHistoryEntry, ...(initialFile?.history || [])],
+                };
+                onCreateSuccess(newFile, true);
+                if (onCancel) onCancel();
+              }}
+              disabled={!formData.title || !formData.category}
+              className="w-full border-slate-200 text-slate-700 hover:bg-slate-50"
+            >
+              <FileIcon size={16} className="mr-2" />
+              Save as Draft
+            </Button>
             <Button
               onClick={handleSubmit}
               disabled={!formData.title || !formData.category || !formData.documentBody}
-              className="w-full bg-[hsl(var(--color-brand))] hover:bg-[hsl(var(--color-brand-hover))] text-white"
+              className="w-full bg-[hsl(var(--color-brand))] hover:bg-[hsl(var(--color-brand-hover))] text-white shadow-md active:scale-[0.98] transition-all"
             >
               <Send size={16} className="mr-2" />
-              Submit
+              {initialFile ? 'Update & Submit' : 'Send for Approval'}
             </Button>
           </div>
         </div>

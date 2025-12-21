@@ -123,11 +123,6 @@
 
   body {
     @apply bg-background text-foreground;
-    /* 
-     * Font stack: Inter for Latin, July Font for Bengali.
-     * Inter comes first as the primary font.
-     * July Font provides glyphs for Bengali characters that Inter doesn't have.
-     */
     font-family: var(--font-inter), 'July Font', sans-serif;
   }
 
@@ -140,17 +135,21 @@
     font-family: var(--font-cursive), cursive;
   }
 
-  /* Bangla fonts */
+  /* Bangla and UI fonts - Ensure Inter is prioritized for English characters */
   .font-bangla {
-    font-family: 'July Font', sans-serif;
+    font-family: var(--font-inter), 'July Font', sans-serif;
   }
 
   .font-bangla-serif {
-    font-family: var(--font-noto-serif-bengali), serif;
+    font-family: var(--font-inter), var(--font-noto-serif-bengali), serif;
   }
 
   .font-mina {
-    font-family: var(--font-mina), sans-serif;
+    font-family: var(--font-inter), var(--font-mina), sans-serif;
+  }
+
+  .font-mono {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   }
 }
 

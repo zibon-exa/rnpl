@@ -126,7 +126,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Right Pane - Files Sidebar */}
-        <div className="w-96 border-l border-slate-200 bg-white overflow-y-auto">
+        <div className="w-[396px] min-w-[396px] border-l border-slate-200 bg-white overflow-y-auto">
           <div className="p-6 space-y-6">
             {/* Files Header */}
             <div className="flex items-center justify-between">

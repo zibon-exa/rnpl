@@ -17,6 +17,14 @@ export interface Attachment {
   url?: string;
 }
 
+export interface Comment {
+  id: string;
+  author: string;
+  text: string;
+  timestamp: string;
+  avatarId?: number;
+}
+
 export interface File {
   id: string;
   title: string;
@@ -28,6 +36,7 @@ export interface File {
   summary?: string;
   documentBody?: string;
   history: HistoryEntry[];
+  comments?: Comment[];
   tags?: string;
   approvalComment?: string;
   returnComment?: string;
@@ -35,6 +44,9 @@ export interface File {
   attachments?: Attachment[];
   priority?: Priority;
   dueDate?: string;
+  language?: 'bn' | 'en';
+  sendTo?: string;
+  sendCopies?: string[];
 }
 
 export interface Notification {
