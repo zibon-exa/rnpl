@@ -412,17 +412,17 @@ export default function FileViewPage() {
           {/* Right Sidebar - Sticky Tabs */}
           <aside className="w-full lg:w-[396px] lg:min-w-[396px] shrink-0 block bg-white border-t lg:border-t-0 lg:border-l border-slate-200">
             <div className="h-[600px] lg:h-full flex flex-col">
-              <Tabs defaultValue="comments" className="flex-1 flex flex-col h-full">
-                <TabsList className="grid grid-cols-2 w-full rounded-none border-b h-12 bg-white p-0">
+              <Tabs defaultValue="comments" className="flex-1 flex flex-col h-full file-viewer-tabs">
+                <TabsList className="grid grid-cols-2 w-full rounded-none border-b border-slate-200 h-12 bg-white p-0">
                   <TabsTrigger
                     value="comments"
-                    className="rounded-none border-b-2 border-transparent data-[state=active]:border-[hsl(var(--color-brand))] data-[state=active]:bg-white data-[state=active]:shadow-none transition-all font-bold text-xs uppercase tracking-wider"
+                    className="rounded-none h-full data-[state=active]:bg-white data-[state=active]:shadow-none transition-all font-bold text-xs uppercase tracking-wider"
                   >
                     Comments
                   </TabsTrigger>
                   <TabsTrigger
                     value="info"
-                    className="rounded-none border-b-2 border-transparent data-[state=active]:border-[hsl(var(--color-brand))] data-[state=active]:bg-white data-[state=active]:shadow-none transition-all font-bold text-xs uppercase tracking-wider"
+                    className="rounded-none h-full data-[state=active]:bg-white data-[state=active]:shadow-none transition-all font-bold text-xs uppercase tracking-wider"
                   >
                     Info
                   </TabsTrigger>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Comment } from '@/types/file';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -16,6 +16,16 @@ interface CommentSectionProps {
 
 export function CommentSection({ comments, user, onAddComment }: CommentSectionProps) {
     const [newComment, setNewComment] = useState('');
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+    // Auto-resize textarea based on content
+    useEffect(() => {
+        const textarea = textareaRef.current;
+        if (textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = `${Math.min(textarea.scrollHeight, 120)}px`;
+        }
+    }, [newComment]);
 
     const handleSubmit = () => {
         if (!newComment.trim()) return;
@@ -46,11 +56,11 @@ export function CommentSection({ comments, user, onAddComment }: CommentSectionP
                     </Avatar>
                     <div className="flex-1 flex items-end gap-2 bg-slate-50 border border-slate-200 rounded-xl p-1.5 focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:border-indigo-500 focus-within:bg-white transition-all">
                         <textarea
+                            ref={textareaRef}
                             value={newComment}
                             onChange={(e) => setNewComment(e.target.value)}
                             placeholder="Add an official comment..."
-                            className="flex-1 pl-2.5 py-1.5 bg-transparent border-none outline-none text-sm resize-none min-h-[36px] max-h-[120px] font-inter overflow-y-auto"
-                            rows={1}
+                            className="flex-1 pl-2.5 py-1.5 bg-transparent border-none outline-none text-sm resize-none min-h-[36px] font-inter overflow-y-auto"
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter' && !e.shiftKey) {
                                     e.preventDefault();
@@ -73,7 +83,7 @@ export function CommentSection({ comments, user, onAddComment }: CommentSectionP
             {/* Comment List - Reverse Chronological */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
                 {comments.length > 0 ? (
-                    [...comments].reverse().map((comment) => (
+                    [...comments].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()).map((comment) => (
                         <div key={comment.id} className="flex gap-3 items-start group">
                             <Avatar className="h-8 w-8 shrink-0 ring-1 ring-slate-100">
                                 <AvatarImage src={getAvatarPath(comment.author, comment.avatarId)} alt={comment.author} />
