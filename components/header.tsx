@@ -218,7 +218,7 @@ export function Header() {
 
   const moreItems = [
     { label: 'Central Registry', href: '/library', value: 'library', icon: Library },
-    { label: 'Discarded', href: '/recycle-bin', value: 'recycle-bin', icon: Trash2 },
+    { label: 'Discarded', href: '/discarded', value: 'discarded', icon: Trash2 },
     { label: 'System Help', href: '/help', value: 'help', icon: HelpCircle },
   ];
 
