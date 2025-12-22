@@ -422,3 +422,181 @@ svg.recharts-surface:focus-visible {
   outline: none !important;
   box-shadow: none !important;
 }
+
+/* File Viewer Tabs - Custom indicator alignment */
+.file-viewer-tabs [role="tablist"] {
+  position: relative;
+}
+
+.file-viewer-tabs [role="tab"] {
+  position: relative;
+}
+
+.file-viewer-tabs [role="tab"]::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: transparent;
+  transition: background-color 200ms;
+}
+
+.file-viewer-tabs [role="tab"][data-state="active"]::after {
+  background-color: hsl(var(--color-brand));
+  bottom: -1px;
+}
+
+/* Bengali numbering for ordered lists in editor */
+.editor-bangla .ProseMirror ol {
+  list-style-type: bengali;
+}
+
+.editor-english .ProseMirror ol {
+  list-style-type: decimal;
+}
+
+/* Better spacing for list items for improved scannability */
+.ProseMirror ul li,
+.ProseMirror ol li {
+  margin-bottom: 0.75em;
+}
+
+.ProseMirror ul li:last-child,
+.ProseMirror ol li:last-child {
+  margin-bottom: 0;
+}
+/* Ensure list markers inherit text color */
+.ProseMirror ul li::marker,
+.ProseMirror ol li::marker {
+  color: inherit;
+}
+
+/* Apply same styles to document preview */
+.font-bangla ul,
+.font-bangla ol {
+  padding-left: 1.5em;
+  margin: 0.5em 0;
+}
+
+.font-bangla ul li,
+.font-bangla ol li {
+  margin-bottom: 0.75em;
+}
+
+.font-bangla ul li:last-child,
+.font-bangla ol li:last-child {
+  margin-bottom: 0;
+}
+
+.font-bangla ul {
+  list-style-type: disc;
+}
+
+.font-bangla ol {
+  list-style-type: bengali;
+}
+
+/* Ensure markers inherit color in preview too */
+.font-bangla ul li::marker,
+.font-bangla ol li::marker {
+  color: inherit;
+}
+
+/* Headings in preview */
+.font-bangla h1,
+.font-bangla h2,
+.font-bangla h3 {
+  font-weight: 600;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}
+
+.font-bangla h1 {
+  font-size: 1.5em;
+}
+
+.font-bangla h2 {
+  font-size: 1.25em;
+}
+
+.font-bangla h3 {
+  font-size: 1.125em;
+}
+
+/* Text formatting in preview */
+.font-bangla strong {
+  font-weight: 600;
+}
+
+.font-bangla em {
+  font-style: italic;
+}
+
+.font-bangla u {
+  text-decoration: underline;
+}
+
+/* Blockquotes in preview */
+.font-bangla blockquote {
+  border-left: 3px solid hsl(var(--color-light-gray));
+  padding-left: 1em;
+  margin: 1em 0;
+  color: hsl(var(--color-slate-gray));
+}
+
+/* Force list markers to match list item text color - more aggressive approach */
+.ProseMirror ul li,
+.ProseMirror ol li {
+  color: inherit;
+}
+
+.ProseMirror ul li > *,
+.ProseMirror ol li > * {
+  color: inherit;
+}
+
+/* When text has inline color, apply to li as well */
+.ProseMirror li[style*="color"],
+.ProseMirror li span[style*="color"] {
+  display: inherit;
+}
+
+/* Make markers follow the text color by ensuring li inherits color from parent */
+.ProseMirror ul,
+.ProseMirror ol {
+  color: inherit;
+}
+/* Override the previous approach - use CSS custom property workaround */
+.ProseMirror ul li,
+.ProseMirror ol li {
+  /* Store the text color */
+  --list-item-color: currentColor;
+}
+
+.ProseMirror ul li::marker,
+.ProseMirror ol li::marker {
+  color: var(--list-item-color, currentColor);
+}
+
+/* When color is applied to child elements, propagate to marker */
+.ProseMirror li > [style*="color"] {
+  display: list-item;
+  list-style-position: outside;
+}
+/* Simpler approach: Force li to inherit color from any styled child */
+.ProseMirror li:has([style*="color"]) {
+  color: inherit;
+}
+
+/* Then ensure markers use the li color */
+.ProseMirror ul li::marker,
+.ProseMirror ol li::marker {
+  color: currentColor !important;
+}
+
+/* Make the p tag inside li pass color up */
+.ProseMirror li > p[style*="color"] {
+  display: contents;
+}

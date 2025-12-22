@@ -357,6 +357,7 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel, initialFile }:
                     content={formData.documentBody}
                     onChange={(content) => setFormData({ ...formData, documentBody: content })}
                     placeholder={formData.language === 'bn' ? 'এখানে আপনার নথির মূল বিষয়বস্তু লিখুন...' : 'Start typing your document content here...'}
+                    language={formData.language}
                   />
                 </div>
 
