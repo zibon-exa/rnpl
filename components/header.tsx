@@ -24,7 +24,7 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
-import { Search, Bell, Clock, CheckCircle, X, FileText, ArrowRight, AlertCircle, LayoutDashboard, Folder, Library, Archive, BarChart, HelpCircle, ChevronDown, Plus, Menu, Trash2 } from 'lucide-react';
+import { Search, Bell, Clock, CheckCircle, X, FileText, ArrowRight, AlertCircle, LayoutDashboard, Folder, Library, Archive, BarChart, HelpCircle, ChevronDown, Plus, Menu, Trash2, MonitorSmartphone } from 'lucide-react';
 import { Notification } from '@/types/file';
 import { cn } from '@/lib/utils';
 import { matchesSearch } from '@/lib/search-utils';
@@ -210,17 +210,16 @@ export function Header() {
   };
 
   const navItems = [
-    { label: 'Dashboard', href: '/dashboard', value: 'dashboard', icon: LayoutDashboard },
-    { label: 'Pending', href: '/pending', value: 'pending', icon: Clock },
+    { label: 'My Desk', href: '/dashboard', value: 'dashboard', icon: MonitorSmartphone },
+    { label: 'Pending Files', href: '/pending', value: 'pending', icon: Clock },
     { label: 'My Files', href: '/files', value: 'files', icon: Folder },
+    { label: 'Reports', href: '/reports', value: 'reports', icon: BarChart },
   ];
 
   const moreItems = [
-    { label: 'Library', href: '/library', value: 'library', icon: Library },
-    { label: 'Archive', href: '/archive', value: 'archive', icon: Archive },
-    { label: 'Recycle Bin', href: '/recycle-bin', value: 'recycle-bin', icon: Trash2 },
-    { label: 'Reports', href: '/reports', value: 'reports', icon: BarChart },
-    { label: 'Help', href: '/help', value: 'help', icon: HelpCircle },
+    { label: 'Central Registry', href: '/library', value: 'library', icon: Library },
+    { label: 'Discarded', href: '/recycle-bin', value: 'recycle-bin', icon: Trash2 },
+    { label: 'System Help', href: '/help', value: 'help', icon: HelpCircle },
   ];
 
   return (

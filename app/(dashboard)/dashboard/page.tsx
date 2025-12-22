@@ -26,6 +26,7 @@ import {
   efficiencyData,
   riskTrendData,
 } from '@/lib/dashboard-data';
+import { matchesSearch } from '@/lib/search-utils';
 
 export default function DashboardPage() {
   const { user } = useRequireAuth();
@@ -58,6 +59,15 @@ export default function DashboardPage() {
     .sort((a, b) => new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime())
     .slice(0, 5);
 
+  // Search logic
+  const searchResults = searchTerm.trim()
+    ? files.filter(f => matchesSearch(f.title, searchTerm) || matchesSearch(f.id, searchTerm))
+    : [];
+
+  const displayedFiles = searchTerm.trim() ? searchResults : filesRequiringAttention;
+  const sectionTitle = searchTerm.trim() ? 'Search Results' : 'Pending Files';
+  const showViewAll = !searchTerm.trim();
+
   const handleOpenFile = (file: File) => {
     router.push(`/files/${file.id}`);
   };
@@ -75,7 +85,7 @@ export default function DashboardPage() {
             <div className="space-y-6 md:space-y-8 animate-in fade-in duration-500">
               {/* Header Section */}
               <div>
-                <h1 className="text-xl md:text-2xl font-bold text-slate-900">Dashboard</h1>
+                <h1 className="text-xl md:text-2xl font-bold text-slate-900">My Desk</h1>
                 <p className="text-slate-500 mt-1 font-bangla text-sm md:text-base">
                   {getGreeting()}
                 </p>
@@ -142,21 +152,23 @@ export default function DashboardPage() {
               />
             </div>
 
-            {/* Pending Files Section */}
+            {/* Pending Files / Search Results Section */}
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-slate-800">Pending Files</h3>
-                <button
-                  onClick={() => router.push('/pending')}
-                  className="text-sm font-medium text-[hsl(var(--color-brand))] hover:text-[hsl(var(--color-brand-hover))] flex items-center gap-1"
-                >
-                  View All
-                </button>
+                <h3 className="text-lg font-semibold text-slate-800">{sectionTitle}</h3>
+                {showViewAll && (
+                  <button
+                    onClick={() => router.push('/pending')}
+                    className="text-sm font-medium text-[hsl(var(--color-brand))] hover:text-[hsl(var(--color-brand-hover))] flex items-center gap-1"
+                  >
+                    View All
+                  </button>
+                )}
               </div>
 
-              {filesRequiringAttention.length > 0 ? (
+              {displayedFiles.length > 0 ? (
                 <div className="space-y-3">
-                  {filesRequiringAttention.map((file) => (
+                  {displayedFiles.map((file) => (
                     <FileThumbnailItem
                       key={file.id}
                       file={file}
@@ -171,7 +183,7 @@ export default function DashboardPage() {
                     <Folder className="text-slate-300" size={24} />
                   </div>
                   <p className="text-slate-500 text-sm font-medium">
-                    No pending files.
+                    {searchTerm.trim() ? 'No matching files found.' : 'No pending files.'}
                   </p>
                 </div>
               )}

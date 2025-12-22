@@ -7,7 +7,7 @@ export default function LibraryPage() {
         <div className="min-h-screen bg-slate-50/50 flex flex-col">
             <main className="flex-1">
                 <UnderConstruction
-                    title="Library"
+                    title="Central Registry"
                     message="The digital library is currently being organized. You'll soon be able to access all corporate documents here."
                 />
             </main>

@@ -32,7 +32,7 @@ export default function PendingApprovalsPage() {
               <FileText size={24} />
             </div>
             <div>
-              <p className="text-sm font-medium text-slate-500">Total Pending</p>
+              <p className="text-sm font-medium text-slate-500">Total Pending Files</p>
               <p className="text-2xl font-bold text-slate-900">{pendingFiles.length}</p>
             </div>
           </div>
@@ -64,7 +64,7 @@ export default function PendingApprovalsPage() {
 
         <FileListTable
           files={pendingFiles}
-          title="Pending Approvals"
+          title="Pending Files"
           onOpenFile={handleOpenFile}
         />
       </main>
