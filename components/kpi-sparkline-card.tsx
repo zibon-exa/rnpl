@@ -48,60 +48,61 @@ export function KpiSparklineCard({ data }: KpiSparklineCardProps) {
 
   return (
     <Card className="bg-white border-slate-100 shadow overflow-hidden">
-      <CardContent className="p-0">
-        <div className="p-4 pb-0">
-          <div className="flex justify-between items-start mb-1">
-            <div className="w-full">
-              <div className="flex items-center gap-1.5 mb-0.5">
-                <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
-                  {title}
-                </p>
-                <TooltipProvider>
-                  <Tooltip delayDuration={300}>
-                    <TooltipTrigger asChild>
-                      <Info size={12} className="text-slate-400 hover:text-slate-600 cursor-help transition-colors" />
-                    </TooltipTrigger>
-                    <TooltipContent side="right" className="max-w-[200px] text-xs">
-                      {description}
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-slate-900 tracking-tight">{value}</span>
-                <div className={cn('flex items-center gap-1 text-xs font-medium', trendColorClass)}>
-                  <TrendIcon size={14} />
-                </div>
-              </div>
-            </div>
-          </div>
-          <p className={cn('text-[10px] font-medium', config.tailwindText)}>
-            {subtext}
+      <CardContent className="p-4">
+        {/* Title Section */}
+        <div className="flex items-center gap-1.5 mb-3">
+          <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+            {title}
           </p>
+          <TooltipProvider>
+            <Tooltip delayDuration={300}>
+              <TooltipTrigger asChild>
+                <Info size={12} className="text-slate-400 hover:text-slate-600 cursor-help transition-colors" />
+              </TooltipTrigger>
+              <TooltipContent side="right" className="max-w-[200px] text-xs">
+                {description}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
 
-        {/* Chart Container */}
-        <div className="h-[45px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={sparklineData} margin={{ top: 5, right: 0, left: 0, bottom: 0 }}>
-              <defs>
-                <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={config.color} stopOpacity={0.25} />
-                  <stop offset="95%" stopColor={config.color} stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <Area
-                type="monotone" // Smooth curves
-                dataKey="value"
-                stroke={config.color}
-                strokeWidth={2}
-                fillOpacity={1}
-                fill={`url(#${gradientId})`}
-                isAnimationActive={true}
-                animationDuration={1000}
-              />
-            </AreaChart>
-          </ResponsiveContainer>
+        {/* Value & Chart Row */}
+        <div className="flex items-end justify-between">
+          {/* Left Column: Value & Subtext */}
+          <div>
+            <span className="text-2xl font-bold text-slate-900 tracking-tight block leading-none">
+              {value}
+            </span>
+            <div className="flex items-center gap-1 mt-1.5">
+              <TrendIcon size={12} className={trendColorClass} />
+              <p className={cn('text-[10px] font-medium', config.tailwindText)}>
+                {subtext}
+              </p>
+            </div>
+          </div>
+
+          {/* Right Column: Mini Sparkline */}
+          <div className="h-[32px] w-[60px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={sparklineData} margin={{ top: 2, right: 0, left: 0, bottom: 2 }}>
+                <defs>
+                  <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor={config.color} stopOpacity={0.3} />
+                    <stop offset="95%" stopColor={config.color} stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <Area
+                  type="monotone"
+                  dataKey="value"
+                  stroke={config.color}
+                  strokeWidth={2}
+                  fillOpacity={1}
+                  fill={`url(#${gradientId})`}
+                  isAnimationActive={true}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </CardContent>
     </Card>
