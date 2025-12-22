@@ -7,7 +7,7 @@ export default function HelpPage() {
         <div className="min-h-screen bg-slate-50/50 flex flex-col">
             <main className="flex-1">
                 <UnderConstruction
-                    title="Help Center"
+                    title="System Help"
                     message="We're compiling guides and FAQs to help you navigate the RNPL Note system more effectively."
                 />
             </main>

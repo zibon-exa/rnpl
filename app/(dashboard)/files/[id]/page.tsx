@@ -4,7 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { useRequireAuth } from '@/hooks/use-require-auth';
 import { useFiles } from '@/lib/files-context';
-import { CheckCircle, RotateCcw, Forward, Download, Printer, Copy, Check, Paperclip, ArrowLeft, Hash, FolderOpen, Calendar, User, FileText, FileSpreadsheet, FileImage, File as FileIcon, Clock } from 'lucide-react';
+import { CheckCircle, RotateCcw, Forward, Download, Printer, Copy, Check, Paperclip, ArrowLeft, Hash, FolderOpen, Calendar, User, FileText, FileSpreadsheet, FileImage, File as FileIcon, Clock, SquarePen, MoreVertical, Archive, Trash2 } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { File, FileStatus } from '@/types/file';
 import { StatusBadge } from '@/components/ui/status-badge';
@@ -215,15 +215,36 @@ export default function FileViewPage() {
             <div className="flex items-center gap-3 sm:gap-6">
               {/* Edit Button */}
               {canEdit && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsEditing(true)}
-                  className="border-indigo-200 text-indigo-700 hover:bg-indigo-50 hover:text-indigo-800"
-                >
-                  <FileText size={16} className="mr-2" />
-                  Edit File
-                </Button>
+                <ButtonGroup>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsEditing(true)}
+                    className="border-indigo-200 text-indigo-700 hover:bg-indigo-50 hover:text-indigo-800"
+                  >
+                    <SquarePen size={16} />
+                    Edit File
+                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="px-2 border-indigo-200 text-indigo-700 hover:bg-indigo-50 hover:text-indigo-800"
+                      >
+                        <MoreVertical size={16} />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel className="text-xs">File Actions</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => console.log('Discard File')} className="cursor-pointer text-rose-600 focus:text-rose-600">
+                        <Trash2 size={16} className="mr-2" />
+                        Discard File
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </ButtonGroup>
               )}
 
               {/* Download and Print */}
@@ -231,7 +252,7 @@ export default function FileViewPage() {
                 <ButtonGroup>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="outline" size="sm" className="flex items-center gap-2 cursor-pointer">
+                      <Button variant="outline" size="sm" className="flex items-center cursor-pointer">
                         <Download size={16} />
                         <span className="hidden sm:inline">Download</span>
                       </Button>
@@ -293,6 +314,7 @@ export default function FileViewPage() {
                             onClick={() => setAction('return')}
                           >
                             <RotateCcw size={16} />
+                            Return
                           </Button>
                         </TooltipTrigger>
                         <TooltipContent>
@@ -308,6 +330,7 @@ export default function FileViewPage() {
                             onClick={() => setAction('forward')}
                           >
                             <Forward size={16} />
+                            Forward
                           </Button>
                         </TooltipTrigger>
                         <TooltipContent>
@@ -322,7 +345,7 @@ export default function FileViewPage() {
                       size="sm"
                       className="bg-[hsl(var(--color-brand))] hover:bg-[hsl(var(--color-brand-hover))] text-white"
                     >
-                      <CheckCircle size={16} className="mr-2" />
+                      <CheckCircle size={16} />
                       Approve
                     </Button>
                   </div>
@@ -631,7 +654,7 @@ export default function FileViewPage() {
           </div>
         </div>
       </Modal>
-    </div>
+    </div >
   );
 }
 

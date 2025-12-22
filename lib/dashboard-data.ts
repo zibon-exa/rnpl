@@ -74,6 +74,7 @@ export const kpiData: KpiData[] = [
       { name: 'W5', value: 12 },
     ],
   },
+
 ];
 
 // Department Heatmap Data

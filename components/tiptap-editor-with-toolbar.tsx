@@ -535,7 +535,7 @@ export function TipTapEditorWithToolbar({ content, onChange, placeholder, classN
               <Tooltip>
                 <TooltipTrigger asChild>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className="h-7 gap-1 font-normal px-2 text-xs">
+                    <Button variant="ghost" size="sm" className="h-7 gap-2 font-normal px-2 text-xs">
                       <Plus size={15} /> Insert
                     </Button>
                   </DropdownMenuTrigger>

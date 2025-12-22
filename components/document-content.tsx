@@ -14,10 +14,10 @@ interface DocumentContentProps {
  * Centralized document content component
  * Used in all document previews to ensure consistent structure and styling
  */
-export function DocumentContent({ 
-  title, 
-  category, 
-  documentBody, 
+export function DocumentContent({
+  title,
+  category,
+  documentBody,
   sender,
   designation,
   showPlaceholders = true,
@@ -32,14 +32,14 @@ export function DocumentContent({
           {title || (showPlaceholders ? <span className="text-slate-400 italic">বিষয়বস্তু যোগ করুন...</span> : '')}
         </p>
       </div>
-      
+
       {/* Document Body */}
       <div className="mb-4">
         <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1 font-bangla-serif">বিষয়বস্তু</p>
-        <div 
-          className="text-[15px] leading-7 text-slate-700 font-bangla [&_table]:w-full [&_table]:border-collapse [&_table]:my-4 [&_td]:border [&_td]:border-slate-300 [&_td]:p-2 [&_th]:border [&_th]:border-slate-300 [&_th]:p-2 [&_th]:bg-slate-50 [&_th]:font-semibold [&_p]:my-1"
-          dangerouslySetInnerHTML={{ 
-            __html: documentBody || (showPlaceholders ? '<span class="text-slate-400 italic">কোন নথি বিষয়বস্তু পাওয়া যায়নি।</span>' : '') 
+        <div
+          className="prose prose-sm max-w-none text-[15px] leading-7 text-slate-700 font-bangla [&_table]:w-full [&_table]:border-collapse [&_table]:my-4 [&_td]:border [&_td]:border-slate-300 [&_td]:p-2 [&_th]:border [&_th]:border-slate-300 [&_th]:p-2 [&_th]:bg-slate-50 [&_th]:font-semibold [&_p]:my-1"
+          dangerouslySetInnerHTML={{
+            __html: documentBody || (showPlaceholders ? '<span class="text-slate-400 italic">কোন নথি বিষয়বস্তু পাওয়া যায়নি।</span>' : '')
           }}
         />
       </div>

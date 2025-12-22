@@ -7,13 +7,14 @@ import { DocumentHeader } from '@/components/document-header';
 import { DocumentPreview } from '@/components/document-preview';
 import { TipTapEditorWithToolbar } from '@/components/tiptap-editor-with-toolbar';
 import { Button } from '@/components/ui/button';
-import { Send, X, ArrowLeft, Calendar as CalendarIcon, Trash2, Plus, ZoomIn, ZoomOut, RotateCcw, File as FileIcon } from 'lucide-react';
+import { Send, X, ArrowLeft, Calendar as CalendarIcon, Trash2, Plus, ZoomIn, ZoomOut, RotateCcw, File as FileIcon, MoreVertical, Archive } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -314,6 +315,22 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel, initialFile }:
                 <span>Saved {lastSaved.toLocaleTimeString()}</span>
               )}
             </div>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-9 w-9 text-slate-500">
+                  <MoreVertical size={18} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel className="text-xs">File Actions</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => console.log('Discard File')} className="cursor-pointer text-rose-600 focus:text-rose-600">
+                  <Trash2 size={16} className="mr-2" />
+                  Discard File
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
 
@@ -567,7 +584,7 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel, initialFile }:
               ))}
             </div>
             <Button variant="outline" size="sm" className="w-full" onClick={handleAddCopy}>
-              <Plus size={14} className="mr-2" />
+              <Plus size={14} />
               Add Recipient
             </Button>
           </div>
@@ -601,7 +618,7 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel, initialFile }:
               disabled={!formData.title || !formData.category}
               className="w-full border-slate-200 text-slate-700 hover:bg-slate-50"
             >
-              <FileIcon size={16} className="mr-2" />
+              <FileIcon size={16} />
               Save as Draft
             </Button>
             <Button
@@ -609,7 +626,7 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel, initialFile }:
               disabled={!formData.title || !formData.category || !formData.documentBody}
               className="w-full bg-[hsl(var(--color-brand))] hover:bg-[hsl(var(--color-brand-hover))] text-white shadow-md active:scale-[0.98] transition-all"
             >
-              <Send size={16} className="mr-2" />
+              <Send size={16} />
               {initialFile ? 'Update & Submit' : 'Send for Approval'}
             </Button>
           </div>

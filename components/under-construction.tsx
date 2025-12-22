@@ -48,7 +48,7 @@ export function UnderConstruction({
           onClick={() => router.push('/dashboard')}
           className="bg-[hsl(var(--color-brand))] hover:bg-[hsl(var(--color-brand-hover))] text-white shadow-sm"
         >
-          Back to Dashboard
+          Back to My Desk
         </Button>
       </div>
     </div>

@@ -18,9 +18,9 @@ export default function RecycleBinPage() {
           <div className="space-y-6 md:space-y-8">
             {/* Header */}
             <div>
-              <h1 className="text-xl md:text-2xl font-bold text-slate-900">Recycle Bin</h1>
+              <h1 className="text-xl md:text-2xl font-bold text-slate-900">Discarded</h1>
               <p className="text-slate-500 mt-1 text-sm md:text-base">
-                Deleted files are kept for 30 days before permanent deletion
+                Discarded files are kept for 30 days before permanent deletion
               </p>
             </div>
 
@@ -30,7 +30,7 @@ export default function RecycleBinPage() {
               <div>
                 <h3 className="text-sm font-semibold text-amber-800">30-Day Retention Policy</h3>
                 <p className="text-sm text-amber-700 mt-1">
-                  Files in the recycle bin are automatically deleted after 30 days. You can restore them before then.
+                  Files in the discarded list are automatically deleted after 30 days. You can restore them before then.
                 </p>
               </div>
             </div>
@@ -40,11 +40,11 @@ export default function RecycleBinPage() {
               <div className="bg-white p-6 rounded-full shadow-sm mb-6 border border-slate-200">
                 <Trash2 className="text-slate-300" size={48} />
               </div>
-              <h3 className="text-lg font-semibold text-slate-800 mb-2">Recycle bin is empty</h3>
+              <h3 className="text-lg font-semibold text-slate-800 mb-2">Discarded list is empty</h3>
               <p className="text-slate-500 text-center max-w-md mb-6">
-                When you delete files, they'll appear here for 30 days before being permanently removed.
+                When you discard files, they'll appear here for 30 days before being permanently removed.
               </p>
-              
+
               {/* Action Buttons for Future Implementation */}
               <div className="flex gap-3">
                 <Button variant="outline" disabled className="flex items-center gap-2">
@@ -53,7 +53,7 @@ export default function RecycleBinPage() {
                 </Button>
                 <Button variant="outline" disabled className="flex items-center gap-2 text-rose-600 border-rose-200 hover:bg-rose-50">
                   <Trash2 size={16} />
-                  Empty Recycle Bin
+                  Empty Discarded
                 </Button>
               </div>
             </div>
