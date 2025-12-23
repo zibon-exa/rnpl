@@ -2,12 +2,12 @@
 
 import { useMemo, useState, useRef, useEffect } from 'react';
 import { User } from '@/types/user';
-import { File, FileStatus } from '@/types/file';
+import { File, FileStatus, Attachment } from '@/types/file';
 import { DocumentHeader } from '@/components/document-header';
 import { DocumentPreview } from '@/components/document-preview';
 import { TipTapEditorWithToolbar } from '@/components/tiptap-editor-with-toolbar';
 import { Button } from '@/components/ui/button';
-import { Send, X, ArrowLeft, Calendar as CalendarIcon, Trash2, Plus, ZoomIn, ZoomOut, RotateCcw, File as FileIcon, MoreVertical, Archive } from 'lucide-react';
+import { Send, X, ArrowLeft, Calendar as CalendarIcon, Trash2, Plus, ZoomIn, ZoomOut, RotateCcw, File as FileIcon, MoreVertical, Archive, Download, FileText, FileSpreadsheet, FileImage, Upload } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -47,6 +47,7 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel, initialFile }:
     language: (initialFile?.language as 'bn' | 'en') || 'bn',
     sendTo: initialFile?.sendTo || 'user-004',
     sendCopies: initialFile?.sendCopies || [''],
+    attachments: initialFile?.attachments || [],
   });
 
   const recipientOptions = useMemo(() => {
@@ -61,10 +62,17 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel, initialFile }:
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [previewZoom, setPreviewZoom] = useState(1);
   const [zoomControlLeft, setZoomControlLeft] = useState<number | null>(null);
+  const [sidebarWidth, setSidebarWidth] = useState(396); // Default 396px (same as file viewer sidebar)
+  const [isResizing, setIsResizing] = useState(false);
   const subjectTextareaRef = useRef<HTMLTextAreaElement>(null);
   const sendCopiesTextareaRefs = useRef<(HTMLTextAreaElement | null)[]>([]);
   const previewContainerRef = useRef<HTMLDivElement>(null);
   const autoSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const resizeHandleRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  
+  // localStorage key for draft backup
+  const DRAFT_STORAGE_KEY = `file-draft-${initialFile?.id || 'new'}`;
 
   // Generate file ID based on reference
   const generateFileId = (ref: string) => {
@@ -81,6 +89,49 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel, initialFile }:
   useEffect(() => {
     latestInitialFile.current = initialFile;
   }, [initialFile]);
+
+  // Load draft from localStorage on mount
+  useEffect(() => {
+    if (initialFile) return; // Don't load draft if editing existing file
+    
+    try {
+      const savedDraft = localStorage.getItem(DRAFT_STORAGE_KEY);
+      if (savedDraft) {
+        const draft = JSON.parse(savedDraft);
+        // Only restore if draft is recent (within last 24 hours)
+        const draftAge = Date.now() - new Date(draft.timestamp).getTime();
+        if (draftAge < 24 * 60 * 60 * 1000) {
+          setFormData(draft.formData);
+          setReference(draft.reference);
+          setLastSaved(new Date(draft.timestamp));
+        } else {
+          // Clear old draft
+          localStorage.removeItem(DRAFT_STORAGE_KEY);
+        }
+      }
+    } catch (error) {
+      console.error('Error loading draft from localStorage:', error);
+    }
+  }, [initialFile, DRAFT_STORAGE_KEY]); // Only run on mount
+
+  // Save draft to localStorage whenever form data changes (debounced)
+  useEffect(() => {
+    if (initialFile) return; // Don't save draft for existing files
+    
+    const saveTimeout = setTimeout(() => {
+      try {
+        localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify({
+          formData,
+          reference,
+          timestamp: new Date().toISOString(),
+        }));
+      } catch (error) {
+        console.error('Error saving draft to localStorage:', error);
+      }
+    }, 1000); // Save to localStorage after 1 second of inactivity
+
+    return () => clearTimeout(saveTimeout);
+  }, [formData, reference, initialFile, DRAFT_STORAGE_KEY]);
 
   // Track the last saved state to prevent redundant saves
   const lastSavedDataRef = useRef({
@@ -102,8 +153,8 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel, initialFile }:
       clearTimeout(autoSaveTimeoutRef.current);
     }
 
-    // Set new timeout for auto-save (3 seconds after last change)
-    autoSaveTimeoutRef.current = setTimeout(() => {
+    // Set new timeout for auto-save (5 seconds after last change, longer to avoid frequent saves)
+    autoSaveTimeoutRef.current = setTimeout(async () => {
       setIsSaving(true);
 
       const fileToUpdate = latestInitialFile.current;
@@ -127,10 +178,27 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel, initialFile }:
         isApproverAction: fileToUpdate?.isApproverAction || false,
         documentBody: formData.documentBody || 'No content provided.',
         history: newHistory,
+        attachments: formData.attachments,
       };
 
-      // In-place update for existing files to keep context in sync
-      onCreateSuccess(updatedFile, true);
+      // Only update context and save to API, don't navigate
+      // For existing files, update in place
+      if (fileToUpdate) {
+        onCreateSuccess(updatedFile, true);
+      } else {
+        // For new files, just save to API without navigation
+        try {
+          await fetch('/api/files', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedFile),
+          });
+          // Update the initialFile ref so subsequent saves work correctly
+          latestInitialFile.current = updatedFile;
+        } catch (error) {
+          console.error('Error auto-saving file:', error);
+        }
+      }
 
       // Update last saved state
       lastSavedDataRef.current = currentData;
@@ -139,7 +207,7 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel, initialFile }:
         setIsSaving(false);
         setLastSaved(new Date());
       }, 500);
-    }, 3000);
+    }, 5000); // Increased from 3 to 5 seconds
 
     // Cleanup on unmount
     return () => {
@@ -170,7 +238,18 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel, initialFile }:
       isApproverAction: true,
       documentBody: formData.documentBody || 'No content provided.',
       history: [newHistoryEntry, ...(initialFile?.history || [])],
+      attachments: formData.attachments,
     };
+    
+    // Clear localStorage draft on successful submit
+    if (!initialFile) {
+      try {
+        localStorage.removeItem(DRAFT_STORAGE_KEY);
+      } catch (error) {
+        console.error('Error clearing draft from localStorage:', error);
+      }
+    }
+    
     onCreateSuccess(newFile, false);
   };
 
@@ -216,6 +295,113 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel, initialFile }:
     const name = getUserName(lang);
     return name.split(' ').map((n: string) => n[0]).join('. ').toUpperCase();
   };
+
+  // File attachment utilities
+  const formatFileSize = (bytes: number): string => {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  };
+
+  const getFileType = (fileName: string): Attachment['type'] => {
+    const ext = fileName.split('.').pop()?.toLowerCase();
+    if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(ext || '')) return 'image';
+    if (ext === 'pdf') return 'pdf';
+    if (['xls', 'xlsx', 'csv'].includes(ext || '')) return 'excel';
+    if (['doc', 'docx'].includes(ext || '')) return 'word';
+    return 'other';
+  };
+
+  const getFileIcon = (type: Attachment['type']) => {
+    switch (type) {
+      case 'excel':
+        return <FileSpreadsheet size={20} className="text-emerald-600" />;
+      case 'pdf':
+        return <FileText size={20} className="text-rose-600" />;
+      case 'image':
+        return <FileImage size={20} className="text-[hsl(var(--color-brand))]" />;
+      case 'word':
+        return <FileText size={20} className="text-[hsl(var(--color-brand))]" />;
+      default:
+        return <FileIcon size={20} className="text-[hsl(var(--color-brand))]" />;
+    }
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    const newAttachments: Attachment[] = Array.from(files).map((file) => ({
+      id: `att-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      name: file.name,
+      type: getFileType(file.name),
+      size: file.size,
+      url: URL.createObjectURL(file), // Create object URL for preview
+    }));
+
+    setFormData({
+      ...formData,
+      attachments: [...formData.attachments, ...newAttachments],
+    });
+
+    // Reset input
+    event.target.value = '';
+  };
+
+  const handleRemoveAttachment = (id: string) => {
+    const attachment = formData.attachments.find((att) => att.id === id);
+    if (attachment?.url && attachment.url.startsWith('blob:')) {
+      URL.revokeObjectURL(attachment.url);
+    }
+    setFormData({
+      ...formData,
+      attachments: formData.attachments.filter((att) => att.id !== id),
+    });
+  };
+
+  // Sidebar resize handlers
+  const MIN_SIDEBAR_WIDTH = 280;
+  const MAX_SIDEBAR_WIDTH = 500;
+
+  const handleResizeStart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsResizing(true);
+  };
+
+  useEffect(() => {
+    if (!isResizing) return;
+
+    const handleResizeMove = (e: MouseEvent) => {
+      if (!containerRef.current) return;
+
+      const containerRect = containerRef.current.getBoundingClientRect();
+      const newWidth = containerRect.right - e.clientX;
+
+      // Constrain width between min and max
+      const constrainedWidth = Math.max(
+        MIN_SIDEBAR_WIDTH,
+        Math.min(MAX_SIDEBAR_WIDTH, newWidth)
+      );
+
+      setSidebarWidth(constrainedWidth);
+    };
+
+    const handleResizeEnd = () => {
+      setIsResizing(false);
+    };
+
+    document.addEventListener('mousemove', handleResizeMove);
+    document.addEventListener('mouseup', handleResizeEnd);
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+
+    return () => {
+      document.removeEventListener('mousemove', handleResizeMove);
+      document.removeEventListener('mouseup', handleResizeEnd);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+  }, [isResizing]);
 
   // Auto-resize subject textarea
   useEffect(() => {
@@ -276,7 +462,7 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel, initialFile }:
   }, [viewMode, previewZoom]);
 
   return (
-    <div className="flex flex-col lg:flex-row h-full overflow-y-auto lg:overflow-hidden">
+    <div ref={containerRef} className="create-file-container flex flex-col lg:flex-row h-full overflow-y-auto lg:overflow-hidden">
       {/* Main Document Editor */}
       <div className="flex-1 flex flex-col bg-slate-50 overflow-hidden min-h-[500px] lg:min-h-0">
         {/* Top Bar */}
@@ -456,8 +642,37 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel, initialFile }:
         )}
       </div>
 
+      {/* Resize Handle Container */}
+      <div
+        ref={resizeHandleRef}
+        className="hidden lg:block relative w-px bg-slate-200 group"
+        onMouseDown={handleResizeStart}
+        style={{ cursor: 'col-resize' }}
+        title="Drag to resize sidebar"
+      >
+        {/* Thin divider line */}
+        <div className="absolute inset-0 w-px bg-slate-200"></div>
+        
+        {/* Resize handle - centered */}
+        <div
+          className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-20 rounded-md bg-[hsl(var(--color-brand))] shadow-md hover:shadow-lg cursor-col-resize transition-all ${
+            isResizing ? 'shadow-lg' : ''
+          }`}
+        >
+          {/* Visual indicator dots */}
+          <div className="flex flex-col items-center justify-center h-full gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
+            <div className="w-0.5 h-0.5 rounded-full bg-white"></div>
+            <div className="w-0.5 h-0.5 rounded-full bg-white"></div>
+            <div className="w-0.5 h-0.5 rounded-full bg-white"></div>
+          </div>
+        </div>
+      </div>
+
       {/* Right Sidebar - Metadata */}
-      <div className="w-full lg:w-80 border-t lg:border-t-0 lg:border-l border-slate-200 bg-white flex flex-col h-auto lg:h-full">
+      <div
+        className="w-full border-t lg:border-t-0 lg:border-l border-slate-200 bg-white flex flex-col h-auto lg:h-full shrink-0"
+        style={{ width: typeof window !== 'undefined' && window.innerWidth >= 1024 ? `${sidebarWidth}px` : '100%' }}
+      >
         {/* Sidebar Header */}
         <div className="px-6 py-4 border-b border-slate-100">
           <h3 className="text-sm font-semibold text-slate-900">Document Settings</h3>
@@ -544,6 +759,51 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel, initialFile }:
             </DropdownMenu>
           </div>
 
+          {/* Attachments */}
+          <div className="space-y-2">
+            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide">
+              Attachments
+            </label>
+            <div className="space-y-2">
+              {formData.attachments.length > 0 && (
+                <div className="space-y-2">
+                  {formData.attachments.map((attachment) => (
+                    <div
+                      key={attachment.id}
+                      className="flex items-center gap-3 p-2 rounded-lg bg-slate-50 border border-slate-200 hover:bg-slate-100 transition-colors group"
+                    >
+                      <div className="shrink-0">
+                        {getFileIcon(attachment.type)}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-medium text-slate-900 truncate">{attachment.name}</div>
+                        <div className="text-xs text-slate-500">{formatFileSize(attachment.size)}</div>
+                      </div>
+                      <button
+                        onClick={() => handleRemoveAttachment(attachment.id)}
+                        className="shrink-0 p-1.5 hover:bg-slate-200 rounded transition-colors opacity-0 group-hover:opacity-100"
+                        aria-label="Remove attachment"
+                      >
+                        <X size={14} className="text-slate-600" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <label className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-slate-700 bg-slate-50 border border-slate-200 rounded-lg hover:bg-slate-100 cursor-pointer transition-colors">
+                <Upload size={16} />
+                {formData.attachments.length === 0 ? 'Add Files' : 'Add More Files'}
+                <input
+                  type="file"
+                  multiple
+                  className="hidden"
+                  onChange={handleFileUpload}
+                  accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.gif,.webp,.svg"
+                />
+              </label>
+            </div>
+          </div>
+
           {/* Send Copies */}
           <div className="space-y-2">
             <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide">
@@ -593,7 +853,7 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel, initialFile }:
           <div className="pt-4 border-t border-slate-200 space-y-2">
             <Button
               variant="outline"
-              onClick={() => {
+              onClick={async () => {
                 const newHistoryEntry = {
                   timestamp: new Date().toISOString(),
                   actor: user.name,
@@ -611,9 +871,37 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel, initialFile }:
                   isApproverAction: initialFile?.isApproverAction || false,
                   documentBody: formData.documentBody || 'No content provided.',
                   history: [newHistoryEntry, ...(initialFile?.history || [])],
+                  attachments: formData.attachments,
                 };
+                
+                // Save to API first
+                try {
+                  await fetch('/api/files', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newFile),
+                  });
+                } catch (error) {
+                  console.error('Error saving draft:', error);
+                }
+                
+                // Clear localStorage draft
+                if (!initialFile) {
+                  try {
+                    localStorage.removeItem(DRAFT_STORAGE_KEY);
+                  } catch (error) {
+                    console.error('Error clearing draft from localStorage:', error);
+                  }
+                }
+                
                 onCreateSuccess(newFile, true);
-                if (onCancel) onCancel();
+                // Navigate to files list after saving draft
+                if (onCancel) {
+                  // Use setTimeout to ensure save completes before navigation
+                  setTimeout(() => {
+                    onCancel();
+                  }, 100);
+                }
               }}
               disabled={!formData.title || !formData.category}
               className="w-full border-slate-200 text-slate-700 hover:bg-slate-50"

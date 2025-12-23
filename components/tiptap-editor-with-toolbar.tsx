@@ -62,6 +62,8 @@ import {
 } from '@/components/ui/tooltip';
 import { TextStyle } from '@tiptap/extension-text-style';
 import { Color } from '@tiptap/extension-color';
+import { Modal } from '@/components/ui/modal';
+import { Input } from '@/components/ui/input';
 
 interface TipTapEditorWithToolbarProps {
   content: string;
@@ -90,6 +92,10 @@ const LINE_SPACING_OPTIONS = [
 export function TipTapEditorWithToolbar({ content, onChange, placeholder, className, language = 'en' }: TipTapEditorWithToolbarProps) {
   const currentPlaceholder = placeholder || 'Start typing...';
   const [lineHeight, setLineHeight] = useState('1.5');
+  const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
+  const [linkUrl, setLinkUrl] = useState('');
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [imageUrl, setImageUrl] = useState('');
 
   const editor = useEditor({
     extensions: [
@@ -154,24 +160,60 @@ export function TipTapEditorWithToolbar({ content, onChange, placeholder, classN
     return null;
   }
 
-  const setLink = () => {
-    const previousUrl = editor.getAttributes('link').href;
-    const url = window.prompt('URL', previousUrl);
-
-    if (url === null) return;
-
-    if (url === '') {
-      editor.chain().focus().extendMarkRange('link').unsetLink().run();
-      return;
-    }
-
-    editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+  const openLinkModal = () => {
+    const previousUrl = editor.getAttributes('link').href || '';
+    setLinkUrl(previousUrl);
+    setIsLinkModalOpen(true);
   };
 
-  const addImage = () => {
-    const url = window.prompt('Image URL');
-    if (url) {
+  const handleLinkSubmit = () => {
+    if (linkUrl.trim() === '') {
+      editor.chain().focus().extendMarkRange('link').unsetLink().run();
+    } else {
+      // Ensure URL has protocol
+      const url = linkUrl.startsWith('http://') || linkUrl.startsWith('https://') 
+        ? linkUrl 
+        : `https://${linkUrl}`;
+      editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+    }
+    setIsLinkModalOpen(false);
+    setLinkUrl('');
+  };
+
+  const openImageModal = () => {
+    setImageUrl('');
+    setIsImageModalOpen(true);
+  };
+
+  const handleImageSubmit = () => {
+    if (imageUrl.trim()) {
+      // Ensure URL has protocol
+      const url = imageUrl.startsWith('http://') || imageUrl.startsWith('https://') 
+        ? imageUrl 
+        : `https://${imageUrl}`;
       editor.chain().focus().setImage({ src: url }).run();
+    }
+    setIsImageModalOpen(false);
+    setImageUrl('');
+  };
+
+  const handleImageFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const dataUrl = e.target?.result as string;
+        if (dataUrl) {
+          editor.chain().focus().setImage({ src: dataUrl }).run();
+        }
+      };
+      reader.readAsDataURL(file);
+      setIsImageModalOpen(false);
+      setImageUrl('');
+    }
+    // Reset input
+    if (event.target) {
+      event.target.value = '';
     }
   };
 
@@ -570,7 +612,7 @@ export function TipTapEditorWithToolbar({ content, onChange, placeholder, classN
                   variant="ghost"
                   size="icon"
                   className="h-7 w-7"
-                  onClick={setLink}
+                  onClick={openLinkModal}
                   data-active={editor.isActive('link')}
                 >
                   <LinkIcon size={15} />
@@ -587,7 +629,7 @@ export function TipTapEditorWithToolbar({ content, onChange, placeholder, classN
                   variant="ghost"
                   size="icon"
                   className="h-7 w-7"
-                  onClick={addImage}
+                  onClick={openImageModal}
                 >
                   <ImageIcon size={15} />
                 </Button>
@@ -652,6 +694,120 @@ export function TipTapEditorWithToolbar({ content, onChange, placeholder, classN
           <EditorContent editor={editor} />
         </div>
       </div>
+
+      {/* Link Modal */}
+      <Modal
+        isOpen={isLinkModalOpen}
+        onClose={() => {
+          setIsLinkModalOpen(false);
+          setLinkUrl('');
+        }}
+        title="Insert Link"
+      >
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              URL
+            </label>
+            <Input
+              type="url"
+              value={linkUrl}
+              onChange={(e) => setLinkUrl(e.target.value)}
+              placeholder="https://example.com"
+              autoFocus
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleLinkSubmit();
+                }
+              }}
+            />
+          </div>
+          <div className="flex justify-end gap-2">
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setIsLinkModalOpen(false);
+                setLinkUrl('');
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleLinkSubmit}
+              className="bg-[hsl(var(--color-brand))] hover:bg-[hsl(var(--color-brand-hover))] text-white"
+            >
+              {linkUrl.trim() === '' ? 'Remove Link' : 'Insert Link'}
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Image Modal */}
+      <Modal
+        isOpen={isImageModalOpen}
+        onClose={() => {
+          setIsImageModalOpen(false);
+          setImageUrl('');
+        }}
+        title="Insert Image"
+      >
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Image URL
+            </label>
+            <Input
+              type="url"
+              value={imageUrl}
+              onChange={(e) => setImageUrl(e.target.value)}
+              placeholder="https://example.com/image.jpg"
+              autoFocus
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleImageSubmit();
+                }
+              }}
+            />
+          </div>
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-300"></div>
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-white px-2 text-slate-500">Or</span>
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Upload Image
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageFileUpload}
+              className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+            />
+          </div>
+          <div className="flex justify-end gap-2">
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setIsImageModalOpen(false);
+                setImageUrl('');
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleImageSubmit}
+              disabled={!imageUrl.trim()}
+              className="bg-[hsl(var(--color-brand))] hover:bg-[hsl(var(--color-brand-hover))] text-white disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Insert Image
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </TooltipProvider>
   );
 }

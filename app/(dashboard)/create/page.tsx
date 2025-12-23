@@ -17,11 +17,12 @@ export default function CreateFilePage() {
 
   const handleCreateSuccess = (file: File, isDraft: boolean) => {
     addFile(file);
-    if (isDraft) {
-      router.push('/dashboard/files');
-    } else {
-      router.push(`/dashboard/files/${file.id}`);
+    // Only navigate on explicit submit, not on auto-save
+    if (!isDraft) {
+      // Use replace to avoid back button issues
+      router.replace(`/dashboard/files/${file.id}`);
     }
+    // For drafts, stay on the page (auto-save doesn't navigate)
   };
 
 

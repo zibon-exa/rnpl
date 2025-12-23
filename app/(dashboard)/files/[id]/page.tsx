@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRequireAuth } from '@/hooks/use-require-auth';
 import { useFiles } from '@/lib/files-context';
 import { CheckCircle, RotateCcw, Forward, Download, Printer, Copy, Check, Paperclip, ArrowLeft, Hash, FolderOpen, Calendar, User, FileText, FileSpreadsheet, FileImage, File as FileIcon, Clock, SquarePen, MoreVertical, Archive, Trash2 } from 'lucide-react';
@@ -39,15 +39,63 @@ export default function FileViewPage() {
   const [copiedRef, setCopiedRef] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [actionNote, setActionNote] = useState('');
+  const [sidebarWidth, setSidebarWidth] = useState(396); // Default 396px (same as file viewer sidebar)
+  const [isResizing, setIsResizing] = useState(false);
+  const resizeHandleRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const fileId = params.id as string;
   const file = files.find(f => f.id === fileId);
+
+  // Sidebar resize handlers
+  const MIN_SIDEBAR_WIDTH = 280;
+  const MAX_SIDEBAR_WIDTH = 500;
+
+  const handleResizeStart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsResizing(true);
+  };
 
   useEffect(() => {
     if (!file) {
       router.push('/dashboard');
     }
   }, [file, router]);
+
+  useEffect(() => {
+    if (!isResizing) return;
+
+    const handleResizeMove = (e: MouseEvent) => {
+      if (!containerRef.current) return;
+
+      const containerRect = containerRef.current.getBoundingClientRect();
+      const newWidth = containerRect.right - e.clientX;
+
+      // Constrain width between min and max
+      const constrainedWidth = Math.max(
+        MIN_SIDEBAR_WIDTH,
+        Math.min(MAX_SIDEBAR_WIDTH, newWidth)
+      );
+
+      setSidebarWidth(constrainedWidth);
+    };
+
+    const handleResizeEnd = () => {
+      setIsResizing(false);
+    };
+
+    document.addEventListener('mousemove', handleResizeMove);
+    document.addEventListener('mouseup', handleResizeEnd);
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+
+    return () => {
+      document.removeEventListener('mousemove', handleResizeMove);
+      document.removeEventListener('mouseup', handleResizeEnd);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+  }, [isResizing]);
 
   if (!user || !file) {
     return null;
@@ -358,7 +406,7 @@ export default function FileViewPage() {
 
       {/* Document Page */}
       <main className="bg-slate-50 flex-1 overflow-hidden">
-        <div className="flex flex-col lg:flex-row h-full overflow-y-auto lg:overflow-hidden">
+        <div ref={containerRef} className="flex flex-col lg:flex-row h-full overflow-y-auto lg:overflow-hidden">
           {/* Main Content */}
           <div className="flex-1 overflow-visible lg:overflow-y-auto px-4 sm:px-14 pt-8 sm:pt-14 pb-12 lg:pb-32 custom-scrollbar">
             <div className="max-w-4xl mx-auto">
@@ -431,8 +479,37 @@ export default function FileViewPage() {
             </div>
           </div>
 
+          {/* Resize Handle Container */}
+          <div
+            ref={resizeHandleRef}
+            className="hidden lg:block relative w-px bg-slate-200 group"
+            onMouseDown={handleResizeStart}
+            style={{ cursor: 'col-resize' }}
+            title="Drag to resize sidebar"
+          >
+            {/* Thin divider line */}
+            <div className="absolute inset-0 w-px bg-slate-200"></div>
+            
+            {/* Resize handle - centered */}
+            <div
+              className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-20 rounded-md bg-[hsl(var(--color-brand))] shadow-md hover:shadow-lg cursor-col-resize transition-all ${
+                isResizing ? 'shadow-lg' : ''
+              }`}
+            >
+              {/* Visual indicator dots */}
+              <div className="flex flex-col items-center justify-center h-full gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
+                <div className="w-0.5 h-0.5 rounded-full bg-white"></div>
+                <div className="w-0.5 h-0.5 rounded-full bg-white"></div>
+                <div className="w-0.5 h-0.5 rounded-full bg-white"></div>
+              </div>
+            </div>
+          </div>
+
           {/* Right Sidebar - Sticky Tabs */}
-          <aside className="w-full lg:w-[396px] lg:min-w-[396px] shrink-0 block bg-white border-t lg:border-t-0 lg:border-l border-slate-200">
+          <aside
+            className="w-full shrink-0 block bg-white border-t lg:border-t-0 lg:border-l border-slate-200"
+            style={{ width: typeof window !== 'undefined' && window.innerWidth >= 1024 ? `${sidebarWidth}px` : '100%' }}
+          >
             <div className="h-[600px] lg:h-full flex flex-col">
               <Tabs defaultValue="comments" className="flex-1 flex flex-col h-full file-viewer-tabs">
                 <TabsList className="grid grid-cols-2 w-full rounded-none border-b border-slate-200 h-12 bg-white p-0">

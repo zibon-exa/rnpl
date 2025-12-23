@@ -6,6 +6,71 @@ This file tracks all AI-assisted changes made to the project.
 - Date-Time: YYYY-MM-dd HH:mm:ss
 - Description: Brief description of changes
 
+## 2025-12-23 14:50:10
+- **Description**: Replaced browser prompt dialogs with custom modals for Link and Image insertion in TipTap editor. Added Input component and Modal UI for better UX. Image modal supports both URL input and file upload.
+- **Files Created**:
+  - `components/ui/input.tsx` - Reusable Input component with consistent styling
+- **Files Modified**:
+  - `components/tiptap-editor-with-toolbar.tsx` - Replaced `window.prompt()` with custom modals:
+    - Link modal: URL input field with "Insert Link" or "Remove Link" button, auto-adds https:// if missing
+    - Image modal: URL input field OR file upload option, supports both methods for inserting images
+    - Both modals have cancel buttons and proper keyboard support (Enter to submit)
+    - Modals use existing Modal component with consistent styling
+- **Features**:
+  - Custom modal UI instead of browser dialogs for better UX
+  - Link modal pre-fills existing link URL if text is already linked
+  - Image modal supports both URL and file upload (converts to data URL)
+  - Proper form validation and error handling
+  - Keyboard shortcuts (Enter to submit, Escape to close)
+  - Consistent styling with rest of application
+
+## 2025-12-23 14:35:00
+- **Description**: Fixed data loss issue during file creation. Added localStorage backup for drafts, prevented auto-save from navigating away, increased auto-save delay to 5 seconds, and improved error handling. Auto-save now only saves silently without navigation.
+- **Files Modified**:
+  - `components/create-file-form.tsx` - Added localStorage backup/restore for drafts, separated auto-save from navigation (auto-save only saves to API), increased auto-save delay from 3s to 5s, added draft restoration on page load
+  - `app/(dashboard)/create/page.tsx` - Updated to only navigate on explicit submit, not on auto-save drafts, using router.replace for better navigation
+
+## 2025-12-23 14:30:00
+- **Description**: Implemented local file storage with git integration. Files are now saved to `data/files/` directory organized by year/month (YYYY/MM/fileId.json). Files sync with git and are included in deployments. Added API routes for file CRUD operations and updated FilesContext to persist files automatically.
+- **Files Created**:
+  - `lib/file-storage.ts` - File system utilities for saving/loading files organized by year/month
+  - `app/api/files/route.ts` - API routes for GET (all files) and POST (create/update file)
+  - `app/api/files/[id]/route.ts` - API routes for GET, PUT, DELETE individual files
+  - `data/files/.gitkeep` - Ensures data directory is tracked by git
+- **Files Modified**:
+  - `lib/files-context.tsx` - Updated to load files from API on mount, automatically persist files when added/updated, and merge with initial mock files on first run
+- **Features**:
+  - Files stored as JSON in organized directory structure (data/files/YYYY/MM/)
+  - Automatic persistence when files are created or updated
+  - Files are tracked by git and included in deployments
+  - Backward compatible with existing mock data (initial files are saved on first load)
+  - API routes handle all file operations (create, read, update, delete)
+
+## 2025-12-23 14:26:00
+- **Description**: Applied resizable sidebar feature to file viewer page. Added same resize handle and functionality as create file form.
+- **Files Modified**:
+  - `app/(dashboard)/files/[id]/page.tsx` - Added sidebar width state, resize handlers, resize handle UI with brand color and white dots, and dynamic sidebar width styling
+
+## 2025-12-23 14:24:00
+- **Description**: Redesigned resize handle with thin divider line and separate centered handle (80px high, 8px wide) with shadow for depth. Handle is visually distinct from the divider.
+- **Files Modified**:
+  - `components/create-file-form.tsx` - Separated thin divider line (1px) from resize handle, added centered handle with shadow, border, and hover effects
+
+## 2025-12-23 14:22:00
+- **Description**: Updated sidebar default width to match file viewer (396px) and improved resize handle visibility with visual indicator dots.
+- **Files Modified**:
+  - `components/create-file-form.tsx` - Changed default sidebar width from 320px to 396px, enhanced resize handle with visible dot indicators and hover effects for better UX
+
+## 2025-12-23 14:20:00
+- **Description**: Made sidebar resizable in file creation form. Added drag-to-resize handle between editor/preview and sidebar with min width (280px) and max width (500px) constraints to prevent layout breaking.
+- **Files Modified**:
+  - `components/create-file-form.tsx` - Added sidebar width state, resize handle with drag functionality, mouse event handlers for resizing, and dynamic width styling. Sidebar can be resized between 280px and 500px.
+
+## 2025-12-23 14:16:00
+- **Description**: Added file attachment functionality to file creation form. Users can now upload multiple files (PDF, Word, Excel, images) in the sidebar, view attached files with icons and file sizes, and remove attachments. Attachments are saved with the file when creating or saving as draft.
+- **Files Modified**:
+  - `components/create-file-form.tsx` - Added attachments state to formData, file upload handler, file type detection, file icon display, attachment removal, and UI in sidebar with upload button and attachment list. Attachments are included when creating/saving files.
+
 ## 2025-12-23 13:16:00
 - **Description**: Changed default table size from 3×3 to 2×3 (2 columns, 3 rows).
 - **Files Modified**:

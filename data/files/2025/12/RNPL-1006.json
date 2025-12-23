@@ -1,0 +1,56 @@
+{
+  "id": "RNPL-1006",
+  "title": "Annual Security Audit Report 2025",
+  "category": "আইটি",
+  "status": "Approved",
+  "lastUpdated": "2025-12-05",
+  "sender": "Mohammad Hasan",
+  "isApproverAction": false,
+  "priority": "Urgent",
+  "dueDate": "2025-12-06",
+  "summary": "Comprehensive security audit findings and recommendations for Q1 2026 improvements.",
+  "documentBody": "Subject: Annual Security Audit Report - 2025\n\nExecutive Summary:\nThis report presents the findings from our comprehensive annual security audit conducted in November 2025. The audit covered network infrastructure, application security, access controls, and compliance with ISO 27001 standards.\n\nKey Findings:\n1. Network Security: 95% compliance - Minor improvements needed in firewall rules\n2. Application Security: 88% compliance - Two medium-risk vulnerabilities identified\n3. Access Controls: 92% compliance - Some inactive accounts need deactivation\n4. Data Backup: 100% compliance - All systems properly backed up\n\nRecommendations:\n1. Update firewall rules by January 15, 2026\n2. Patch identified vulnerabilities by December 20, 2025\n3. Review and deactivate inactive user accounts monthly\n4. Implement two-factor authentication for all admin accounts\n\nOverall Security Rating: A- (Excellent)\n\nThis report has been reviewed and approved by the IT Security Committee.",
+  "history": [
+    {
+      "timestamp": "2025-12-05T14:00:00Z",
+      "actor": "Toufique Joarder",
+      "event": "Approved",
+      "stateChange": "Approved",
+      "note": "Excellent work. Implement recommendations as scheduled."
+    },
+    {
+      "timestamp": "2025-12-05T10:00:00Z",
+      "actor": "Mohammad Hasan",
+      "event": "Sent for Approval",
+      "stateChange": "Pending",
+      "note": "Annual audit complete. Ready for review."
+    },
+    {
+      "timestamp": "2025-11-30T08:00:00Z",
+      "actor": "Mohammad Hasan",
+      "event": "Draft Created",
+      "stateChange": "Draft",
+      "note": "Compiling audit results."
+    }
+  ],
+  "attachments": [
+    {
+      "id": "att-7",
+      "name": "Security_Audit_Report.pdf",
+      "type": "pdf",
+      "size": 2048000
+    },
+    {
+      "id": "att-8",
+      "name": "Vulnerability_Scan_Results.xlsx",
+      "type": "excel",
+      "size": 512000
+    },
+    {
+      "id": "att-9",
+      "name": "Network_Diagram.png",
+      "type": "image",
+      "size": 640000
+    }
+  ]
+}

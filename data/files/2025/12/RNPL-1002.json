@@ -1,0 +1,36 @@
+{
+  "id": "RNPL-1002",
+  "title": "নতুন কর্মচারী অনবোর্ডিং নীতি",
+  "category": "মানবসম্পদ",
+  "status": "Approved",
+  "lastUpdated": "2025-12-01",
+  "sender": "Karim Uddin",
+  "isApproverAction": false,
+  "priority": "Medium",
+  "dueDate": "2025-12-15",
+  "summary": "দূরবর্তী অনবোর্ডিং প্রক্রিয়ার জন্য আপডেট করা নির্দেশিকা। চূড়ান্ত অনুমোদনের প্রয়োজন।",
+  "documentBody": "নীতি নম্বর: HR-POL-2025-12\nপ্রয়োগের তারিখ: ১ জানুয়ারি ২০২৬\n\nউদ্দেশ্য:\nদূরবর্তী অনবোর্ডিং অভিজ্ঞতাকে মানসম্মত করা এবং নতুন কর্মচারীদের জন্য একটি সুসংগঠিত প্রক্রিয়া নিশ্চিত করা।\n\nপরিধি:\n২০২৬ সালের ১ জানুয়ারির পর যোগদানকারী সকল পূর্ণকালীন কর্মচারী এই নীতির আওতায় আসবে।\n\nনীতি বিবরণ:\n১. শুরু হওয়ার তারিখের ৩ দিন আগে সকল আইটি সম্পদ (ল্যাপটপ, মাউস, কিবোর্ড) পাঠাতে হবে।\n২. চুক্তি স্বাক্ষরের পর স্বয়ংক্রিয়ভাবে IDM পোর্টালের মাধ্যমে অ্যাক্সেস ক্রেডেনশিয়াল সরবরাহ করা হবে।\n৩. প্রথম দিন একটি ভার্চুয়াল ওরিয়েন্টেশন সেশন অনুষ্ঠিত হবে।\n৪. প্রথম সপ্তাহে প্রতিদিন একজন মেন্টর নিয়োগ করা হবে।",
+  "history": [
+    {
+      "timestamp": "2025-12-01T15:00:00Z",
+      "actor": "Toufique Joarder",
+      "event": "Approved",
+      "stateChange": "Approved",
+      "note": "Policy looks solid. Go live next week."
+    },
+    {
+      "timestamp": "2025-12-01T10:00:00Z",
+      "actor": "Karim Uddin",
+      "event": "Sent for Approval",
+      "stateChange": "Pending",
+      "note": "Please review the scope changes."
+    },
+    {
+      "timestamp": "2025-11-28T09:00:00Z",
+      "actor": "Karim Uddin",
+      "event": "Draft Created",
+      "stateChange": "Draft",
+      "note": "Initial policy draft."
+    }
+  ]
+}

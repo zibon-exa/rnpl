@@ -1,0 +1,63 @@
+{
+  "id": "RNPL-1001",
+  "title": "চতুর্থ প্রান্তিক বাজেট বৈচিত্র্য প্রতিবেদন",
+  "category": "অর্থ",
+  "status": "Pending",
+  "lastUpdated": "2025-12-07",
+  "sender": "Rashida Begum",
+  "isApproverAction": true,
+  "priority": "High",
+  "dueDate": "2025-12-10",
+  "summary": "প্রক্ষিপ্ত বাজেটের বিপরীতে চতুর্থ প্রান্তিক ব্যয়ের বিশ্লেষণ বৈচিত্র্যের ব্যাখ্যাসহ। অবিলম্বে অনুমোদনের প্রয়োজন।",
+  "documentBody": "বিষয়: চতুর্থ প্রান্তিক (অক্টোবর-ডিসেম্বর ২০২৫) আর্থিক কার্যকারিতা পর্যালোচনা\n\nসারসংক্ষেপ:\nচতুর্থ প্রান্তিকের আর্থিক কার্যকারিতা পর্যালোচনায় দেখা যায় যে পরিচালন ব্যয়ে ১২% বৈচিত্র্য রয়েছে, যা মূলত অপ্রত্যাশিত সার্ভার মাইগ্রেশন খরচ দ্বারা চালিত। প্রকল্পিত বাজেট ছিল ২৫,০০,০০০ টাকা, কিন্তু প্রকৃত ব্যয় হয়েছে ২৮,০০,০০০ টাকা।\n\nবিশ্লেষণ:\n১. সার্ভার মাইগ্রেশন: ২,৫০,০০০ টাকা (অপ্রত্যাশিত)\n২. সফটওয়্যার লাইসেন্স: ৫০,০০০ টাকা (অতিরিক্ত)\n৩. রক্ষণাবেক্ষণ: ২,০০,০০০ টাকা (প্রত্যাশিত)\n\nসুপারিশ:\nবিপণন বাজেট থেকে ৩,০০,০০০ টাকা উদ্বৃত্ত রয়েছে। আমরা এই ঘাটতি কাটিয়ে উঠতে বিপণন বাজেট থেকে উদ্বৃত্ত পুনরায় বরাদ্দ করার সুপারিশ করি।\n\nআপনার পর্যালোচনার জন্য বিস্তারিত খাতা সংযুক্ত করা হয়েছে।",
+  "history": [
+    {
+      "timestamp": "2025-12-07T10:45:00Z",
+      "actor": "Rashida Begum",
+      "event": "Sent for Approval",
+      "stateChange": "Pending",
+      "note": "Ready for review. Critical item due to year-end closing."
+    },
+    {
+      "timestamp": "2025-12-06T09:00:00Z",
+      "actor": "Rashida Begum",
+      "event": "Draft Created",
+      "stateChange": "Draft",
+      "note": "Initial creation of the file."
+    }
+  ],
+  "attachments": [
+    {
+      "id": "att-1",
+      "name": "বাজেট_বিশ্লেষণ.xlsx",
+      "type": "excel",
+      "size": 245760
+    },
+    {
+      "id": "att-2",
+      "name": "খরচ_বিবরণ.pdf",
+      "type": "pdf",
+      "size": 512000
+    },
+    {
+      "id": "att-3",
+      "name": "চার্ট_চিত্র.png",
+      "type": "image",
+      "size": 128000
+    }
+  ],
+  "comments": [
+    {
+      "id": "c1",
+      "author": "Toufique Joarder",
+      "text": "The server migration cost seems high. Can we negotiate with the vendor?",
+      "timestamp": "2025-12-07T11:00:00Z"
+    },
+    {
+      "id": "c2",
+      "author": "Rashida Begum",
+      "text": "I will look into it and update the figures.",
+      "timestamp": "2025-12-07T11:30:00Z"
+    }
+  ]
+}

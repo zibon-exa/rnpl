@@ -1,0 +1,50 @@
+{
+  "id": "RNPL-1003",
+  "title": "অফিস স্পেস সংস্কার প্রস্তাব",
+  "category": "প্রশাসন",
+  "status": "Returned",
+  "lastUpdated": "2025-12-02",
+  "sender": "Fatima Ahmed",
+  "isApproverAction": true,
+  "priority": "High",
+  "dueDate": "2025-12-05",
+  "summary": "নতুন মিটিং রুম সহ তৃতীয় তলার সংস্কারের জন্য খরচ অনুমান। পুনরায় জমা দেওয়ার প্রয়োজন।",
+  "documentBody": "প্রস্তাবিত প্রকল্প: তৃতীয় তলার অফিস স্পেস সংস্কার\n\nভেন্ডর: A-1 Construction Ltd.\nঅনুমানকৃত খরচ: ৩৫,০০,০০০ টাকা\nসময়সীমা: ৩ সপ্তাহ\n\nকাজের পরিধি:\n১. বিদ্যমান ক্যুবিকল ভাঙা এবং অপসারণ\n২. কাচের পার্টিশন স্থাপন (মোট ২০০ বর্গফুট)\n৩. ৪টি নতুন কনফারেন্স রুমের জন্য বৈদ্যুতিক রিওয়্যারিং\n৪. নতুন LED লাইটিং সিস্টেম ইনস্টলেশন\n৫. HVAC সিস্টেম আপগ্রেড\n\nঅনুমোদনের জন্য জমা দেওয়া হয়েছে।",
+  "history": [
+    {
+      "timestamp": "2025-12-02T16:30:00Z",
+      "actor": "Toufique Joarder",
+      "event": "Returned",
+      "stateChange": "Returned",
+      "note": "Cost is too high. Find a cheaper vendor and resubmit."
+    },
+    {
+      "timestamp": "2025-12-02T11:00:00Z",
+      "actor": "Fatima Ahmed",
+      "event": "Sent for Approval",
+      "stateChange": "Pending",
+      "note": "Urgent renovation request."
+    },
+    {
+      "timestamp": "2025-12-01T09:00:00Z",
+      "actor": "Fatima Ahmed",
+      "event": "Draft Created",
+      "stateChange": "Draft",
+      "note": "Initial estimate."
+    }
+  ],
+  "attachments": [
+    {
+      "id": "att-4",
+      "name": "ভেন্ডর_প্রস্তাব.pdf",
+      "type": "pdf",
+      "size": 1024000
+    },
+    {
+      "id": "att-5",
+      "name": "ফ্লোর_প্ল্যান.jpg",
+      "type": "image",
+      "size": 768000
+    }
+  ]
+}

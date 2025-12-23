@@ -1,0 +1,28 @@
+{
+  "title": "প্রযুক্তি পণ্য ক্রয় সংক্রান্ত নোটিশ",
+  "summary": "",
+  "category": "it",
+  "tags": "",
+  "documentBody": "No content provided.",
+  "date": "2025-12-23",
+  "language": "bn",
+  "sendTo": "user-009",
+  "sendCopies": [
+    ""
+  ],
+  "attachments": [],
+  "id": "RNPL-0000",
+  "sender": "Toufique Joarder",
+  "status": "Draft",
+  "lastUpdated": "2025-12-23",
+  "isApproverAction": false,
+  "history": [
+    {
+      "timestamp": "2025-12-23T08:44:01.600Z",
+      "actor": "Toufique Joarder",
+      "event": "Draft Saved",
+      "stateChange": "Draft",
+      "note": "Auto-saved draft."
+    }
+  ]
+}

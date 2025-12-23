@@ -1,0 +1,37 @@
+{
+  "id": "RNPL-1005",
+  "title": "মার্কেটিং ক্যাম্পেইন লঞ্চ পরিকল্পনা",
+  "category": "প্রশাসন",
+  "status": "Pending",
+  "lastUpdated": "2025-12-04",
+  "sender": "Nusrat Jahan",
+  "isApproverAction": true,
+  "priority": "Medium",
+  "dueDate": "2025-12-20",
+  "summary": "প্রথম প্রান্তিক সোশ্যাল মিডিয়া ব্লিটজ কৌশল। বাজেট স্বাক্ষরের প্রয়োজন।",
+  "documentBody": "ক্যাম্পেইন: Q1 2026 Enterprise Feature Launch Campaign\n\nকৌশল:\nআমাদের নতুন এন্টারপ্রাইজ বৈশিষ্ট্যগুলিতে ফোকাস করে LinkedIn এবং Twitter-এ আক্রমনাত্মক টার্গেটেড বিজ্ঞাপন।\n\nলক্ষ্য:\n- B2B লিড জেনারেশন: ৫০০+ যোগ্য লিড\n- ব্র্যান্ড সচেতনতা বৃদ্ধি: ১০০K+ ইম্প্রেশন\n- ওয়েবসাইট ট্রাফিক: ২৫% বৃদ্ধি\n\nবাজেট:\n- LinkedIn Ads: ২,৫০,০০০ টাকা/মাস\n- Twitter Ads: ১,৫০,০০০ টাকা/মাস\n- মোট: ৪,০০,০০০ টাকা/মাস\n\nসময়কাল: জানুয়ারি - মার্চ ২০২৬ (৩ মাস)\n\nমোট বাজেট: ১২,০০,০০০ টাকা",
+  "history": [
+    {
+      "timestamp": "2025-12-04T12:00:00Z",
+      "actor": "Nusrat Jahan",
+      "event": "Sent for Approval",
+      "stateChange": "Pending",
+      "note": "Submitted to Finance for budget review."
+    },
+    {
+      "timestamp": "2025-12-04T09:00:00Z",
+      "actor": "Nusrat Jahan",
+      "event": "Draft Created",
+      "stateChange": "Draft",
+      "note": "Campaign shell built."
+    }
+  ],
+  "attachments": [
+    {
+      "id": "att-6",
+      "name": "ক্যাম্পেইন_বাজেট.xlsx",
+      "type": "excel",
+      "size": 384000
+    }
+  ]
+}

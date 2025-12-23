@@ -1,0 +1,3 @@
+# This file ensures the data/files directory is tracked by git
+# Files created through the application will be stored in subdirectories organized by year/month
+

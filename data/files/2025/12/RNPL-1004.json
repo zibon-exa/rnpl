@@ -1,0 +1,21 @@
+{
+  "id": "RNPL-1004",
+  "title": "সার্ভার আপগ্রেড অনুরোধ",
+  "category": "আইটি",
+  "status": "Draft",
+  "lastUpdated": "2025-12-03",
+  "sender": "Toufique Joarder",
+  "isApproverAction": false,
+  "priority": "Medium",
+  "summary": "প্রাথমিক ক্লাস্টারের জন্য ৩টি নতুন ব্লেডের অনুরোধ।",
+  "documentBody": "বিষয়: প্রাথমিক কম্পিউট ক্লাস্টার সম্প্রসারণ\n\nবর্তমান অবস্থা:\nআমরা বর্তমানে আমাদের প্রাথমিক কম্পিউট ক্লাস্টারে ৮৫% ক্ষমতায় পৌঁছেছি। বর্তমানে ১২টি ব্লেড সক্রিয় রয়েছে।\n\nপ্রস্তাব:\nআসন্ন পিক সিজনে স্থিতিশীলতা নিশ্চিত করতে, আমরা ৩টি Dell PowerEdge R750 ব্লেড সার্ভারের ক্রয়ের অনুরোধ করছি।\n\nবিশদ:\n- মডেল: Dell PowerEdge R750\n- প্রসেসর: Intel Xeon Silver 4314 (2.4GHz, 16-core)\n- RAM: 128GB DDR4\n- স্টোরেজ: 2x 1.92TB NVMe SSD\n- মোট খরচ: ১২,০০,০০০ টাকা\n\nপ্রত্যাশিত ডেলিভারি: ২ সপ্তাহ",
+  "history": [
+    {
+      "timestamp": "2025-12-03T10:00:00Z",
+      "actor": "Toufique Joarder",
+      "event": "Draft Saved",
+      "stateChange": "Draft",
+      "note": "Initial draft, pending content review."
+    }
+  ]
+}
