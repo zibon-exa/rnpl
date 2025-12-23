@@ -6,6 +6,52 @@ This file tracks all AI-assisted changes made to the project.
 - Date-Time: YYYY-MM-dd HH:mm:ss
 - Description: Brief description of changes
 
+## 2025-12-23 13:16:00
+- **Description**: Changed default table size from 3×3 to 2×3 (2 columns, 3 rows).
+- **Files Modified**:
+  - `components/tiptap-editor-with-toolbar.tsx` - Updated insertTable call from `rows: 3, cols: 3` to `rows: 3, cols: 2` and updated label from "3×3" to "2×3"
+
+## 2025-12-23 13:15:00
+- **Description**: Rearranged TipTap toolbar: moved Task List icon next to Numbered List, and converted Quote, Link, Image, Table from dropdown to individual icon buttons (maintaining order).
+- **Files Modified**:
+  - `components/tiptap-editor-with-toolbar.tsx` - Moved Task List button to Group 3 (next to Numbered List), replaced Insert dropdown with individual icon buttons for Quote, Link, Image, and Table (Table remains as dropdown for table operations)
+
+## 2025-12-23 13:12:00
+- **Description**: Fixed title/subject size in preview to match final document view. Changed from `text-sm` to `text-xl sm:text-2xl` and updated spacing to match.
+- **Files Modified**:
+  - `components/document-content.tsx` - Updated title from `<p className="text-sm">` to `<h1 className="text-xl sm:text-2xl">` and changed container margin from `mb-4` to `mb-8` to match file view page
+
+## 2025-12-23 13:10:00
+- **Description**: Fixed captions in preview mode and improved HTML formatting rendering. Removed captions from preview pane, and added proper CSS styles to ensure TipTap HTML (line breaks, colors, formatting) renders correctly in preview and final documents.
+- **Files Modified**:
+  - `components/document-preview.tsx` - Changed `showCaptions` from `true` to `false` to remove captions from preview pane
+  - `components/document-content.tsx` - Enhanced prose classes with comprehensive formatting styles for headings, lists, blockquotes, code, and text styles
+  - `app/(dashboard)/files/[id]/page.tsx` - Removed `whitespace-pre-wrap` and added comprehensive prose formatting classes to properly render HTML content
+  - `app/globals.css` - Added extensive prose styles for rendered TipTap HTML to ensure proper rendering of line breaks, headings, lists, blockquotes, code blocks, and text formatting (bold, italic, underline, strikethrough)
+
+## 2025-12-23 13:05:00
+- **Description**: Removed captions "বিষয়" and "বিষয়বস্তু" from final document previews. Captions are now only shown in the editor (DocumentPreview component).
+- **Files Modified**:
+  - `components/document-content.tsx` - Added `showCaptions` prop (defaults to false) to conditionally show/hide captions
+  - `components/document-preview.tsx` - Set `showCaptions={true}` to show captions in editor preview
+  - `components/file-inspector.tsx` - Uses default `showCaptions={false}` so captions are hidden in final document view
+
+## 2025-12-23 12:58:00
+- **Description**: Removed Noto Serif Bengali font and replaced all instances with July Font using correct weights (font-bold/700 instead of font-semibold/600).
+- **Files Modified**:
+  - `lib/fonts.ts` - Removed Noto_Serif_Bengali import and notoSerifBengali export
+  - `app/layout.tsx` - Removed notoSerifBengali from imports and className
+  - `app/globals.css` - Updated font-bangla-serif to use 'July Font' instead of var(--font-noto-serif-bengali)
+  - `components/document-content.tsx` - Changed font-semibold to font-bold for font-bangla-serif elements
+  - `components/create-file-form.tsx` - Changed font-semibold to font-bold for font-bangla-serif elements
+  - `app/(dashboard)/files/[id]/page.tsx` - Changed font-semibold to font-bold for font-bangla-serif elements
+
+## 2025-12-23 12:53:12
+- **Description**: Fixed avatar mismatch for Sultana Razia (সুলতানা রাজিয়া) - changed from male avatar (avatarId: 9) to female avatar (avatarId: 11, using new 11-F.png).
+- **Files Modified**:
+  - `lib/mock-users.ts` - Updated user-009 (Sultana Razia) avatarId from 9 to 11
+  - `lib/avatar-utils.ts` - Added 11 to femaleAvatars array and updated comments to include 11-F.png
+
 ## 2025-12-21 18:56:02
 - **Description**: Removed tooltip from the rainbow "New File" button and made the label text slightly smaller for a cleaner appearance.
 - **Files Modified**:

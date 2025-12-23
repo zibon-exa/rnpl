@@ -42,6 +42,7 @@ export function DocumentPreview({
           sender={sender}
           designation={designation}
           showPlaceholders={true}
+          showCaptions={false}
           language={language}
         />
       </DocumentPaper>

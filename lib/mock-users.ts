@@ -132,7 +132,7 @@ export const mockUsers: User[] = [
     designationBn: 'ক্রয় কর্মকর্তা',
     officeEn: 'Administration',
     officeBn: 'প্রশাসন',
-    avatarId: 9,
+    avatarId: 11,
     status: 'Inactive',
     dateJoined: '2023-05-12',
   },

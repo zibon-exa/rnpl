@@ -27,7 +27,7 @@ export function isFemaleName(name: string): boolean {
  */
 export function getAvatarPath(name: string, avatarId?: number): string {
   // Available avatars map
-  const femaleAvatars = [3, 4, 5, 10];
+  const femaleAvatars = [3, 4, 5, 10, 11];
   
   if (avatarId) {
     const isFemale = femaleAvatars.includes(avatarId);
@@ -43,9 +43,9 @@ export function getAvatarPath(name: string, avatarId?: number): string {
     hash = hash & hash; // Convert to 32bit integer
   }
   
-  // Map hash to avatar number (1-10)
+  // Map hash to avatar number (1-11)
   // Available avatars: 1.png, 2.png, 6.png, 7.png, 8.png, 9.png (male)
-  //                    3-F.png, 4-F.png, 5-F.png, 10-F.png (female)
+  //                    3-F.png, 4-F.png, 5-F.png, 10-F.png, 11-F.png (female)
   const maleAvatars = [1, 2, 6, 7, 8, 9];
   
   if (isFemale) {

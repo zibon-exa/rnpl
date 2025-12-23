@@ -41,7 +41,6 @@ import {
   Undo,
   Redo,
   RemoveFormatting,
-  Plus,
   Table as TableIcon,
   Palette,
   AlignVerticalSpaceAround
@@ -525,44 +524,102 @@ export function TipTapEditorWithToolbar({ content, onChange, placeholder, classN
                 Numbered List
               </TooltipContent>
             </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7"
+                  onClick={() => editor.chain().focus().toggleTaskList().run()}
+                  data-active={editor.isActive('taskList')}
+                >
+                  <CheckSquare size={15} />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="text-xs">
+                Task List
+              </TooltipContent>
+            </Tooltip>
           </div>
 
           <div className="w-px h-6 bg-slate-300 mx-1" />
 
-          {/* Group 4: Insert */}
+          {/* Group 4: Insert Elements */}
           <div className="flex items-center gap-0.5 bg-white rounded-md p-0.5 border border-slate-200">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7"
+                  onClick={() => editor.chain().focus().toggleBlockquote().run()}
+                  data-active={editor.isActive('blockquote')}
+                >
+                  <Quote size={15} />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="text-xs">
+                Quote
+              </TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7"
+                  onClick={setLink}
+                  data-active={editor.isActive('link')}
+                >
+                  <LinkIcon size={15} />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="text-xs">
+                Link
+              </TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7"
+                  onClick={addImage}
+                >
+                  <ImageIcon size={15} />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="text-xs">
+                Image
+              </TooltipContent>
+            </Tooltip>
+
             <DropdownMenu>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className="h-7 gap-2 font-normal px-2 text-xs">
-                      <Plus size={15} /> Insert
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-7 w-7"
+                      data-active={editor.isActive('table')}
+                    >
+                      <TableIcon size={15} />
                     </Button>
                   </DropdownMenuTrigger>
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="text-xs">
-                  Insert Elements
+                  Table
                 </TooltipContent>
               </Tooltip>
               <DropdownMenuContent align="start">
-                <DropdownMenuLabel className="text-xs">Insert</DropdownMenuLabel>
+                <DropdownMenuLabel className="text-xs">Table</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={setLink}>
-                  <LinkIcon size={14} className="mr-2" /> Link
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={addImage}>
-                  <ImageIcon size={14} className="mr-2" /> Image
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => editor.chain().focus().toggleBlockquote().run()}>
-                  <Quote size={14} className="mr-2" /> Quote
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => editor.chain().focus().toggleTaskList().run()}>
-                  <CheckSquare size={14} className="mr-2" /> Task List
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}>
-                  <TableIcon size={14} className="mr-2" /> Table (3×3)
+                <DropdownMenuItem onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 2, withHeaderRow: true }).run()}>
+                  Insert Table (2×3)
                 </DropdownMenuItem>
                 {editor.isActive('table') && (
                   <>

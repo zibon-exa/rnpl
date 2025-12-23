@@ -372,7 +372,7 @@ export default function FileViewPage() {
 
                   {/* Title */}
                   <header className="mb-8 text-center">
-                    <h1 className="text-xl sm:text-2xl font-semibold text-slate-900 mb-4 leading-tight font-bangla-serif">
+                    <h1 className="text-xl sm:text-2xl font-bold text-slate-900 mb-4 leading-tight font-bangla-serif">
                       {file.title}
                     </h1>
                   </header>
@@ -380,9 +380,8 @@ export default function FileViewPage() {
                   {/* Main Content */}
                   <div className="mb-12">
                     {file.documentBody ? (
-                      <div className="prose prose-slate max-w-none">
+                      <div className="prose prose-slate max-w-none text-[15px] leading-7 text-slate-700 font-bangla [&_table]:w-full [&_table]:border-collapse [&_table]:my-4 [&_td]:border [&_td]:border-slate-300 [&_td]:p-2 [&_th]:border [&_th]:border-slate-300 [&_th]:p-2 [&_th]:bg-slate-50 [&_th]:font-semibold [&_p]:my-1 [&_p]:mb-2 [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mb-4 [&_h1]:mt-6 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mb-3 [&_h2]:mt-5 [&_h3]:text-lg [&_h3]:font-bold [&_h3]:mb-2 [&_h3]:mt-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:my-2 [&_li]:my-1 [&_blockquote]:border-l-4 [&_blockquote]:border-slate-300 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:my-4 [&_code]:bg-slate-100 [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-sm [&_strong]:font-bold [&_em]:italic [&_u]:underline [&_s]:line-through">
                         <div
-                          className="whitespace-pre-wrap text-[15px] leading-7 text-slate-700 font-bangla"
                           dangerouslySetInnerHTML={{ __html: file.documentBody }}
                         />
                       </div>
@@ -398,7 +397,7 @@ export default function FileViewPage() {
                       return (
                         <div className="text-center space-y-1 font-bangla-serif min-w-[200px]">
                           <div className="border-b border-slate-300 mb-2"></div>
-                          <p className="text-sm font-semibold text-slate-900">
+                          <p className="text-sm font-bold text-slate-900">
                             ({sender?.nameBn || file.sender})
                           </p>
                           <p className="text-[12px] text-slate-700">
@@ -414,7 +413,7 @@ export default function FileViewPage() {
 
                   {/* Distribution List */}
                   <div className="mt-12">
-                    <p className="text-[13px] font-semibold text-slate-900 mb-3 font-bangla-serif">
+                    <p className="text-[13px] font-bold text-slate-900 mb-3 font-bangla-serif">
                       বিতরণ জ্ঞাতার্থে / জ্ঞাতার্থে ও কার্যার্থে (জ্যেষ্ঠতার ক্রমানুসারে নয়):
                     </p>
                     <ol className="list-decimal pl-5 space-y-1 text-[13px] leading-6 text-slate-800 font-bangla">

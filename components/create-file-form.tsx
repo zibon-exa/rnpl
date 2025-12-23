@@ -363,7 +363,7 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel, initialFile }:
                     value={formData.title}
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                     placeholder={formData.language === 'bn' ? 'বিষয়: এখানে বিষয় লিখুন...' : 'Subject: Enter subject here...'}
-                    className="w-full text-xl md:text-2xl font-semibold text-slate-900 mb-4 leading-tight font-bangla-serif border-none outline-none bg-transparent focus:ring-0 placeholder:text-slate-400 text-center resize-none overflow-hidden"
+                    className="w-full text-xl md:text-2xl font-bold text-slate-900 mb-4 leading-tight font-bangla-serif border-none outline-none bg-transparent focus:ring-0 placeholder:text-slate-400 text-center resize-none overflow-hidden"
                     rows={1}
                   />
                 </div>
@@ -382,7 +382,7 @@ export function CreateFileForm({ user, onCreateSuccess, onCancel, initialFile }:
                 <div className="mt-16 flex justify-end">
                   <div className="text-center space-y-1 font-bangla-serif min-w-[200px]">
                     <div className="border-b border-slate-300 mb-2"></div>
-                    <p className="text-sm font-semibold text-slate-900">
+                    <p className="text-sm font-bold text-slate-900">
                       ({getUserName(formData.language)})
                     </p>
                     <p className="text-[12px] text-slate-700">

@@ -4,7 +4,7 @@ import { AuthProvider } from "@/lib/auth-context"
 import { FilesProvider } from "@/lib/files-context"
 import { Header } from "@/components/header"
 import { Toaster } from "@/components/ui/toaster"
-import { inter, playfairDisplay, dancingScript, notoSerifBengali, mina } from "@/lib/fonts"
+import { inter, playfairDisplay, dancingScript, mina } from "@/lib/fonts"
 
 export const metadata: Metadata = {
   title: "RNPL Note",
@@ -21,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfairDisplay.variable} ${dancingScript.variable} ${notoSerifBengali.variable} ${mina.variable}`} suppressHydrationWarning={true}>
+    <html lang="en" className={`${inter.variable} ${playfairDisplay.variable} ${dancingScript.variable} ${mina.variable}`} suppressHydrationWarning={true}>
       <body suppressHydrationWarning={true}>
         <AuthProvider>
           <FilesProvider>
