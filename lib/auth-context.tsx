@@ -44,21 +44,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const login = (username: string, password: string): boolean => {
-    // Validate credentials
-    const validUsername = 'rnpl-demo';
+  const login = (email: string, password: string): boolean => {
+    // Validate credentials - for demo, accept any email with password '123123'
+    // In production, this would validate against a database
     const validPassword = '123123';
     
-    if (username !== validUsername || password !== validPassword) {
+    if (password !== validPassword) {
       return false;
     }
 
-    const adminUser = mockUsers.find(u => u.role === 'Admin') || mockUsers[0];
+    // Find user by email, or use admin as default
+    const foundUser = mockUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+    const userToLogin = foundUser || mockUsers.find(u => u.role === 'Admin') || mockUsers[0];
 
-    setUser(adminUser);
+    setUser(userToLogin);
     
     if (typeof window !== 'undefined') {
-      localStorage.setItem('rnpl_user', JSON.stringify(adminUser));
+      localStorage.setItem('rnpl_user', JSON.stringify(userToLogin));
     }
 
     // Redirect to dashboard

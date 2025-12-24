@@ -6,6 +6,21 @@ This file tracks all AI-assisted changes made to the project.
 - Date-Time: YYYY-MM-dd HH:mm:ss
 - Description: Brief description of changes
 
+## 2025-12-24 12:50:37
+- **Description**: Updated login page to use email instead of username and added forgot password functionality. Authentication now validates by email address, and users can request password reset through a modal dialog. Added Key icon to forgot password link and changed color to brand color.
+- **Files Modified**:
+  - `app/(auth)/login/page.tsx` - Changed username field to email field, added "Forgot Password?" link below password field with Key icon from lucide-react, changed link color from medium-turquoise to brand color (--color-brand), implemented forgot password modal with email input, success message, and form handling. Modal uses existing Modal component for consistent UI.
+  - `lib/auth-context.tsx` - Updated login function to validate by email instead of username. Now finds user by email from mockUsers array, or defaults to admin user. Password validation remains the same (123123 for demo).
+- **Features**:
+  - Email-based authentication (replaced username)
+  - Forgot password link with Key icon in login form
+  - Link uses brand color (turquoise) for consistency
+  - Modal dialog for password reset request
+  - Success message after submitting forgot password form
+  - Email validation in forgot password form
+  - Consistent styling with existing login page design
+  - Auto-close modal after 3 seconds on success
+
 ## 2025-12-23 14:50:10
 - **Description**: Replaced browser prompt dialogs with custom modals for Link and Image insertion in TipTap editor. Added Input component and Modal UI for better UX. Image modal supports both URL input and file upload.
 - **Files Created**:
